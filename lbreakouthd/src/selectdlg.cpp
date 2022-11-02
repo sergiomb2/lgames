@@ -115,27 +115,40 @@ SetInfo::SetInfo(const string &n, Theme &theme)
 
 
 /** Create levelset list and previews + layout. */
-void SelectDialog::init()
+void SelectDialog::init(int sd_type)
 {
 	uint sw = theme.menuBackground.getWidth();
 	uint sh = theme.menuBackground.getHeight();
 	vector<string> list, list2;
+	string path;
 
-	list.push_back(_(TOURNAMENT));
-	list.push_back(_("!JUMPING_JACK!"));
-	list.push_back(_("!OUTBREAK!"));
-	list.push_back(_("!BARRIER!"));
-	list.push_back(_("!SITTING_DUCKS!"));
-	list.push_back(_("!HUNTER!"));
-	list.push_back(_("!INVADERS!"));
-	readDir(string(DATADIR)+"/levels", RD_FILES, list2);
-	for (auto& s : list2)
-		list.push_back(s);
-	if (string(CONFIGDIR) != ".") {
-		readDir(getHomeDir() + "/" + string(CONFIGDIR) + "/levels",
-							RD_FILES, list2);
+	/* mini-games and installed sets */
+	if (sd_type == SDT_ALL) {
+		list.push_back(_(TOURNAMENT));
+		list.push_back(_("!JUMPING_JACK!"));
+		list.push_back(_("!OUTBREAK!"));
+		list.push_back(_("!BARRIER!"));
+		list.push_back(_("!SITTING_DUCKS!"));
+		list.push_back(_("!HUNTER!"));
+		list.push_back(_("!INVADERS!"));
+		readDir(string(DATADIR)+"/levels", RD_FILES, list2);
 		for (auto& s : list2)
-			list.push_back(string("~")+s);
+			list.push_back(s);
+
+		/* if game is installed, get customs from home as well */
+		if (string(CONFIGDIR) != ".") {
+			readDir(getCustomLevelsetDir(),RD_FILES, list2);
+			for (auto& s : list2)
+				list.push_back(string("~")+s);
+		}
+	} else { /* custom sets only */
+		/* we need to add LBreakoutHD as it is ignored further down */
+		list.push_back("LBreakoutHD");
+
+		/* if not installed use regular levels */
+		readDir(getCustomLevelsetDir(), RD_FILES, list2);
+		for (auto& s : list2)
+			list.push_back(s);
 	}
 
 	vlen = (0.7 * sh) / theme.fMenuNormal.getSize(); /* vlen = displayed entries */

@@ -212,6 +212,7 @@ enum {
 int readDir(const string &dname, int type, vector<string> &fnames);
 
 string getHomeDir();
+const string &getCustomLevelsetDir();
 const string &getFullLevelsetPath(const string &n);
 
 string trimString(const string& str);

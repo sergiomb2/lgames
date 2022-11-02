@@ -20,13 +20,14 @@
 #include "sprite.h"
 #include "menu.h"
 #include "selectdlg.h"
+#include "editor.h"
 #include "view.h"
 
 extern SDL_Renderer *mrc;
 extern int last_ball_brick_reflect_x;
 
 View::View(Config &cfg, ClientGame &_cg)
-	: config(cfg), mw(NULL),
+	: config(cfg), mw(NULL), editor(theme,mixer),
 	  curMenu(NULL), graphicsMenu(NULL), resumeMenuItem(NULL),
 	  selectDlg(theme, mixer), lblCredits1(true), lblCredits2(true),
 	  cgame(_cg), quitReceived(false),
@@ -1102,7 +1103,7 @@ void View::playSounds()
 
 void View::createMenus()
 {
-	Menu *mNewGame, *mOptions, *mAudio, *mGraphics, *mControls, *mAdv;
+	Menu *mNewGame, *mOptions, *mAudio, *mGraphics, *mControls, *mAdv, *mEditor;
 	const char *diffNames[] = {_("Kids"),_("Very Easy"),_("Easy"),_("Medium"),_("Hard") } ;
 	const char *fpsLimitNames[] = {_("No Limit"),_("200 FPS"),_("100 FPS") } ;
 	const int bufSizes[] = { 256, 512, 1024, 2048, 4096 };
@@ -1125,6 +1126,7 @@ void View::createMenus()
 	graphicsMenu = mGraphics; /* needed to return after mode/theme change */
 	mControls = new Menu(theme);
 	mAdv = new Menu(theme);
+	mEditor = new Menu(theme);
 
 	mNewGame->add(new MenuItem(_("Start Original Levels"),
 			_("Start level set 'LBreakoutHD'."),
@@ -1244,10 +1246,20 @@ void View::createMenus()
 	mAdv->add(new MenuItemSep());
 	mAdv->add(new MenuItemBack(mOptions));
 
+	mEditor->add(new MenuItemEdit(_("Create New Set"),
+			config.edit_setname, AID_EDITNEWSET, true));
+	mEditor->add(new MenuItem(_("Edit Existing Set"),
+			_("Edit an existing levelset."),
+			AID_EDITCUSTOM));
+	mEditor->add(new MenuItemSep());
+	mEditor->add(new MenuItemBack(rootMenu.get()));
+
 	rootMenu->add(new MenuItemSub(_("New Game"), mNewGame));
 	resumeMenuItem = new MenuItem(_("Resume Game"), "", AID_RESUME);
 	rootMenu->add(resumeMenuItem);
 	updateResumeGameTooltip();
+	rootMenu->add(new MenuItemSep());
+	rootMenu->add(new MenuItemSub(_("Editor"), mEditor));
 	rootMenu->add(new MenuItemSep());
 	rootMenu->add(new MenuItemSub(_("Settings"), mOptions));
 	rootMenu->add(new MenuItem(_("Help"), "", AID_HELP));
@@ -1386,6 +1398,20 @@ void View::runMenu()
 				break;
 			case AID_HELP:
 				showHelp();
+				ticks.reset();
+				break;
+			case AID_EDITNEWSET:
+				editor.run(config.edit_setname);
+				ticks.reset();
+				break;
+			case AID_EDITCUSTOM:
+				darkenScreen();
+				selectDlg.init(SDT_CUSTOMONLY);
+				if (selectDlg.run()) {
+					editor.run(selectDlg.get());
+					ticks.reset();
+				} else if (selectDlg.quitRcvd())
+					quitReceived = true;
 				break;
 			}
 		}

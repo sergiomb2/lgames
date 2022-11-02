@@ -23,6 +23,7 @@ using namespace std;
 #include "sprite.h"
 #include "menu.h"
 #include "selectdlg.h"
+#include "editor.h"
 #include "view.h"
 
 int main(int argc, char **argv)

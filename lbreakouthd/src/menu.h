@@ -33,7 +33,9 @@ enum {
 	AID_VOLUME,
 	AID_APPLYAUDIO,
 	AID_APPLYTHEMEMODE,
-	AID_MAXBALLSPEEDCHANGED
+	AID_MAXBALLSPEEDCHANGED,
+	AID_EDITNEWSET,
+	AID_EDITCUSTOM
 };
 
 class Menu;
@@ -62,16 +64,11 @@ public:
 	static uint tooltipWidth;
 
 	MenuItem(const string &c, const string &tt, int aid = AID_NONE) :
-			caption(c), lblNormal(true), lblFocus(true),
+			lblNormal(true), lblFocus(true),
 			x(0), y(0), w(1), h(1),
 			focus(0), actionId(aid), fadingAlpha(0) {
-		if (MenuItem::fNormal && MenuItem::fFocus) {
-			lblNormal.setText(*(MenuItem::fNormal), c);
-			lblFocus.setText(*(MenuItem::fFocus), c);
-		}
-		if (MenuItem::fTooltip)
-			tooltip.setText(*(MenuItem::fTooltip),tt,
-						MenuItem::tooltipWidth);
+		setCaption(c);
+		setTooltip(tt);
 	}
 	virtual ~MenuItem() {}
 	void setGeometry(int _x, int _y, int _w, int _h) {
@@ -80,6 +77,13 @@ public:
 		w = _w;
 		h = _h;
 		_logdebug(2,"Geometry for %s: %d,%d,%d,%d\n",caption.c_str(),x,y,w,h);
+	}
+	void setCaption(const string &c) {
+		caption = c;
+		if (MenuItem::fNormal)
+			lblNormal.setText(*(MenuItem::fNormal), c);
+		if (MenuItem::fFocus)
+			lblFocus.setText(*(MenuItem::fFocus), c);
 	}
 	void setTooltip(const string &tt) {
 		if (MenuItem::fTooltip)
@@ -122,6 +126,7 @@ public:
 
 /** Allow a string value in addition to caption. */
 class MenuItemValue : public MenuItem {
+protected:
 	string value;
 	Label lblValueNormal;
 	Label lblValueFocus;
@@ -303,11 +308,16 @@ public:
 
 class MenuItemEdit : public MenuItemValue {
 	string &str;
+	bool hidval;
 
 	int runEditDialog(const string &caption, string &str);
 public:
-	MenuItemEdit(const string &c, string &s, int aid = AID_NONE)
-			: MenuItemValue(c,s,"",AID_NONE), str(s) {}
+	MenuItemEdit(const string &c, string &s, int aid = AID_NONE,
+				bool hv = false)
+				: MenuItemValue(c,s,"",aid), str(s), hidval(hv) {
+		if (hidval) /* XXX value is hidden, remove : from caption */
+			setCaption(c);
+	}
 	virtual int handleEvent(const SDL_Event &ev) {
 		if (ev.type == SDL_MOUSEBUTTONDOWN)
 			if (runEditDialog(_("Enter Name"),str)) {
@@ -315,6 +325,11 @@ public:
 				return actionId;
 			}
 		return AID_NONE;
+	}
+	virtual void render() {
+		if (!hidval)
+			renderPart(lblValueNormal, lblValueFocus, ALIGN_X_RIGHT);
+		MenuItem::render();
 	}
 };
 

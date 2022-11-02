@@ -1,3 +1,17 @@
 editor
 menu for gamepad
-warp mouse for absolute position to keep inside playing field 
+warp mouse for absolute position to keep inside playing field
+random set: build set from 10 random levels with randomly generated extras
+
+new extras
+- invert paddle movement
+- free paddle y movement
+- move level down 1
+- instant death
+- instant warp
+- smaller/bigger balls (?)
+- laser (clears entire row, limited number of shots)
+- net: bring back one lost ball
+
+new brick:
+debris: splits into small pieces that kill the paddle

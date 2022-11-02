@@ -44,6 +44,7 @@ class View {
 	MainWindow *mw;
 	SDL_Rect viewport; /* used if width not 0 */
 	Gamepad gamepad;
+	Editor editor;
 
 	/* menu */
 	unique_ptr<Menu> rootMenu;

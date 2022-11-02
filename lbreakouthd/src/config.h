@@ -98,6 +98,7 @@ public:
 	int return_on_click; /* autoreturn on click if true else automatically */
 	int theme_id; /* 0 == default theme */
 	int theme_count; /* to check and properly reset id if number of themes changed */
+	string edit_setname;
 
 	Config();
 	~Config() { save(); }

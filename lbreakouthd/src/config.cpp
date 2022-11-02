@@ -81,6 +81,7 @@ Config::Config()
 	return_on_click = 0;
 	theme_id = 0;
 	theme_count = 1;
+	edit_setname ="newset";
 
 	/* if config dir not found create necessary dirs */
 	dname = CONFIGDIR;
@@ -156,6 +157,7 @@ Config::Config()
 	fp.get( "return_on_click", return_on_click );
 	fp.get( "theme_id", theme_id );
 	fp.get( "theme_count", theme_count );
+	fp.get( "edit_setname", edit_setname );
 }
 
 void Config::save()
@@ -219,6 +221,7 @@ void Config::save()
 	ofs << "return_on_click=" << return_on_click << "\n";
 	ofs << "theme_id=" << theme_id << "\n";
 	ofs << "theme_count=" << theme_count << "\n";
+	ofs << "edit_setname=" << edit_setname << "\n";
 
 	ofs.close();
 	_loginfo("Configuration saved to %s\n",path.c_str());

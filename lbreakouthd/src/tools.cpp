@@ -207,6 +207,16 @@ string getHomeDir() {
 }
 
 /* not thread safe */
+const string &getCustomLevelsetDir() {
+	static string path;
+	if (string(CONFIGDIR) == ".")
+		path = "./levels/";
+	else
+		path = getHomeDir() + "/" + CONFIGDIR + "/levels/";
+	return path;
+}
+
+/* not thread safe */
 const string &getFullLevelsetPath(const string &n)
 {
 	static string path;

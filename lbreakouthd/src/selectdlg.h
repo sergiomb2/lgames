@@ -29,6 +29,9 @@ public:
 };
 
 enum {
+	SDT_ALL = 0,
+	SDT_CUSTOMONLY,
+
 	SEL_NONE = -1,
 	SEL_PREV = -2,
 	SEL_NEXT = -3
@@ -71,11 +74,12 @@ public:
 	{
 		sel = SEL_NONE;
 		pos = max = vlen = 0;
+		tx = ty = 0;
 		lx = ly = 0;
 		cw = ch = 0;
 		px = py = pw = ph = 0;
 	}
-	void init();
+	void init(int sd_type = SDT_ALL);
 	int run();
 	string get() {
 		if (sel >= 0)
