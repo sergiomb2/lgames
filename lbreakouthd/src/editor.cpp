@@ -77,7 +77,7 @@ void Editor::init(const string &setname) {
 	/* create simple buttons */
 	buttons.create(EB_NUMBER*bw,bh);
 	string captions[] = {"First", "Prev", "Next", "Last",
-		"Add>", "<Add", "Clear", "Del", "MvUp", "MvDn",
+		"<Add", "Add>", "Clear", "Del", "MvUp", "MvDn",
 		"Load", "Save", "Quit", "Test"
 	};
 	Font &f = theme.fSmall;
@@ -478,7 +478,14 @@ void Editor::render() {
 	string levinfo = _("Current Level: ") + to_string((curLevelId+1))
 					+ "/" + to_string(numLevels);
 	font.write(rMap.x + rMap.w/2, rMap.y+rMap.h,levinfo);
+	if (btnFocus != -1)
+		font.write(rButtons.x + rButtons.w/2, rButtons.y + rButtons.h,
+				btnTooltips[btnFocus]);
 
+	/* info about editor state */
+	font.setAlign(ALIGN_X_LEFT | ALIGN_Y_TOP);
+	font.write(rBricks.x,rButtons.y,_("The editor is work in progress!"));
+	font.write(rBricks.x,rButtons.y+brickHeight,_("Not everything is working yet!"));
 }
 
 void Editor::run(const string &setname)
@@ -495,19 +502,32 @@ void Editor::run(const string &setname)
 	while (!quitReceived && !leaveRequested) {
 		/* handle events */
 		if (SDL_PollEvent(&ev)) {
+			/* quit entirely? */
 			if (ev.type == SDL_QUIT)
 				quitReceived = true;
-			if (ev.type == SDL_MOUSEMOTION) {
-			}
+			/* check button focus for tooltip */
+			if (ev.type == SDL_MOUSEMOTION &&
+					inRect(ev.motion.x, ev.motion.y, rButtons))
+				btnFocus = (ev.motion.x - rButtons.x)/brickWidth;
+			else
+				btnFocus = -1;
+			/* handle click */
 			if (ev.type == SDL_MOUSEBUTTONDOWN) {
 				handleClick(ev.button.x, ev.button.y,
 							ev.button.button);
 			}
+			/* handle drag */
 			if (ev.type == SDL_MOUSEMOTION && ev.motion.state &&
 					inRect(ev.motion.x, ev.motion.y, rMap))
 				handleClick(ev.motion.x, ev.motion.y,
 						(ev.motion.state&SDL_BUTTON_RMASK)?
 						SDL_BUTTON_RIGHT:SDL_BUTTON_LEFT);
+			/* check shortcuts */
+			if (ev.type == SDL_KEYDOWN) {
+				for (uint k = 0; k <= EB_NUMBER; k++)
+					if (btnShortcuts[k] ==
+							ev.key.keysym.scancode)
+						handleButton(k);			}
 		}
 
 		/* render */

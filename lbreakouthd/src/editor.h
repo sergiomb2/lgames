@@ -34,8 +34,8 @@ enum {
 	EB_PREV,
 	EB_NEXT,
 	EB_LAST,
-	EB_ADDAFTER,
 	EB_ADDBEFORE,
+	EB_ADDAFTER,
 	EB_CLEAR,
 	EB_DELETE,
 	EB_MOVEUP,
@@ -60,6 +60,9 @@ class Editor {
 	uint brickWidth, brickHeight;
 	uint numBrickCols, numExtraCols;
 	uint numBricks, numExtras;
+	int btnShortcuts[EB_NUMBER];
+	string btnTooltips[EB_NUMBER];
+	int btnFocus; /* -1 or id of button of mouse cursor on it */
 
 	string fpath; /* edited file */
 	vector<EditorLevel> levels; /* level data */
@@ -95,10 +98,36 @@ public:
 			  quitReceived(false), leaveRequested(false),
 			  brickWidth(0), brickHeight(0),
 			  numBrickCols(0), numExtraCols(0),
-			  numBricks(0), numExtras(0),
+			  numBricks(0), numExtras(0), btnFocus(-1),
 			  version("1.00"), numLevels(0), curLevelId(0), curLevel(NULL),
 			  selBrickId(0), selExtraId(0),
-			  editWidth(EDIT_WIDTH), editHeight(EDIT_HEIGHT) {};
+			  editWidth(EDIT_WIDTH), editHeight(EDIT_HEIGHT) {
+		/* set shortcuts and tooltips for buttons */
+		btnShortcuts[EB_FIRST] = SDL_SCANCODE_UP;
+		btnShortcuts[EB_PREV] = SDL_SCANCODE_LEFT;
+		btnShortcuts[EB_NEXT] = SDL_SCANCODE_RIGHT;
+		btnShortcuts[EB_LAST] = SDL_SCANCODE_DOWN;
+		btnShortcuts[EB_ADDBEFORE] = SDL_SCANCODE_N;
+		btnShortcuts[EB_ADDAFTER] = SDL_SCANCODE_M;
+		btnShortcuts[EB_CLEAR] = SDL_SCANCODE_C;
+		btnShortcuts[EB_DELETE] = SDL_SCANCODE_DELETE;
+		btnShortcuts[EB_LOAD] = SDL_SCANCODE_L;
+		btnShortcuts[EB_SAVE] = SDL_SCANCODE_S;
+		btnShortcuts[EB_QUIT] = SDL_SCANCODE_ESCAPE;
+		btnShortcuts[EB_TEST] = SDL_SCANCODE_T;
+		btnTooltips[EB_FIRST] = _("Go to first level [Up Arrow]");
+		btnTooltips[EB_PREV] = _("Go to previous level [Left Arrow]");
+		btnTooltips[EB_NEXT] = _("Go to next level [Right Arrow]");
+		btnTooltips[EB_LAST] = _("Go to last level [Down Arrow]");
+		btnTooltips[EB_ADDBEFORE] = _("Add new level before this one [N]");
+		btnTooltips[EB_ADDAFTER] = _("Add new level after this one [M]");
+		btnTooltips[EB_CLEAR] = _("Clear bricks and extras [C]");
+		btnTooltips[EB_DELETE] = _("Delete level completely [DEL]");
+		btnTooltips[EB_LOAD] = _("Reload levelset from file [L]");
+		btnTooltips[EB_SAVE] = _("Save levelset to file [S]");
+		btnTooltips[EB_QUIT] = _("Quit editor [ESC]");
+		btnTooltips[EB_TEST] = _("Test current level [T]");
+	};
 	bool quitRcvd() { return quitReceived; }
 	void run(const string &setname);
 };

@@ -1,4 +1,10 @@
-editor
+polish editor:
+- implement move up/down
+- dim or blink extras
+- background
+- preview of levels
+- test level
+
 menu for gamepad
 warp mouse for absolute position to keep inside playing field
 random set: build set from 10 random levels with randomly generated extras

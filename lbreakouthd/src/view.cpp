@@ -1259,10 +1259,10 @@ void View::createMenus()
 	rootMenu->add(resumeMenuItem);
 	updateResumeGameTooltip();
 	rootMenu->add(new MenuItemSep());
-	rootMenu->add(new MenuItemSub(_("Editor"), mEditor));
-	rootMenu->add(new MenuItemSep());
 	rootMenu->add(new MenuItemSub(_("Settings"), mOptions));
 	rootMenu->add(new MenuItem(_("Help"), "", AID_HELP));
+	rootMenu->add(new MenuItemSep());
+	rootMenu->add(new MenuItemSub(_("Editor"), mEditor));
 	rootMenu->add(new MenuItemSep());
 	rootMenu->add(new MenuItem(_("Quit"), "", AID_QUIT));
 
