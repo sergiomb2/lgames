@@ -1402,6 +1402,9 @@ void View::runMenu()
 				break;
 			case AID_EDITNEWSET:
 				editor.run(config.edit_setname);
+				if (editor.quitRcvd())
+					quitReceived = true;
+				dim();
 				ticks.reset();
 				break;
 			case AID_EDITCUSTOM:
@@ -1409,6 +1412,9 @@ void View::runMenu()
 				selectDlg.init(SDT_CUSTOMONLY);
 				if (selectDlg.run()) {
 					editor.run(selectDlg.get());
+					if (editor.quitRcvd())
+						quitReceived = true;
+					dim();
 					ticks.reset();
 				} else if (selectDlg.quitRcvd())
 					quitReceived = true;

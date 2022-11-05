@@ -210,7 +210,7 @@ string getHomeDir() {
 const string &getCustomLevelsetDir() {
 	static string path;
 	if (string(CONFIGDIR) == ".")
-		path = "./levels/";
+		path = "./levels";
 	else
 		path = getHomeDir() + "/" + CONFIGDIR + "/levels/";
 	return path;

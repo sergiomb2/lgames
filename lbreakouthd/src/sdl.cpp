@@ -69,8 +69,12 @@ void MainWindow::refresh()
 
 /** Image */
 
+/** Create new black image. If no size is given use screen size. */
 int Image::create(int w, int h)
 {
+	if (w == 0 || h == 0)
+		SDL_GetRendererOutputSize(mrc,&w,&h);
+
 	_logdebug(1,"Creating new texture of size %dx%d\n",w,h);
 
 	if (tex) {
@@ -304,6 +308,15 @@ void Image::fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
 	SDL_SetRenderTarget(mrc,old);
 }
 
+void Image::fill(int x, int y, int w, int h, const SDL_Color &c) {
+	SDL_Rect r = {x,y,w,h};
+	SDL_Texture *old = SDL_GetRenderTarget(mrc);
+	SDL_SetRenderTarget(mrc,tex);
+	SDL_SetRenderDrawColor(mrc,c.r,c.g,c.b,c.a);
+	SDL_RenderFillRect(mrc, &r);
+	SDL_SetRenderTarget(mrc,old);
+}
+
 void Image::scale(int nw, int nh)
 {
 	_logdebug(1,"Scaling texture of size %dx%d to %dx%d\n",w,h,nw,nh);
@@ -454,8 +467,8 @@ void GridImage::scale(int ncw, int nch)
 	SDL_SetTextureBlendMode(newtex, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(mrc,0,0,0,0);
 	SDL_RenderClear(mrc);
-	for (int j = 0; j < getGridSizeY(); j++)
-		for (int i = 0; i < getGridSizeX(); i++) {
+	for (uint j = 0; j < getGridSizeY(); j++)
+		for (uint i = 0; i < getGridSizeX(); i++) {
 			srect.x = i * gw;
 			srect.y = j * gh;
 			drect.x = i * ncw;
@@ -683,4 +696,117 @@ const Uint8 *Gamepad::update() {
 		state[GPAD_BUTTON0 + i] = SDL_JoystickGetButton(js,i);
 
 	return state;
+}
+
+/** Run a standalone dialog for editing a UTF8 string. ESC cancels editing
+ * (string is not changed), Enter confirms changes. Return 1 if string was
+ * changed, 0 if not changed, -1 if quit requested. */
+int runEditDialog(Font &font, const string &caption, string &str)
+{
+	int ret = 0;
+	SDL_Event event;
+	string backup = str;
+	Image img;
+	bool done = false;
+
+	img.createFromScreen();
+	img.setAlpha(64);
+
+	font.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
+
+	SDL_StartTextInput();
+	while (!done) {
+		if (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_QUIT:
+				done = true;
+				ret = -1;
+				break;
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.scancode) {
+				case SDL_SCANCODE_ESCAPE:
+					str = backup;
+					done = true;
+					break;
+				case SDL_SCANCODE_RETURN:
+					ret = 1;
+					done = true;
+					break;
+				case SDL_SCANCODE_BACKSPACE:
+					if (str.length()>0)
+						str = str.substr(0, str.length()-1);
+					break;
+				default: break;
+				}
+				break;
+			case SDL_TEXTINPUT:
+				str += event.text.text;
+				break;
+			}
+		}
+
+		/* redraw */
+		SDL_SetRenderDrawColor(mrc,0,0,0,255);
+		SDL_RenderClear(mrc);
+		img.copy();
+		string text(caption + ": " + str);
+		font.write(img.getWidth()/2,img.getHeight()/2,text);
+		SDL_RenderPresent(mrc);
+		SDL_Delay(10);
+		SDL_FlushEvent(SDL_MOUSEMOTION);
+	}
+	SDL_StopTextInput();
+
+	return ret;
+}
+
+/** Run standalone confirm dialog. Return 1 if confirmed
+ * changed, 0 if not, -1 if quit requested. */
+int runConfirmDialog(Font &font, const string &caption)
+{
+	int ret = 0;
+	bool done = false;
+	SDL_Event event;
+	Image img;
+
+	img.createFromScreen();
+	img.setAlpha(64);
+
+	font.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
+
+	while (!done) {
+		if (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_QUIT:
+				done = true;
+				ret = -1;
+				break;
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.scancode) {
+				case SDL_SCANCODE_Y:
+				case SDL_SCANCODE_Z:
+					ret = 1;
+					done = true;
+					break;
+				default:
+					ret = 0;
+					done = true;
+					break;
+				}
+				break;
+			}
+		}
+
+		/* redraw */
+		SDL_SetRenderDrawColor(mrc,0,0,0,255);
+		SDL_RenderClear(mrc);
+		img.copy();
+		font.write(img.getWidth()/2, img.getHeight()/2,caption);
+		SDL_RenderPresent(mrc);
+		SDL_Delay(10);
+		SDL_FlushEvent(SDL_MOUSEMOTION);
+	}
+
+	return ret;
+
 }

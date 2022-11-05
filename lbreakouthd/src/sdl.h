@@ -123,7 +123,7 @@ public:
 		if (tex)
 			SDL_DestroyTexture(tex);
 	}
-	int create(int w, int h);
+	int create(int w=0, int h=0);
 	int createFromScreen();
 	int load(const string& fname);
 	int load(SDL_Surface *s);
@@ -148,6 +148,11 @@ public:
 	void fill(const SDL_Color &c) {
 		fill(c.r,c.g,c.b,c.a);
 	}
+	void fill(int x, int y, int w, int h, const SDL_Color &c);
+	void fill(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255) {
+		SDL_Color c = {r,g,b,a};
+		fill(x,y,w,h,c);
+	}
 	void scale(int nw, int nh);
 	int createShadow(Image &img);
 };
@@ -159,10 +164,10 @@ public:
 	GridImage() : gw(0), gh(0) {};
 	int load(const string& fname, int _gw, int _gh);
 	int load(SDL_Surface *s, int _gw, int _gh);
-	int getGridSizeX() {return w/gw;}
-	int getGridSizeY() {return h/gh;}
-	int getGridWidth() {return gw;}
-	int getGridHeight() {return gh;}
+	uint getGridSizeX() {return w/gw;}
+	uint getGridSizeY() {return h/gh;}
+	uint getGridWidth() {return gw;}
+	uint getGridHeight() {return gh;}
 	void copy(int gx, int gy, int dx, int dy);
 	void copy(int gx, int gy, int dx, int dy, int dw, int dh);
 	void copy(int gx, int gy, int sx, int sy, int sw, int sh, int dx, int dy);
@@ -351,5 +356,14 @@ public:
 	}
 	const Uint8 *update();
 };
+
+/** Run a standalone dialog for editing a UTF8 string. ESC cancels editing
+ * (string is not changed), Enter confirms changes. Return 1 if string was
+ * changed, 0 if not changed. */
+int runEditDialog(Font &font, const string &caption, string &str);
+
+/** Run standalone confirm dialog. Return 1 if confirmed
+ * changed, 0 if not, -1 if quit requested. */
+int runConfirmDialog(Font &font, const string &caption);
 
 #endif /* SDL_H_ */

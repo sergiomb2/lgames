@@ -297,6 +297,7 @@ int SelectDialog::run()
 		/* render */
 		render();
 		SDL_RenderPresent(mrc);
+		SDL_Delay(10);
 		SDL_FlushEvent(SDL_MOUSEMOTION); /* prevent event loop from dying */
 	}
 

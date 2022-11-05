@@ -19,6 +19,7 @@ class View;
 class Menu;
 class SelectDialog;
 class SetInfo;
+class Editor;
 
 enum {
 	MAXWALLPAPERS= 10
@@ -29,6 +30,7 @@ class Theme {
 	friend Menu;
 	friend SelectDialog;
 	friend SetInfo;
+	friend Editor;
 
 	string stdPath; /* path to standard theme for fallbacks */
 	bool oldTheme;
@@ -94,12 +96,13 @@ class Theme {
 		return fpath;
 	}
 public:
-	Theme() : oldTheme(true),
+	Theme() : oldTheme(true), boardX(0), boardWidth(0),
 			brickFileWidth(0), brickFileHeight(0), shadowOffset(0),
 			fontSmallSize(0), fontNormalSize(0),
 			shotFrameNum(0), shotAnimDelay(0),
 			weaponFrameNum(0), weaponAnimDelay(0),
 			explFrameNum(0), explAnimDelay(0),
+			shineFrameNum(0), shineAnimDelay(0),
 			menuX(0), menuY(0), menuItemWidth(0), menuItemHeight(0),
 			menuFontNormalSize(0), menuFontFocusSize(0),
 			numWallpapers(0)
