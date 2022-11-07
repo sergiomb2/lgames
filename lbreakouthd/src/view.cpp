@@ -1219,6 +1219,7 @@ void View::createMenus()
 	mOptions->add(new MenuItemSub(_("Graphics"),mGraphics));
 	mOptions->add(new MenuItemSub(_("Audio"),mAudio));
 	mOptions->add(new MenuItemSub(_("Advanced"),mAdv));
+	mOptions->add(new MenuItemSep());
 	mOptions->add(new MenuItemBack(rootMenu.get()));
 
 	mAdv->add(new MenuItemList(_("Paddle Style"),

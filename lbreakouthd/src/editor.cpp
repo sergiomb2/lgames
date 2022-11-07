@@ -406,13 +406,11 @@ void Editor::handleClick(int mx, int my, int mb)
 		if (mb == SDL_BUTTON_LEFT) {
 			if (selBrickId != -1)
 				curLevel->bricks[rx][ry] = selBrickId;
-			else
+			else if (curLevel->bricks[rx][ry] != -1)
 				curLevel->extras[rx][ry] = selExtraId;
 		} else if (mb == SDL_BUTTON_RIGHT) {
-			if (selBrickId != -1)
-				curLevel->bricks[rx][ry] = -1;
-			else
-				curLevel->extras[rx][ry] = -1;
+			curLevel->bricks[rx][ry] = -1;
+			curLevel->extras[rx][ry] = -1;
 		}
 	}
 	if (inRect(mx,my,rTitle))
