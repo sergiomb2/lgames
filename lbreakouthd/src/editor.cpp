@@ -432,8 +432,12 @@ void Editor::handleClick(int mx, int my, int mb)
 			else if (curLevel->bricks[rx][ry] != -1)
 				curLevel->extras[rx][ry] = selExtraId;
 		} else if (mb == SDL_BUTTON_RIGHT) {
-			curLevel->bricks[rx][ry] = -1;
-			curLevel->extras[rx][ry] = -1;
+			if (selBrickId != -1) {
+				/* if brick gets deleted, delete extra as well */
+				curLevel->bricks[rx][ry] = -1;
+				curLevel->extras[rx][ry] = -1;
+			} else
+				curLevel->extras[rx][ry] = -1;
 		}
 	}
 	if (inRect(mx,my,rTitle))
@@ -483,6 +487,8 @@ void Editor::render() {
 					alpha = tick/4;
 				else
 					alpha = (2000-tick)/4;
+				if (selExtraId != -1)
+					alpha = 255;
 				theme.extras.setAlpha(alpha);
 				theme.extras.copy(curLevel->extras[i][j],0,
 						rMap.x + i*brickWidth,
