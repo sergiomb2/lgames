@@ -457,10 +457,11 @@ void Editor::render() {
 						rMap.x + i*brickWidth,
 						rMap.y + j*brickHeight);
 			if (curLevel->extras[i][j] != -1) {
-				if (selExtraId != -1)
-					alpha = 255;
+				uint tick = SDL_GetTicks()%2000;
+				if (tick < 1000)
+					alpha = tick/4;
 				else
-					alpha = 128;
+					alpha = (2000-tick)/4;
 				theme.extras.setAlpha(alpha);
 				theme.extras.copy(curLevel->extras[i][j],0,
 						rMap.x + i*brickWidth,
