@@ -333,6 +333,17 @@ void Editor::save()
 	_loginfo("Levelset saved to %s\n",fpath.c_str());
 }
 
+void Editor::swapLevels(uint pos1, uint pos2)
+{
+	if (pos1 >= numLevels || pos2 >= numLevels)
+		return;
+
+	EditorLevel swap;
+	swap = levels[pos1];
+	levels[pos1] = levels[pos2];
+	levels[pos2] = swap;
+}
+
 void Editor::handleButton(uint id)
 {
 	EditorLevel newlev;
@@ -365,6 +376,18 @@ void Editor::handleButton(uint id)
 			numLevels--;
 			if (curLevelId == numLevels)
 				gotoLevel(curLevelId-1);
+		}
+		break;
+	case EB_MOVEUP:
+		if (curLevelId < numLevels-1) {
+			swapLevels(curLevelId, curLevelId+1);
+			gotoLevel(curLevelId+1);
+		}
+		break;
+	case EB_MOVEDOWN:
+		if (curLevelId > 0) {
+			swapLevels(curLevelId, curLevelId-1);
+			gotoLevel(curLevelId-1);
 		}
 		break;
 	case EB_QUIT:

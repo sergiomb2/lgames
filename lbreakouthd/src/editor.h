@@ -92,6 +92,7 @@ class Editor {
 	char extraId2Char(int id);
 	int brickChar2Id(char c);
 	int extraChar2Id(char c);
+	void swapLevels(uint pos1, uint pos2);
 public:
 	Editor(Theme &t, Mixer &m)
 			: theme(t), mixer(m),
