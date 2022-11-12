@@ -68,11 +68,8 @@ void Editor::init(const string &setname) {
 
 	/* create selection frame image */
 	selFrame.create(bw,bh);
-	old = SDL_GetRenderTarget(mrc);
-	SDL_SetRenderTarget(mrc,background.getTex());
 	selFrame.fill(250,200,0,255);
 	selFrame.fill(3,3,bw-6,bh-6,0,0,0,0);
-	SDL_SetRenderTarget(mrc,old);
 
 	/* create simple buttons */
 	buttons.create(EB_NUMBER*bw,bh);
@@ -92,6 +89,16 @@ void Editor::init(const string &setname) {
 
 	/* create background */
 	background.create();
+	if (theme.numWallpapers > 1) {
+		old = SDL_GetRenderTarget(mrc);
+		SDL_SetRenderTarget(mrc,background.getTex());
+		theme.wallpapers[0].setBlendMode(1);
+		theme.wallpapers[0].setAlpha(48);
+		theme.wallpapers[0].copy();
+		theme.wallpapers[0].clearAlpha();
+		theme.wallpapers[0].setBlendMode(0);
+		SDL_SetRenderTarget(mrc,old);
+	}
 	background.setBlendMode(0);
 
 	/* draw chess grid for editable part to background */
