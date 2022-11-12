@@ -69,7 +69,8 @@ void Editor::init(const string &setname) {
 	/* create selection frame image */
 	selFrame.create(bw,bh);
 	selFrame.fill(250,200,0,255);
-	selFrame.fill(3,3,bw-6,bh-6,0,0,0,0);
+	selFrame.fill(1,1,bw-2,bh-2,255,125,0,255);
+	selFrame.fill(2,2,bw-4,bh-4,0,0,0,0);
 
 	/* create simple buttons */
 	buttons.create(EB_NUMBER*bw,bh);
@@ -531,10 +532,6 @@ void Editor::render() {
 		font.write(rButtons.x + rButtons.w/2, rButtons.y + rButtons.h,
 				btnTooltips[btnFocus]);
 
-	/* info about editor state */
-	font.setAlign(ALIGN_X_LEFT | ALIGN_Y_TOP);
-	font.write(rBricks.x,rButtons.y,_("The editor is work in progress!"));
-	font.write(rBricks.x,rButtons.y+brickHeight,_("Not everything is working yet!"));
 }
 
 void Editor::run(const string &setname)
