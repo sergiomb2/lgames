@@ -43,7 +43,7 @@ enum {
 	EB_LOAD,
 	EB_SAVE,
 	EB_QUIT,
-	EB_TEST,
+	//EB_TEST,
 	EB_NUMBER
 };
 
@@ -117,7 +117,7 @@ public:
 		btnShortcuts[EB_LOAD] = SDL_SCANCODE_L;
 		btnShortcuts[EB_SAVE] = SDL_SCANCODE_S;
 		btnShortcuts[EB_QUIT] = SDL_SCANCODE_ESCAPE;
-		btnShortcuts[EB_TEST] = SDL_SCANCODE_T;
+		//btnShortcuts[EB_TEST] = SDL_SCANCODE_T;
 		btnTooltips[EB_FIRST] = _("Go to first level [Up Arrow]");
 		btnTooltips[EB_PREV] = _("Go to previous level [Left Arrow]");
 		btnTooltips[EB_NEXT] = _("Go to next level [Right Arrow]");
@@ -131,7 +131,7 @@ public:
 		btnTooltips[EB_LOAD] = _("Reload levelset from file [L]");
 		btnTooltips[EB_SAVE] = _("Save levelset to file [S]");
 		btnTooltips[EB_QUIT] = _("Quit editor [ESC]");
-		btnTooltips[EB_TEST] = _("Test current level [T]");
+		//btnTooltips[EB_TEST] = _("Test current level [T]");
 	};
 	bool quitRcvd() { return quitReceived; }
 	void run(const string &setname);
