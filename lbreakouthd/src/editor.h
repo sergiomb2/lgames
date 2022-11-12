@@ -112,6 +112,8 @@ public:
 		btnShortcuts[EB_ADDAFTER] = SDL_SCANCODE_M;
 		btnShortcuts[EB_CLEAR] = SDL_SCANCODE_C;
 		btnShortcuts[EB_DELETE] = SDL_SCANCODE_DELETE;
+		btnShortcuts[EB_MOVEUP] = SDL_SCANCODE_U;
+		btnShortcuts[EB_MOVEDOWN] = SDL_SCANCODE_D;
 		btnShortcuts[EB_LOAD] = SDL_SCANCODE_L;
 		btnShortcuts[EB_SAVE] = SDL_SCANCODE_S;
 		btnShortcuts[EB_QUIT] = SDL_SCANCODE_ESCAPE;
@@ -124,6 +126,8 @@ public:
 		btnTooltips[EB_ADDAFTER] = _("Add new level after this one [M]");
 		btnTooltips[EB_CLEAR] = _("Clear bricks and extras [C]");
 		btnTooltips[EB_DELETE] = _("Delete level completely [DEL]");
+		btnTooltips[EB_MOVEUP] = _("Swap this level with next level [U]");
+		btnTooltips[EB_MOVEDOWN] = _("Swap this level with previous level [D]");
 		btnTooltips[EB_LOAD] = _("Reload levelset from file [L]");
 		btnTooltips[EB_SAVE] = _("Save levelset to file [S]");
 		btnTooltips[EB_QUIT] = _("Quit editor [ESC]");

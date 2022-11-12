@@ -120,7 +120,12 @@ void Editor::init(const string &setname) {
 	rBricks.w = numBrickCols * bw;
 	rBricks.h = bh;
 	for (uint i = 0; i < numBricks; i++) {
-		theme.bricks.copy(i,0,dx,dy);
+		if (i == INVIS_BRICK_ID) {
+			theme.bricks.setAlpha(32);
+			theme.bricks.copy(i-1,0,dx,dy); /* XXX use brick before */
+			theme.bricks.clearAlpha();
+		} else
+			theme.bricks.copy(i,0,dx,dy);
 		if (((i+1) % numBrickCols) == 0) {
 			dy += bh;
 			rBricks.h += bh;
@@ -481,6 +486,15 @@ void Editor::render() {
 				theme.bricks.copy(curLevel->bricks[i][j],0,
 						rMap.x + i*brickWidth,
 						rMap.y + j*brickHeight);
+			if (curLevel->bricks[i][j] == INVIS_BRICK_ID) {
+				/* invisible brick is not seen so show prev brick
+				 * with some transparency */
+				theme.bricks.setAlpha(32);
+				theme.bricks.copy(curLevel->bricks[i][j]-1,0,
+						rMap.x + i*brickWidth,
+						rMap.y + j*brickHeight);
+				theme.bricks.clearAlpha();
+			}
 			if (curLevel->extras[i][j] != -1) {
 				uint tick = SDL_GetTicks()%2000;
 				if (tick < 1000)
