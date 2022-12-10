@@ -122,6 +122,7 @@ class View {
 	void runBrickDestroyDlg();
 	void waitForInputRelease();
 	void getNewShinePosition();
+	void handleEditor(int type);
 public:
 	View(Config &cfg, ClientGame &_cg);
 	~View();

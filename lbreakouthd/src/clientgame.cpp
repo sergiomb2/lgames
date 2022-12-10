@@ -90,6 +90,56 @@ int ClientGame::init(const string& setname, int levelid)
 	return 0;
 }
 
+/** Initiate a single level game from data passed from editor. */
+int ClientGame::initTestlevel(const string &title, const string &author, int bricks[][EDIT_HEIGHT], int extras[][EDIT_HEIGHT])
+{
+	/* kill running game if any */
+	if (levelset)
+		levelset_delete(&levelset);
+	if (game)
+		game_delete(&game);
+
+	/* init player */
+	curPlayer = 0;
+	players.clear();
+	players.push_back(unique_ptr<ClientPlayer>(
+				new ClientPlayer(config.player_names[0],
+						diffs[config.diff].lives,
+						diffs[config.diff].max_lives)));
+	/* build single level levelset */
+	char str[20] = "test"; /* avoid stupid warnings... */
+	levelset = levelset_create_empty(1,str,str);
+	levelset->cur_level = 0;
+	for (int i = 0; i < EDIT_WIDTH; i++)
+		for (int j = 0; j < EDIT_HEIGHT; j++) {
+			levelset->levels[0]->bricks[i][j] = bricks[i][j];
+			levelset->levels[0]->extras[i][j] = extras[i][j];
+		}
+
+	/* create game context and init first level */
+	if ((game = game_create(GT_LOCAL,config.diff,config.rel_warp_limit)) == 0) {
+		_logerr("Could not create game context\n");
+		return -1;
+	}
+	game->localServerGame = 1; /* for special levels */
+	game_set_current(game);
+	game_init(game,levelset->levels[0]);
+	game_set_convex_paddle( config.convex );
+	game_set_ball_auto_return( !config.return_on_click );
+	game_set_ball_random_angle( config.random_angle );
+	game_set_ball_accelerated_speed( config.maxballspeed_float );
+	game->ball_auto_speedup = config.ball_auto_turbo;
+	extrasActive = false;
+	pvel = pvelmin;
+	pveldir = 0;
+
+	/* set first level as snapshot to player */
+	players[0]->setLevelSnapshot(levelset->levels[0]);
+
+	return 0;
+
+}
+
 /** Cycle through list to get next player or NULL if none (=game over) */
 ClientPlayer *ClientGame::getNextPlayer()
 {

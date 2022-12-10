@@ -19,6 +19,7 @@ class Editor;
 
 class EditorLevel {
 	friend Editor;
+	friend View;
 
 	string title, author;
 	int bricks[EDIT_WIDTH][EDIT_HEIGHT]; /* -1 or brick id */
@@ -43,7 +44,7 @@ enum {
 	EB_LOAD,
 	EB_SAVE,
 	EB_QUIT,
-	//EB_TEST,
+	EB_TEST,
 	EB_NUMBER
 };
 
@@ -52,6 +53,7 @@ class Editor {
 	Mixer &mixer;
 	bool quitReceived; /* close app entirely */
 	bool leaveRequested; /* close editor and return to menu */
+	bool testLevel; /* whether current level should be test played */
 
 	Image background;
 	Image selFrame;
@@ -96,7 +98,7 @@ class Editor {
 public:
 	Editor(Theme &t, Mixer &m)
 			: theme(t), mixer(m),
-			  quitReceived(false), leaveRequested(false),
+			  quitReceived(false), leaveRequested(false), testLevel(false),
 			  brickWidth(0), brickHeight(0),
 			  numBrickCols(0), numExtraCols(0),
 			  numBricks(0), numExtras(0), btnFocus(-1),
@@ -117,7 +119,7 @@ public:
 		btnShortcuts[EB_LOAD] = SDL_SCANCODE_L;
 		btnShortcuts[EB_SAVE] = SDL_SCANCODE_S;
 		btnShortcuts[EB_QUIT] = SDL_SCANCODE_ESCAPE;
-		//btnShortcuts[EB_TEST] = SDL_SCANCODE_T;
+		btnShortcuts[EB_TEST] = SDL_SCANCODE_T;
 		btnTooltips[EB_FIRST] = _("Go to first level [Up Arrow]");
 		btnTooltips[EB_PREV] = _("Go to previous level [Left Arrow]");
 		btnTooltips[EB_NEXT] = _("Go to next level [Right Arrow]");
@@ -131,10 +133,11 @@ public:
 		btnTooltips[EB_LOAD] = _("Reload levelset from file [L]");
 		btnTooltips[EB_SAVE] = _("Save levelset to file [S]");
 		btnTooltips[EB_QUIT] = _("Quit editor [ESC]");
-		//btnTooltips[EB_TEST] = _("Test current level [T]");
+		btnTooltips[EB_TEST] = _("Test current level [T] (will save all changes)");
 	};
 	bool quitRcvd() { return quitReceived; }
-	void run(const string &setname);
+	int run(const string &setname);
+	EditorLevel *getCurrentLevel() { return curLevel; }
 };
 
 #endif /* SRC_EDITOR_H_ */

@@ -1270,6 +1270,52 @@ void View::createMenus()
 	rootMenu->adjust();
 }
 
+/** Handle click on either create new set or edit existing set.
+ * Run editor and create test game if single level is to be tested.
+ * Since editor would need the view to run the game (not sure if a
+ * second view would be ok because of the shared SDL window?), we
+ * shortly leave the editor and run the test game from inside the view.
+ * Messy solution, I know, but that's just how we roll...
+ */
+void View::handleEditor(int type)
+{
+	string fname;
+	int ret = 0;
+
+	/* get file name from menu or select dialog */
+	if (type == AID_EDITNEWSET)
+		fname = config.edit_setname;
+	else {
+		darkenScreen();
+		selectDlg.init(SDT_CUSTOMONLY);
+		if (selectDlg.run())
+			fname = selectDlg.get();
+		else {
+			if (selectDlg.quitRcvd())
+				quitReceived = true;
+			return;
+		}
+	}
+
+	/* run editor. return value 1 means to run current level as test set. */
+	do {
+		ret = editor.run(fname);
+		if (editor.quitRcvd()) {
+			quitReceived = true;
+			return;
+		}
+		if (ret) {
+			if (cgame.initTestlevel(editor.getCurrentLevel()->title,
+					editor.getCurrentLevel()->author,
+					editor.getCurrentLevel()->bricks,
+					editor.getCurrentLevel()->extras)) {
+				dim();
+				run();
+			}
+		}
+	} while (ret);
+}
+
 void View::runMenu()
 {
 	SDL_Event ev;
@@ -1402,23 +1448,10 @@ void View::runMenu()
 				ticks.reset();
 				break;
 			case AID_EDITNEWSET:
-				editor.run(config.edit_setname);
-				if (editor.quitRcvd())
-					quitReceived = true;
+			case AID_EDITCUSTOM:
+				handleEditor(aid);
 				dim();
 				ticks.reset();
-				break;
-			case AID_EDITCUSTOM:
-				darkenScreen();
-				selectDlg.init(SDT_CUSTOMONLY);
-				if (selectDlg.run()) {
-					editor.run(selectDlg.get());
-					if (editor.quitRcvd())
-						quitReceived = true;
-					dim();
-					ticks.reset();
-				} else if (selectDlg.quitRcvd())
-					quitReceived = true;
 				break;
 			}
 		}

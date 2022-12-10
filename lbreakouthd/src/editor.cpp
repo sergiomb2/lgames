@@ -414,6 +414,13 @@ void Editor::handleButton(uint id)
 		if (runConfirmDlg(_("Reload levelset from file? y/n")))
 			load();
 		break;
+	case EB_TEST:
+		/* XXX save changes first, since we need to load from file afterwards */
+		save();
+		testLevel = true;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -534,7 +541,7 @@ void Editor::render() {
 
 }
 
-void Editor::run(const string &setname)
+int Editor::run(const string &setname)
 {
 	SDL_Event ev;
 
@@ -545,7 +552,8 @@ void Editor::run(const string &setname)
 	render();
 
 	leaveRequested = false;
-	while (!quitReceived && !leaveRequested) {
+	testLevel = false;
+	while (!quitReceived && !leaveRequested && !testLevel) {
 		/* handle events */
 		if (SDL_PollEvent(&ev)) {
 			/* quit entirely? */
@@ -558,10 +566,9 @@ void Editor::run(const string &setname)
 			else
 				btnFocus = -1;
 			/* handle click */
-			if (ev.type == SDL_MOUSEBUTTONDOWN) {
+			if (ev.type == SDL_MOUSEBUTTONDOWN)
 				handleClick(ev.button.x, ev.button.y,
 							ev.button.button);
-			}
 			/* handle drag */
 			if (ev.type == SDL_MOUSEMOTION && ev.motion.state &&
 					inRect(ev.motion.x, ev.motion.y, rMap))
@@ -585,4 +592,9 @@ void Editor::run(const string &setname)
 
 	/* clear events for menu loop */
 	SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
+
+	/* to signal testing a level return 1, 0 otherwise */
+	if (testLevel)
+		return 1;
+	return 0;
 }
