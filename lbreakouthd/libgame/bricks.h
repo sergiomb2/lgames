@@ -18,6 +18,10 @@
 #ifndef __BRICKS_H
 #define __BRICKS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* extra conversion item */
 typedef struct {
 	int  type; /* extra of type */
@@ -77,7 +81,12 @@ void bricks_add_grow_mod( int x, int y, int id );
 /* update regeneration and explosion of bricks */
 void bricks_update( int ms );
 
-/* return the character that represents the brick with this type id */
+/* return the character that represents the brick/extra with this type id */
 char brick_get_char( int type );
+char extra_get_char(int type);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

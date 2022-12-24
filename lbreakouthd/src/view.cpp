@@ -1280,7 +1280,6 @@ void View::createMenus()
 void View::handleEditor(int type)
 {
 	string fname;
-	int ret = 0;
 
 	/* get file name from menu or select dialog */
 	if (type == AID_EDITNEWSET)
@@ -1297,23 +1296,25 @@ void View::handleEditor(int type)
 		}
 	}
 
-	/* run editor. return value 1 means to run current level as test set. */
-	do {
-		ret = editor.run(fname);
+	/* run editor */
+	while (1) {
+		editor.run(fname);
 		if (editor.quitRcvd()) {
 			quitReceived = true;
 			return;
 		}
-		if (ret) {
+		/* test level? */
+		if (editor.testRequested()) {
 			if (cgame.initTestlevel(editor.getCurrentLevel()->title,
 					editor.getCurrentLevel()->author,
 					editor.getCurrentLevel()->bricks,
-					editor.getCurrentLevel()->extras)) {
+					editor.getCurrentLevel()->extras) == 0) {
 				dim();
 				run();
 			}
-		}
-	} while (ret);
+		} else
+			break; /* editor normally exited */
+	}
 }
 
 void View::runMenu()

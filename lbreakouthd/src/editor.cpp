@@ -415,8 +415,6 @@ void Editor::handleButton(uint id)
 			load();
 		break;
 	case EB_TEST:
-		/* XXX save changes first, since we need to load from file afterwards */
-		save();
 		testLevel = true;
 		break;
 	default:
@@ -541,13 +539,17 @@ void Editor::render() {
 
 }
 
-int Editor::run(const string &setname)
+void Editor::run(const string &setname)
 {
 	SDL_Event ev;
 
-	init(setname);
-	if (fileExists(fpath))
-		load();
+	/* if testLevel is set we just tested a level so don't init/load
+	 * anything */
+	if (!testLevel) {
+		init(setname);
+		if (fileExists(fpath))
+			load();
+	}
 
 	render();
 
@@ -577,7 +579,7 @@ int Editor::run(const string &setname)
 						SDL_BUTTON_RIGHT:SDL_BUTTON_LEFT);
 			/* check shortcuts */
 			if (ev.type == SDL_KEYDOWN) {
-				for (uint k = 0; k <= EB_NUMBER; k++)
+				for (uint k = 0; k < EB_NUMBER; k++)
 					if (btnShortcuts[k] ==
 							ev.key.keysym.scancode)
 						handleButton(k);			}
@@ -592,9 +594,4 @@ int Editor::run(const string &setname)
 
 	/* clear events for menu loop */
 	SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
-
-	/* to signal testing a level return 1, 0 otherwise */
-	if (testLevel)
-		return 1;
-	return 0;
 }

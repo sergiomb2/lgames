@@ -62,7 +62,7 @@ class Editor {
 	uint brickWidth, brickHeight;
 	uint numBrickCols, numExtraCols;
 	uint numBricks, numExtras;
-	int btnShortcuts[EB_NUMBER];
+	SDL_Scancode btnShortcuts[EB_NUMBER];
 	string btnTooltips[EB_NUMBER];
 	int btnFocus; /* -1 or id of button of mouse cursor on it */
 
@@ -136,7 +136,8 @@ public:
 		btnTooltips[EB_TEST] = _("Test current level [T] (will save all changes)");
 	};
 	bool quitRcvd() { return quitReceived; }
-	int run(const string &setname);
+	bool testRequested() { return testLevel; }
+	void run(const string &setname);
 	EditorLevel *getCurrentLevel() { return curLevel; }
 };
 

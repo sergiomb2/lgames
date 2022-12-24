@@ -110,10 +110,11 @@ int ClientGame::initTestlevel(const string &title, const string &author, int bri
 	char str[20] = "test"; /* avoid stupid warnings... */
 	levelset = levelset_create_empty(1,str,str);
 	levelset->cur_level = 0;
+	levelset->count = 1;
 	for (int i = 0; i < EDIT_WIDTH; i++)
 		for (int j = 0; j < EDIT_HEIGHT; j++) {
-			levelset->levels[0]->bricks[i][j] = bricks[i][j];
-			levelset->levels[0]->extras[i][j] = extras[i][j];
+			levelset->levels[0]->bricks[i][j] = brick_get_char(bricks[i][j]);
+			levelset->levels[0]->extras[i][j] = extra_get_char(extras[i][j]);
 		}
 
 	/* create game context and init first level */

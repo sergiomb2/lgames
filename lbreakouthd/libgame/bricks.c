@@ -1233,3 +1233,10 @@ char brick_get_char( int type )
 			return brick_conv_table[i].c;
 	return ' ';
 }
+
+char extra_get_char(int type)
+{
+	if (type >= 0 && type < EX_NUMBER)
+		return extra_conv_table[type].c;
+	return ' ';
+}
