@@ -65,6 +65,7 @@ void Editor::init(const string &setname) {
 	editHeight = EDIT_HEIGHT;
 	brickWidth = bw;
 	brickHeight = bh;
+	hasChanges = false;
 
 	/* create selection frame image */
 	selFrame.create(bw,bh);
@@ -185,8 +186,10 @@ void Editor::runEditDlg(const string &c, string &v)
 	int ret = runEditDialog(theme.fMenuNormal,c,aux);
 	if (ret == -1)
 		quitReceived = true;
-	else if (ret == 1)
+	else if (ret == 1) {
 		v = aux;
+		hasChanges = true;
+	}
 }
 
 /** Run confirm dialog and set quitRequested if quit was received.
@@ -263,6 +266,7 @@ void Editor::load()
 
 	levels.clear();
 	numLevels = 0;
+	hasChanges = false;
 
 	getline(ifs,line);
 	if (line.find("Version:") == string::npos)
@@ -344,6 +348,7 @@ void Editor::save()
 	}
 	ofs.close();
 	_loginfo("Levelset saved to %s\n",fpath.c_str());
+	hasChanges = false;
 }
 
 void Editor::swapLevels(uint pos1, uint pos2)
@@ -360,6 +365,7 @@ void Editor::swapLevels(uint pos1, uint pos2)
 void Editor::handleButton(uint id)
 {
 	EditorLevel newlev;
+	string text = "";
 
 	switch (id) {
 	case EB_FIRST:
@@ -404,7 +410,10 @@ void Editor::handleButton(uint id)
 		}
 		break;
 	case EB_QUIT:
-		if (runConfirmDlg(_("Quit editor? y/n")))
+		text = _("Quit editor? y/n");
+		if (hasChanges)
+			text += _(" (unsaved changes!)");
+		if (runConfirmDlg(text))
 			leaveRequested = true;
 		break;
 	case EB_SAVE:
@@ -457,6 +466,7 @@ void Editor::handleClick(int mx, int my, int mb)
 			} else
 				curLevel->extras[rx][ry] = -1;
 		}
+		hasChanges = true;
 	}
 	if (inRect(mx,my,rTitle))
 		runEditDlg(_("Title"),curLevel->title);

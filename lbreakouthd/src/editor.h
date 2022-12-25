@@ -54,6 +54,7 @@ class Editor {
 	bool quitReceived; /* close app entirely */
 	bool leaveRequested; /* close editor and return to menu */
 	bool testLevel; /* whether current level should be test played */
+	bool hasChanges; /* any changes made that need to be saved? */
 
 	Image background;
 	Image selFrame;
@@ -98,7 +99,8 @@ class Editor {
 public:
 	Editor(Theme &t, Mixer &m)
 			: theme(t), mixer(m),
-			  quitReceived(false), leaveRequested(false), testLevel(false),
+			  quitReceived(false), leaveRequested(false),
+			  testLevel(false), hasChanges(false),
 			  brickWidth(0), brickHeight(0),
 			  numBrickCols(0), numExtraCols(0),
 			  numBricks(0), numExtras(0), btnFocus(-1),
