@@ -1323,7 +1323,7 @@ void View::runMenu()
 	Ticks ticks;
 	MenuItemSub *subItem;
 	MenuItemBack *backItem;
-	bool changingKey = false, newEvent = false;
+	bool changingKey = false, newEvent = false, changedKey = false;
 	int aid = AID_NONE;
 
 	curMenu = rootMenu.get();
@@ -1335,6 +1335,7 @@ void View::runMenu()
 		newEvent = false;
 		if (SDL_PollEvent(&ev)) {
 			newEvent = true;
+			changedKey = false;
 			if (ev.type == SDL_QUIT)
 				quitReceived = true;
 			if (changingKey && ev.type == SDL_KEYDOWN) {
@@ -1350,6 +1351,7 @@ void View::runMenu()
 				default:
 					keyItem->setKey(ev.key.keysym.scancode);
 					changingKey = false;
+					changedKey = true;
 					break;
 				}
 			} else if (ev.type == SDL_KEYDOWN &&
@@ -1366,7 +1368,8 @@ void View::runMenu()
 		curMenu->update(ticks.get());
 
 		/* handle events in items */
-		if (newEvent && !changingKey && (aid = curMenu->handleEvent(ev))) {
+		if (newEvent && !changingKey && !changedKey &&
+					(aid = curMenu->handleEvent(ev))) {
 			if (aid != AID_FOCUSCHANGED)
 				mixer.play(theme.sMenuClick);
 			switch (aid) {
