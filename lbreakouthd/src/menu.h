@@ -115,7 +115,7 @@ public:
 		renderTooltip();
 	}
 	virtual int handleEvent(const SDL_Event &ev) {
-		if (ev.type == SDL_MOUSEBUTTONDOWN) {
+		if (ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_KEYDOWN) {
 			if (actionId == AID_NONE)
 				return AID_CLICKED;
 			return actionId;
@@ -185,18 +185,27 @@ public:
 		  min(_min), max(_max), step(_step), val(_val) {}
 	virtual int handleEvent(const SDL_Event &ev) {
 		int oldval = val;
+		int mod = 0;
 		if (ev.type == SDL_MOUSEBUTTONDOWN) {
-			if (ev.button.button == SDL_BUTTON_LEFT) {
-				val += step;
-				if (val > max)
-					val = min;
-			} else if (ev.button.button == SDL_BUTTON_RIGHT) {
-				val -= step;
-				if (val < min)
-					val = max;
-			}
-			if (val != oldval)
-				setValue(to_string(val));
+			if (ev.button.button == SDL_BUTTON_LEFT)
+				mod = 1;
+			else if (ev.button.button == SDL_BUTTON_RIGHT)
+				mod = -1;
+		}
+		if (ev.type == SDL_KEYDOWN) {
+			if (ev.key.keysym.scancode == SDL_SCANCODE_RIGHT)
+				mod = 1;
+			else if (ev.key.keysym.scancode == SDL_SCANCODE_LEFT)
+				mod = -1;
+		}
+		val += step * mod;
+		if (val > max)
+			val = min;
+		else if (val < min)
+			val = max;
+		if (val != oldval)
+			setValue(to_string(val));
+		if (mod) {
 			if (actionId == AID_NONE)
 				return AID_CLICKED;
 			return actionId;
@@ -247,7 +256,7 @@ public:
 
 /* Value contains real integer value not the index. */
 class MenuItemIntList : public MenuItemRange {
-	int idx;
+	int idx; /* value of menu item range */
 	int &val;
 	vector<int> options;
 public:
@@ -289,7 +298,9 @@ public:
 		setValue(SDL_GetScancodeName((SDL_Scancode)sc));
 	}
 	virtual int handleEvent(const SDL_Event &ev) {
-		if (ev.type == SDL_MOUSEBUTTONDOWN) {
+		if (ev.type == SDL_MOUSEBUTTONDOWN ||
+				(ev.type == SDL_KEYDOWN &&
+				ev.key.keysym.scancode == SDL_SCANCODE_RETURN)) {
 			waitForNewKey = true;
 			setValue("???");
 		}
@@ -319,7 +330,9 @@ public:
 			setCaption(c);
 	}
 	virtual int handleEvent(const SDL_Event &ev) {
-		if (ev.type == SDL_MOUSEBUTTONDOWN)
+		if (ev.type == SDL_MOUSEBUTTONDOWN ||
+				(ev.type == SDL_KEYDOWN &&
+				ev.key.keysym.scancode == SDL_SCANCODE_RETURN))
 			if (runEditDialog(_("Enter Name"),str)) {
 				setValue(str);
 				return actionId;
@@ -337,13 +350,19 @@ class Menu {
 	Theme &theme;
 	vector<unique_ptr<MenuItem>> items;
 	MenuItem *curItem;
+	int keySelectId; /* if not -1, id of menu entry selected by keys
+			   * equals selection by mouse if any made */
 public:
-	Menu(Theme &t) : theme(t), curItem(NULL) {}
+	Menu(Theme &t) : theme(t), curItem(NULL), keySelectId(-1) {}
 	~Menu() {}
 	void add(MenuItem *item) {
 		items.push_back(unique_ptr<MenuItem>(item));
 	}
-	MenuItem *getCurItem() { return curItem; }
+	MenuItem *getCurItem() {
+		if (keySelectId != -1)
+			return items[keySelectId].get();
+		return curItem;
+	}
 	void adjust() {
 		int h = items.size() * theme.menuItemHeight;
 		int w = theme.menuItemWidth;
@@ -374,6 +393,17 @@ public:
 				return bi->getLastMenu();
 		}
 		return NULL;
+	}
+	void resetSelection() {
+		if (curItem) {
+			curItem->setFocus(0);
+			curItem = NULL;
+		}
+		if (keySelectId != -1)
+			items[keySelectId]->setFocus(0);
+		/* start with first entry key selected */
+		keySelectId = 0;
+		items[keySelectId]->setFocus(1);
 	}
 };
 

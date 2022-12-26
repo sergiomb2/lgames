@@ -1327,6 +1327,7 @@ void View::runMenu()
 	int aid = AID_NONE;
 
 	curMenu = rootMenu.get();
+	curMenu->resetSelection();
 	renderMenu();
 
 	while (!quitReceived) {
@@ -1352,7 +1353,8 @@ void View::runMenu()
 					break;
 				}
 			} else if (ev.type == SDL_KEYDOWN &&
-				ev.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+					(ev.key.keysym.scancode == SDL_SCANCODE_ESCAPE ||
+					ev.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)) {
 				Menu *lm = curMenu->getLastMenu();
 				if (lm)
 					curMenu = lm;
@@ -1378,6 +1380,7 @@ void View::runMenu()
 				subItem = dynamic_cast<MenuItemSub*>(curMenu->getCurItem());
 				if (subItem) { /* should never fail */
 					curMenu = subItem->getSubMenu();
+					curMenu->resetSelection();
 				} else
 					_logerr("Oops, submenu not found...\n");
 				break;
@@ -1385,6 +1388,7 @@ void View::runMenu()
 				backItem = dynamic_cast<MenuItemBack*>(curMenu->getCurItem());
 				if (backItem) { /* should never fail */
 					curMenu = backItem->getLastMenu();
+					curMenu->resetSelection();
 				} else
 					_logerr("Oops, last menu not found...\n");
 				break;
@@ -1412,6 +1416,7 @@ void View::runMenu()
 				init(themeNames[config.theme_id],
 					MainWindow::getModeResolution(config.mode));
 				curMenu = graphicsMenu;
+				curMenu->resetSelection();
 				break;
 			case AID_RESUME:
 				if (resumeGame()) {
