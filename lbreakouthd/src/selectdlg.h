@@ -42,8 +42,10 @@ class SelectDialog {
 	Mixer &mixer;
 	bool quitReceived;
 	vector<unique_ptr<SetInfo>> entries;
-	int sel;
-	uint pos, max, vlen;
+	int sel; /* actual selection */
+	uint pos; /* offset for viewport */
+	uint max; /* max value for pos */
+	uint vlen; /* length of viewport */
 	int tx, ty; /* centered title position */
 	int lx, ly; /* list start */
 	uint cw, ch; /* cell size */
@@ -68,6 +70,27 @@ class SelectDialog {
 			pos = 0;
 		else
 			pos -= vlen-2;
+	}
+	void changeSelection(int steps) {
+		if (entries.size() == 0)
+			return;
+		if (sel < 0) {
+			sel = pos;
+			return;
+		}
+		sel += steps;
+		if (steps < 0) {
+			if (sel < 0)
+				sel = 0;
+			if (sel < (int)pos)
+				pos = sel;
+		}
+		if (steps > 0) {
+			if (sel > (int)(entries.size()-1))
+				sel = entries.size()-1;
+			if (sel >= (int)(pos+vlen))
+				pos = sel-vlen+1;
+		}
 	}
 public:
 	SelectDialog(Theme &t, Mixer &m) : theme(t), mixer(m), quitReceived(false)

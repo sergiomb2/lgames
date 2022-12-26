@@ -176,6 +176,9 @@ void SelectDialog::init(int sd_type)
 		SetInfo *si = new SetInfo(e, theme);
 		entries.push_back(unique_ptr<SetInfo>(si));
 	}
+	/* select first entry if any */
+	if (entries.size() > 0)
+		sel = 0;
 }
 
 void SelectDialog::render()
@@ -226,6 +229,7 @@ void SelectDialog::render()
 	}
 }
 
+/* Return 1 if selection made, 0 otherwise */
 int SelectDialog::run()
 {
 	SDL_Event ev;
@@ -244,12 +248,16 @@ int SelectDialog::run()
 					leave = true;
 					break;
 				case SDL_SCANCODE_PAGEUP:
-					goPrevPage();
-					sel = SEL_NONE;
+					changeSelection(-vlen);
 					break;
 				case SDL_SCANCODE_PAGEDOWN:
-					goNextPage();
-					sel = SEL_NONE;
+					changeSelection(vlen);
+					break;
+				case SDL_SCANCODE_UP:
+					changeSelection(-1);
+					break;
+				case SDL_SCANCODE_DOWN:
+					changeSelection(1);
 					break;
 				default:
 					break;
@@ -292,6 +300,12 @@ int SelectDialog::run()
 				}
 				if (sel != SEL_NONE)
 					mixer.play(theme.sMenuClick);
+			}
+			if (ev.type == SDL_KEYDOWN && sel > 0 &&
+					ev.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+				ret = 1;
+				leave = true;
+				mixer.play(theme.sMenuClick);
 			}
 		}
 		/* render */
