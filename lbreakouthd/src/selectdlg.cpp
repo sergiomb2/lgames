@@ -301,7 +301,7 @@ int SelectDialog::run()
 				if (sel != SEL_NONE)
 					mixer.play(theme.sMenuClick);
 			}
-			if (ev.type == SDL_KEYDOWN && sel > 0 &&
+			if (ev.type == SDL_KEYDOWN && sel >= 0 &&
 					ev.key.keysym.scancode == SDL_SCANCODE_RETURN) {
 				ret = 1;
 				leave = true;
