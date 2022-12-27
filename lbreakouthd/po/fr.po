@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-12 12:41+0100\n"
+"POT-Creation-Date: 2022-12-27 16:55+0100\n"
 "PO-Revision-Date: 2019-06-26 10:11+0200\n"
 "Last-Translator: Wuzzy <almikes@aol.com>\n"
 "Language-Team: \n"
@@ -138,23 +138,23 @@ msgstr "Active Extras"
 msgid "Hiscores"
 msgstr "Tableau des points"
 
-#: src/view.cpp:1107 src/view.cpp:1646
+#: src/view.cpp:1107 src/view.cpp:1688
 msgid "Kids"
 msgstr "Enfants"
 
-#: src/view.cpp:1107 src/view.cpp:1646
+#: src/view.cpp:1107 src/view.cpp:1688
 msgid "Very Easy"
 msgstr "Très Facile"
 
-#: src/view.cpp:1107 src/view.cpp:1646
+#: src/view.cpp:1107 src/view.cpp:1688
 msgid "Easy"
 msgstr "Facile"
 
-#: src/view.cpp:1107 src/view.cpp:1646
+#: src/view.cpp:1107 src/view.cpp:1688
 msgid "Medium"
 msgstr "Moyenne"
 
-#: src/view.cpp:1107 src/view.cpp:1646
+#: src/view.cpp:1107 src/view.cpp:1688
 msgid "Hard"
 msgstr "Difficile"
 
@@ -519,7 +519,7 @@ msgstr ""
 "Soit 50° de gauche à droite, soit aléatoire, quelque soit la touche de tir "
 "actionnée."
 
-#: src/view.cpp:1233 src/view.cpp:1754
+#: src/view.cpp:1233 src/view.cpp:1796
 msgid "Random"
 msgstr "Aléatoire"
 
@@ -615,7 +615,7 @@ msgstr "Reprendre la partie"
 msgid "Settings"
 msgstr "Préférences"
 
-#: src/view.cpp:1264 src/view.cpp:1713
+#: src/view.cpp:1264 src/view.cpp:1755
 msgid "Help"
 msgstr "Aide"
 
@@ -627,19 +627,19 @@ msgstr ""
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/view.cpp:1641
+#: src/view.cpp:1683
 msgid "No saved game."
 msgstr "La partie n'est pas sauvegardée."
 
-#: src/view.cpp:1658
+#: src/view.cpp:1700
 msgid " player(s)\n"
 msgstr " joueur(s)\n"
 
-#: src/view.cpp:1669
+#: src/view.cpp:1711
 msgid "  (Lvl: "
 msgstr "  (Niv : "
 
-#: src/view.cpp:1688
+#: src/view.cpp:1730
 msgid ""
 "You can control your paddle either with the mouse or keyboard. Destroying "
 "bricks will release extras sometimes. Some are good, some are bad and some "
@@ -688,174 +688,174 @@ msgstr ""
 "Bon jeu !\n"
 "          Michael Speck"
 
-#: src/view.cpp:1721
+#: src/view.cpp:1763
 msgid "Extra Score"
 msgstr "Points en plus"
 
-#: src/view.cpp:1722
+#: src/view.cpp:1764
 msgid "Gold Shower"
 msgstr "Pluie d'or"
 
-#: src/view.cpp:1724
+#: src/view.cpp:1766
 msgid "Extra Life"
 msgstr "Vie en plus"
 
-#: src/view.cpp:1725
+#: src/view.cpp:1767
 msgid "Extra Ball"
 msgstr "Balle en plus"
 
-#: src/view.cpp:1727
+#: src/view.cpp:1769
 msgid "Expand Paddle"
 msgstr "Palet élargi"
 
-#: src/view.cpp:1728
+#: src/view.cpp:1770
 msgid "Shrink Paddle"
 msgstr "Palet rétréci"
 
-#: src/view.cpp:1730
+#: src/view.cpp:1772
 msgid "Sticky Paddle"
 msgstr "Palet collant"
 
-#: src/view.cpp:1731
+#: src/view.cpp:1773
 msgid "Plasma Weapon"
 msgstr "Arme au plasma"
 
-#: src/view.cpp:1733
+#: src/view.cpp:1775
 msgid "Slow Balls"
 msgstr "Balles lentes"
 
-#: src/view.cpp:1734
+#: src/view.cpp:1776
 msgid "Fast Balls"
 msgstr "Balles rapides"
 
-#: src/view.cpp:1736
+#: src/view.cpp:1778
 msgid "Energy Balls"
 msgstr "Balles d'énergie"
 
-#: src/view.cpp:1737
+#: src/view.cpp:1779
 msgid "Explosive Balls"
 msgstr "Balles explosives"
 
-#: src/view.cpp:1739
+#: src/view.cpp:1781
 msgid "Extra Floor"
 msgstr "Étage en plus"
 
-#: src/view.cpp:1740
+#: src/view.cpp:1782
 msgid "Joker (collect goodies)"
 msgstr "Joker (collecte tous les bonus)"
 
-#: src/view.cpp:1742
+#: src/view.cpp:1784
 msgid "Bonus Magnet"
 msgstr "Attire les bonus"
 
-#: src/view.cpp:1743
+#: src/view.cpp:1785
 msgid "Malus Magnet"
 msgstr "Attire les malus"
 
-#: src/view.cpp:1745
+#: src/view.cpp:1787
 msgid "Chaotic Balls"
 msgstr "Balles chaotiques"
 
-#: src/view.cpp:1746
+#: src/view.cpp:1788
 msgid "Weak Balls"
 msgstr "Balles faibles"
 
-#: src/view.cpp:1748
+#: src/view.cpp:1790
 msgid "Frozen Paddle"
 msgstr "Palet gelée"
 
-#: src/view.cpp:1749
+#: src/view.cpp:1791
 msgid "Ghost Paddle"
 msgstr "Palet fantôme"
 
-#: src/view.cpp:1751
+#: src/view.cpp:1793
 msgid "Extra Time"
 msgstr "Temps en plus"
 
-#: src/view.cpp:1752
+#: src/view.cpp:1794
 msgid "Reset"
 msgstr "ré-initialisation"
 
-#: src/view.cpp:1755
+#: src/view.cpp:1797
 msgid "Darkness"
 msgstr "Nuit"
 
-#: src/view.cpp:1757
+#: src/view.cpp:1799
 msgid "Indestructible"
 msgstr "Indestructible"
 
-#: src/view.cpp:1758
+#: src/view.cpp:1800
 msgid "Regular Wall"
 msgstr "Mur standard"
 
-#: src/view.cpp:1760
+#: src/view.cpp:1802
 msgid "Chaotic Wall"
 msgstr "Mur chaotique"
 
-#: src/view.cpp:1761
+#: src/view.cpp:1803
 msgid "Regular Brick"
 msgstr "Brique basique"
 
-#: src/view.cpp:1763
+#: src/view.cpp:1805
 msgid "Multi-hit Brick"
 msgstr "Brique multi coup"
 
-#: src/view.cpp:1764
+#: src/view.cpp:1806
 msgid "Regenerative Brick"
 msgstr "Brique régénératrice"
 
-#: src/view.cpp:1766
+#: src/view.cpp:1808
 msgid "Explosive Brick"
 msgstr "Brique explosive"
 
-#: src/view.cpp:1767
+#: src/view.cpp:1809
 msgid "Growing Brick"
 msgstr "Brique grandissante"
 
-#: src/view.cpp:1789
+#: src/view.cpp:1831
 msgid "Plane of Inner Stability"
 msgstr "Zone de stabilité"
 
-#: src/view.cpp:1793
+#: src/view.cpp:1835
 #, fuzzy, c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr "Clique gauche sur une brique pour l'effacer (coute 10% des points)."
 
-#: src/view.cpp:1796
+#: src/view.cpp:1838
 msgid "Press any key to cancel selection."
 msgstr "Appuyer sur une touche pour annuler la sélection."
 
-#: src/clientgame.cpp:229
+#: src/clientgame.cpp:280
 #, c-format
 msgid "Congratulations, %s, you cleared all levels!"
 msgstr "Félicitations, %s, vous avez passez tous les niveaux!"
 
-#: src/clientgame.cpp:236
+#: src/clientgame.cpp:287
 #, c-format
 msgid "Game over, %s!"
 msgstr "Fin de la partie, %s!"
 
-#: src/clientgame.cpp:330
+#: src/clientgame.cpp:381
 #, c-format
 msgid "Level: %d, Size: %d/12"
 msgstr "Niveau : %d, taille : %d/12"
 
-#: src/clientgame.cpp:334
+#: src/clientgame.cpp:385
 #, c-format
 msgid "Total Hits: %d, Current Price: %d"
 msgstr "Gesamttreffer: %d, Cout: %d"
 
-#: src/clientgame.cpp:338
+#: src/clientgame.cpp:389
 #, c-format
 msgid "Wave: %d, Invaders: %d/%d"
 msgstr "Vague : %d, Envahisseurs : %d/%d"
 
-#: src/clientgame.cpp:343
+#: src/clientgame.cpp:394
 #, c-format
 msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgstr "Vague : %d, Infections : %d/%d, Actif : %d/%d"
 
-#: src/clientgame.cpp:349 src/clientgame.cpp:353
+#: src/clientgame.cpp:400 src/clientgame.cpp:404
 #, c-format
 msgid "Hits: %d, Current Price: %d, Time: %d secs"
 msgstr "But : %d, Cout actuel : %d, Temps : %d s"
@@ -868,23 +868,23 @@ msgstr "Ensemble des niveaux"
 msgid "Mini Game"
 msgstr "Partie courte"
 
-#: src/selectdlg.cpp:190
+#: src/selectdlg.cpp:193
 msgid "Select Levelset (press ESC to exit)"
 msgstr "Choisissez le niveau (touche ESC pour quitter)"
 
-#: src/selectdlg.cpp:199
+#: src/selectdlg.cpp:202
 msgid "<Previous Page>"
 msgstr "<Page précédante>"
 
-#: src/selectdlg.cpp:214
+#: src/selectdlg.cpp:217
 msgid "<Next Page>"
 msgstr "<Page suivante>"
 
-#: src/selectdlg.cpp:220
+#: src/selectdlg.cpp:223
 msgid " by "
 msgstr " par "
 
-#: src/selectdlg.cpp:224
+#: src/selectdlg.cpp:227
 msgid " levels)"
 msgstr " Niveaux) "
 
@@ -912,15 +912,15 @@ msgstr "Fenêtre 1920x1080"
 msgid "Back"
 msgstr "Retour"
 
-#: src/menu.h:279
+#: src/menu.h:288
 msgid "Off"
 msgstr "Désactivé"
 
-#: src/menu.h:279
+#: src/menu.h:288
 msgid "On"
 msgstr "Activé"
 
-#: src/menu.h:323
+#: src/menu.h:336
 msgid "Enter Name"
 msgstr "Entrez un Nom"
 
