@@ -166,20 +166,21 @@ int Menu::handleEvent(const SDL_Event &ev)
 			keySelectId = 0;
 		else if (ev.key.keysym.scancode == SDL_SCANCODE_UP ||
 				ev.key.keysym.scancode == SDL_SCANCODE_DOWN) {
-			if (ev.key.keysym.scancode == SDL_SCANCODE_UP &&
-							keySelectId > 0) {
+			if (ev.key.keysym.scancode == SDL_SCANCODE_UP) {
 				keySelectId--;
+				if (keySelectId < 0)
+					keySelectId = items.size()-1;
 				/* check for separators which only come single
 				 * and are never at the beginning/end of the
 				 * menu so this should work without further
 				 * checks */
-				if (dynamic_cast<MenuItemSep*>(items[keySelectId].get()))
+				else if (dynamic_cast<MenuItemSep*>(items[keySelectId].get()))
 					keySelectId--;
-			} else if (ev.key.keysym.scancode == SDL_SCANCODE_DOWN &&
-						keySelectId < (int)items.size()-1) {
+			} else if (ev.key.keysym.scancode == SDL_SCANCODE_DOWN) {
 				keySelectId++;
-				/* see above */
-				if (dynamic_cast<MenuItemSep*>(items[keySelectId].get()))
+				if (keySelectId >= (int)items.size())
+					keySelectId = 0;
+				else if (dynamic_cast<MenuItemSep*>(items[keySelectId].get()))
 					keySelectId++;
 			}
 		} else if (ev.key.keysym.scancode == SDL_SCANCODE_RETURN ||
