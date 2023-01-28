@@ -1,3 +1,5 @@
+- use config directory as fallback for highscores (2023/01/28 MS)
+
 1.1.1:
 - added keyboard support for menu (2022/12/26 MS)
 - added test functionality to editor (2022/12/24 MS)
