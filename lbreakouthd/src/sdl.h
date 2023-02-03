@@ -32,6 +32,11 @@ public:
 	~MainWindow();
 	int getWidth() { return w; }
 	int getHeight() { return h; }
+	int getDisplayIndex() {
+		if (mw)
+			return SDL_GetWindowDisplayIndex(mw);
+		return 0;
+	}
 	void refresh();
 
 	static int getModeNames(vector<string> &list) {

@@ -84,7 +84,14 @@ View::View(Config &cfg, ClientGame &_cg)
  * t is theme name, r=0 means fullscreen, otherwise vertical resolution. */
 void View::init(string t, uint r)
 {
+	int cpdix = 0; /* default to display 0 */
+
 	_loginfo("Initializing View (Theme=%s, Resolution=%d)\n",t.c_str(),r);
+
+	/* get current display index or default to 0 */
+	if (mw)
+		cpdix = mw->getDisplayIndex();
+	_loginfo("Using display %d\n",cpdix);
 
 	/* determine resolution and scale factor */
 	int sw, sh;
@@ -92,7 +99,7 @@ void View::init(string t, uint r)
 		/* fullscreen is tricky... might also be 16:10,4:3,...
 		 * use width to get 16:9 leaving space at bottom */
 		SDL_DisplayMode mode;
-		SDL_GetCurrentDisplayMode(0,&mode);
+		SDL_GetCurrentDisplayMode(cpdix,&mode);
 		/* TEST  mode.w = 1600; mode.h = 1200; */
 		sw = mode.w;
 		sh = mode.w/16*9;
