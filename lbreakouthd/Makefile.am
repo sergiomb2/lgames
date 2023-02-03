@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = intl po libgame src 
 EXTRA_DIST = gettext.h config.rpath m4/ChangeLog \
 	TODO COPYING README Changelog CROSSCOMPILE \
-	lbreakouthd.desktop.in lbreakouthd256.gif
+	lbreakouthd.desktop lbreakouthd256.png lbreakouthd48.png
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
