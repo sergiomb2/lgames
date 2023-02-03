@@ -2,6 +2,6 @@
 Name=LTris
 Comment=A tetris clone with nice graphics.
 Exec=ltris
-Icon=
+Icon=ltris
 Type=Application
 Categories=Game;
