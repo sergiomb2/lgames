@@ -4,16 +4,18 @@ EXTRA_DIST = gettext.h config.rpath m4/ChangeLog \
 	TODO COPYING README Changelog CROSSCOMPILE \
 	lbreakouthd.desktop.in lbreakouthd256.gif
 
-desktopdir = $(datadir)/applications
-desktop_DATA = lbreakouthd.desktop
-icondir = $(datadir)/icons
-icon_DATA = lbreakouthd256.gif
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/applications
+	$(INSTALL_DATA) lbreakouthd256.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/lbreakouthd.png
+	$(INSTALL_DATA) lbreakouthd48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/lbreakouthd.png
+	$(INSTALL_DATA) lbreakouthd.desktop $(DESTDIR)$(datadir)/applications
+	
 
-# We can't use static desktop file because of icon location. Is this 
-# the right way to handle it? At least it works... as long as $datadir
-# does not contain plus signs. :-)
-lbreakouthd.desktop:
-	@sed -e "s+Icon=+Icon=$(datadir)/icons/lbreakouthd256.gif+" \
-	< lbreakouthd.desktop.in > lbreakouthd.desktop
+uninstall-local:
+	rm $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/lbreakouthd.png
+	rm $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/lbreakouthd.png
+	rm $(DESTDIR)$(datadir)/applications/lbreakouthd.desktop
 
 ACLOCAL_AMFLAGS = -I m4
