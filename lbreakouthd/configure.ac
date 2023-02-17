@@ -68,7 +68,7 @@ if test "x$host" = "xx86_64-w64-mingw32"; then
 	LIBS="$LIBS -lintl -L/usr/$host/sys-root/mingw/lib -lmingw32 -lSDL2main -lSDL2"
 else
 	CXXFLAGS="$CXXFLAGS $(sdl2-config --cflags)"
-	LIBS="$LIBS $(sdl2-config --libs)"
+	LIBS="$LIBS $LIBINTL $(sdl2-config --libs)"
 fi
 
 # Makefiles
