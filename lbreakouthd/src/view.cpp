@@ -89,8 +89,25 @@ void View::init(string t, uint r)
 	_loginfo("Initializing View (Theme=%s, Resolution=%d)\n",t.c_str(),r);
 
 	/* get current display index or default to 0 */
-	if (mw)
+	if (mw) {
 		cpdix = mw->getDisplayIndex();
+	} else if (SDL_GetNumVideoDisplays() > 1) {
+		/* XXX first time we open the window, so to properly determine the
+		 * current display we open a small window for multiple monitors */
+		SDL_Window *testwindow;
+		_loginfo("Multiple displays detected\n");
+		if((testwindow = SDL_CreateWindow("LBreakoutHD",
+					SDL_WINDOWPOS_CENTERED,
+					SDL_WINDOWPOS_CENTERED,
+					320, 200, 0)) == NULL) {
+			_logerr("Could not open display test window: %s\n",
+								SDL_GetError());
+			_loginfo("Falling back to settings of display 0\n");
+		} else {
+			cpdix = SDL_GetWindowDisplayIndex(testwindow);
+			SDL_DestroyWindow(testwindow);
+		}
+	}
 	_loginfo("Using display %d\n",cpdix);
 
 	/* determine resolution and scale factor */
