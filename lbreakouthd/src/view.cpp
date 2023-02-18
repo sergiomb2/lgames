@@ -610,7 +610,7 @@ void View::render()
 	}
 
 	/* shine effect */
-	if (cgame.isBrickAtPosition(shineX,shineY))
+	if (shineX != -1 && cgame.isBrickAtPosition(shineX,shineY))
 		theme.shine.copy(shineFrameCounter.get(),0,
 			shineX*brickScreenWidth,
 			shineY*brickScreenHeight);

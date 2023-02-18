@@ -167,6 +167,10 @@ public:
 		return game->isBonusLevel;
 	}
 	int isBrickAtPosition(int x, int y) {
+		if (x < 0 || y < 0 || x >= MAP_WIDTH || y >= MAP_HEIGHT) {
+			_logerr("isBrickAtPosition: position %d,%d invalid\n",x,y);
+			return 0;
+		}
 		if (game->bricks[x][y].type != MAP_EMPTY &&
 					game->bricks[x][y].id != INVIS_BRICK_ID)
 			return 1;

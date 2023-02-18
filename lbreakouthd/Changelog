@@ -1,3 +1,4 @@
+- fixed memory violation in shine effect (2023/02/18 MS)
 - use proper display settings for multiple monitors (2023/02/17 MS)
 - properly link to libintl (2023/02/17 Dmitry Marakasov)
 - properly install icons (2023/02/03 MS)
