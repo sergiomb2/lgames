@@ -277,7 +277,12 @@ int ClientGame::update(uint ms, double rx, PaddleInputState &pis)
 			if (p->nextLevel() < (uint)levelset->count)
 				p->setLevelSnapshot(levelset->levels[p->getLevel()]);
 			else {
-				strprintf(msg,_("Congratulations, %s, you cleared all levels!"),p->getName().c_str());
+				/* if only one bonus level, we play a special mini game
+				 * set so just say game over to avoid confusion */
+				if (game->level_type != LT_NORMAL && levelset->count == 1)
+					strprintf(msg,_("Game over, %s!"), p->getName().c_str());
+				else
+					strprintf(msg,_("Congratulations, %s, you cleared all levels!"),p->getName().c_str());
 				ret |= CGF_PLAYERMESSAGE;
 			}
 		} else {
