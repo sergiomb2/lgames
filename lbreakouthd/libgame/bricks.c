@@ -599,7 +599,7 @@ static void bricks_init_bonus_level( Game *game, int game_type, int level_type )
             game->blCancerScore = 400;
             game->blCancerCount = 3;
             game->blCancerLimit = 20;
-            game->blCancerSimLimit = 7;
+            game->blCancerSimLimit = 10;
             delay_set(&game->blDelay,game->blActionTime);
             for (i=0;i<3;i++) brick_create_instable( game, -1 );
             break;

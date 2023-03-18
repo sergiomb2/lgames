@@ -1,3 +1,5 @@
+1.1.2:
+- mini game "Outbreak" now ends on appearance of 10th brick (2023/03/18 MS)
 - show "Game Over" instead of congrats at end of mini game set (2023/02/18 MS)
 - fixed memory violation in shine effect (2023/02/18 MS)
 - use proper display settings for multiple monitors (2023/02/17 MS)
