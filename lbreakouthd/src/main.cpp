@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 #endif
 
 	printf("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
-	printf("Copyright 2018-2022 Michael Speck\n");
+	printf("Copyright 2018-2023 Michael Speck\n");
 	printf("Published under GNU GPL\n");
 	printf("---\n");
 
