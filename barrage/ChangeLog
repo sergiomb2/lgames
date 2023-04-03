@@ -1,3 +1,5 @@
+- updated config.guess/sub and added compile file (2023/03/03 MS)
+
 1.0.6:
 - create desktop file from desktop.in (2022/10/30 MS)
 - removed Makefile.in from repository (2022/10/30 MS)
