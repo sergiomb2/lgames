@@ -102,15 +102,16 @@ Hiscores::Hiscores()
 
 	/* set path to highscores file */
 	fname = string(HISCOREDIR) + "/lbreakouthd.hscr";
-	if (!fileIsWriteable(fname)) {
-		/* if not found or permission denied we can't use global
+	if (string(HISCOREDIR) != "." && !fileIsWriteable(fname)) {
+		/* if not found or no write access we can't use global
 		 * highscores file so fallback to home directory */
 		_loginfo("No permission to access global highscores\n");
 		fname = getHomeDir() + "/" + CONFIGDIR + "/lbreakouthd.hscr";
 		_loginfo("Falling back to %s\n",fname.c_str());
 	}
+
 	if (!fileExists(fname)) {
-		_loginfo("No hiscores file yet\n");
+		_loginfo("No hiscores file %s yet\n",fname.c_str());
 		return; /* no hiscores yet */
 	}
 
