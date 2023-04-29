@@ -1,3 +1,5 @@
+- gettext argument set to external since now required (2023/04/29 MS)
+
 1.1.2:
 - mini game "Outbreak" now ends on appearance of 10th brick (2023/03/18 MS)
 - show "Game Over" instead of congrats at end of mini game set (2023/02/18 MS)
