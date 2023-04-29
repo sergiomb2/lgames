@@ -73,7 +73,6 @@ fi
 
 # Makefiles
 AC_CONFIG_FILES([Makefile 
-intl/Makefile 
 po/Makefile.in
 libgame/Makefile 
 src/Makefile 
