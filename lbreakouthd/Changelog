@@ -1,3 +1,4 @@
+- updated config.guess (2023/04/29 MS)
 - gettext argument set to external since now required (2023/04/29 MS)
 
 1.1.2:
