@@ -179,6 +179,7 @@ public:
 	const string &getBonusLevelInfo();
 	int restartLevel();
 	double getPaddleVelocity() { return pvel; }
+	void saveHiscores() { hiscores.save(); }
 };
 
 #endif /* SRC_CLIENTGAME_H_ */

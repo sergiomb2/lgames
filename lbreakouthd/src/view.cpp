@@ -213,9 +213,15 @@ View::~View()
 	theme.fMenuFocus.free();
 
 #ifdef WIN32
-	/* in windows saving in destructor does not work on exit */
+	/* XXX after the view object clientgame and config get destructed which
+	 * works in linux and saves hiscores and config. however, in windows
+	 * destructing some sub object in clientgame seg faults. the hiscore's
+	 * dtor is never called (and so is clientgame's dtor) so we explicitly
+	 * save hiscores and config here. if anyone knows why: let me know. */
+	cgame.saveHiscores();
 	config.save();
 #endif
+
 	_loginfo("Finalizing SDL\n");
 	TTF_Quit();
 	SDL_Quit();
