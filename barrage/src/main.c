@@ -487,7 +487,7 @@ static void take_screenshot()
 	static int i;
 	sprintf( buf, "screenshot%i.bmp", i++ );
 	SDL_SaveBMP( screen, buf );
-
+	printf("Taking screenshot ... saving it to %s\n",buf);
 }
 
 static void game_init()
@@ -739,8 +739,10 @@ static void main_loop()
 			input_delay = INPUT_DELAY;
 		}
 		/* take screenshots anywhere */
-		if ( keystate[SDLK_TAB] )
+		if ( keystate[SDLK_TAB] ) {
 			take_screenshot();
+			input_delay = INPUT_DELAY;
+		}
 	}
 
 	frame_time = SDL_GetTicks() - frame_time;
