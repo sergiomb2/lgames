@@ -170,7 +170,7 @@ static void set_video_mode()
 			video_sh = 480;
 		}
 		printf("Using scale factor %s\n",
-				(video_scale==2)?"2":((video_scale==1)?"1.5":0));
+				(video_scale==2)?"2":((video_scale==1)?"1.5":"0"));
 		video_xoff = (w - video_sw) / 2;
 		video_yoff = (h - video_sh) / 2;
 	}
