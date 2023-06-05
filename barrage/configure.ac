@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(barrage, 1.0.6)
+AC_INIT(barrage, 1.0.7)
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_TARGET
@@ -22,7 +22,7 @@ AM_PATH_SDL(1.2.0,, AC_MSG_ERROR(lib SDL is needed))
 # Mixer is optional
 audio_flag="-DAUDIO_ENABLED"
 audio_lib="-lSDL_mixer"
-AC_CHECK_LIB(SDL_mixer, main,, AC_MSG_RESULT(lib SDL mixer is missing); audio_flag=""; audio_lib="")
+AC_CHECK_LIB(SDL_mixer, main,, AC_MSG_RESULT(lib SDL mixer missing: audio disabled); audio_flag=""; audio_lib="")
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h string.h])
