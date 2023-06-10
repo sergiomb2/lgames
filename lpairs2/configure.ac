@@ -1,8 +1,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
-AC_INIT(lpairs2, 2.2)
+AC_PREREQ([2.71])
+AC_INIT([lpairs2],[2.2])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -55,13 +55,13 @@ CXXFLAGS="$CXXFLAGS -std=c++11 -DLOCALEDIR=\\\"$localedir\\\" -DCONFIGDIR=\\\"$c
 LIBS="$LIBS $SDL_LIBS"
 
 # Makefiles
-AC_OUTPUT(
-Makefile 
+AC_CONFIG_FILES([Makefile 
 po/Makefile.in
 src/Makefile 
 src/themes/Makefile 
 src/themes/Standard/Makefile
 src/themes/Standard/backgrounds/Makefile
 src/themes/Standard/motifs/Makefile
-)
+])
+AC_OUTPUT
 
