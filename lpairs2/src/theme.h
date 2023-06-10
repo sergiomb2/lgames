@@ -65,6 +65,9 @@ class Theme {
 	Sound sClick, sFail, sRemove;
 	Sound sMenuClick, sMenuMotion;
 
+	/* configured in theme.ini */
+	uint relIconSize; /* scale motif down to this percentage of max motif size */
+
 	const string &testRc(const string &path, const string &fname) {
 		static string fpath; /* not thread safe */
 		if (fileExists(path + "/" + fname))

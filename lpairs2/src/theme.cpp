@@ -33,8 +33,15 @@ void Theme::load(string name, Renderer &r)
 	path = string(DATADIR) + "/themes/" + name;
 
 	if (!fileExists(path))
-		_logerr("CRITICAL ERROR: theme %s not found. I will continue but most likely crash...\n",path.c_str());
+		_logerr("CRITICAL ERROR: theme %s not found. We continue but most likely it will crash...\n",path.c_str());
 	_loginfo("Loading theme %s\n",path.c_str());
+
+	/* load theme.ini */
+	relIconSize = 94;
+	if (fileExists(path + "/theme.ini")) {
+			FileParser fp(path + "/theme.ini");
+			fp.get("relIconSize",relIconSize);
+	}
 
 	Texture::setRenderScaleQuality(1);
 
@@ -102,10 +109,10 @@ void Theme::load(string name, Renderer &r)
 		card.setBlendMode(1);
 		r.setTarget(card);
 		if (pic.getWidth() > pic.getHeight()) {
-			dw = 0.94 * cbase.getWidth();
+			dw = relIconSize * cbase.getWidth() / 100;
 			dh = dw * pic.getHeight() / pic.getWidth();
 		} else {
-			dh = 0.94 * cbase.getHeight();
+			dh = relIconSize * cbase.getHeight() / 100;
 			dw = dh * pic.getWidth() / pic.getHeight();
 		}
 		dx = (cbase.getWidth() - dw) / 2;
