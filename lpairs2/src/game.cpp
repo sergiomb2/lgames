@@ -21,17 +21,72 @@
 #include "menu.h"
 #include "view.h"
 
+/** Initialize cards
+ * @rows, @cols: number of rows and columns of cards
+ * @matchsize: number of cards per motif */
+void Game::initCards(uint cols, uint rows, uint matchsize)
+{
+	uint w = gbWidth, h = gbHeight;
+	double pgap = 0.1; /* gap in percent of card width */
+	uint maxcw = (double)w/(cols*(1 + pgap));
+	uint maxch = (double)h/(rows*(1 + pgap));
+	uint sz = (maxcw>maxch)?maxch:maxcw;
+	cgap = pgap * sz;
+	int cxoff = (w - (cols*sz + (cols-1)*cgap)) / 2;
+	int cyoff = (h - (rows*sz + (rows-1)*cgap)) / 2;
+	int x = cxoff, y = cyoff;
+
+	/* layout cards */
+	numCards = cols*rows - ((cols*rows)%matchsize);
+	if (numCards > numMotifs*matchsize)
+		numCards = numMotifs*matchsize;
+	uint pos = 0;
+	for (uint j = 0; j < rows && pos < numCards; j++) {
+		for (uint i = 0; i < cols && pos < numCards; i++) {
+			cards[pos++].setGeometry(x, y, sz, sz);
+			x += sz + cgap;
+		}
+		y += sz + cgap;
+		x = cxoff;
+	}
+	numCardsLeft = numCards;
+
+	/* get pair ids (first numCards/2 are chosen from all) */
+	random_device rd;
+	mt19937 g(rd());
+	vector<int> pids;
+	for (uint i = 0; i < numMotifs; i++)
+		pids.push_back(i);
+	shuffle(pids.begin(), pids.end(), g);
+
+	/* set card ids */
+	vector<int> cids;
+	for (uint j = 0; j < matchsize; j++)
+		for (uint i = 0; i < numCards/matchsize; i++)
+			cids.push_back(pids[i]);
+	shuffle(cids.begin(), cids.end(), g);
+
+	for (uint i = 0; i < numCards; i++)
+		cards[i].set(cids[i]);
+}
+
 /** Initialize game board of virtual size w,h.
  *  @mode determines layout and number of cards depending in @fscreen
- *  @climit is the maximum number of cards that can be dealt */
-void Game::init(uint w, uint h, uint mode, uint setsize, uint matchsize, int fscreen, uint climit)
+ *  @nmotifs number of motifs in current theme */
+void Game::init(uint w, uint h, uint gm, uint setsize, uint matchsize, int fscreen, uint nmotifs)
 {
 	uint nx = 4, ny = 4;
+
+	mode = gm;
+	gbWidth = w;
+	gbHeight = h;
+	numMotifs = nmotifs;
 
 	/* game mode */
 	curPlayer = 0;
 	switch (mode) {
 	case GM_SOLO:
+	case GM_SURVIVOR:
 		numPlayers = 1;
 		players[0].init("You", PC_HUMAN);
 		break;
@@ -47,8 +102,20 @@ void Game::init(uint w, uint h, uint mode, uint setsize, uint matchsize, int fsc
 		break;
 	}
 
+	/* in survivor we always match pairs so overwrite option
+	 * and we always start at lowest setsize */
+	if (mode == GM_SURVIVOR) {
+		matchsize = 2;
+		setsize = GM_TINY;
+		stage = 1;
+	}
+
 	/* only regular modes supported for now */
 	switch (setsize) {
+	case GM_TINY:
+		nx = 4;
+		ny = 4;
+		break;
 	case GM_SMALL:
 		nx = 6;
 		ny = 4;
@@ -67,47 +134,7 @@ void Game::init(uint w, uint h, uint mode, uint setsize, uint matchsize, int fsc
 		break;
 	}
 
-	double pgap = 0.1; /* gap in percent of card width */
-	uint maxcw = (double)w/(nx*(1 + pgap));
-	uint maxch = (double)h/(ny*(1 + pgap));
-	uint sz = (maxcw>maxch)?maxch:maxcw;
-	cgap = pgap * sz;
-	int cxoff = (w - (nx*sz + (nx-1)*cgap)) / 2;
-	int cyoff = (h - (ny*sz + (ny-1)*cgap)) / 2;
-	int x = cxoff, y = cyoff;
-
-	/* layout cards */
-	numCards = nx*ny - ((nx*ny)%matchsize);
-	if (numCards > climit)
-		numCards = climit;
-	uint pos = 0;
-	for (uint j = 0; j < ny && pos < numCards; j++) {
-		for (uint i = 0; i < nx && pos < numCards; i++) {
-			cards[pos++].setGeometry(x, y, sz, sz);
-			x += sz + cgap;
-		}
-		y += sz + cgap;
-		x = cxoff;
-	}
-	numCardsLeft = numCards;
-
-	/* get pair ids (first numCards/2 are chosen from all) */
-	random_device rd;
-	mt19937 g(rd());
-	vector<int> pids;
-	for (uint i = 0; i < climit/matchsize; i++)
-		pids.push_back(i);
-	shuffle(pids.begin(), pids.end(), g);
-
-	/* set card ids */
-	vector<int> cids;
-	for (uint j = 0; j < matchsize; j++)
-		for (uint i = 0; i < numCards/matchsize; i++)
-			cids.push_back(pids[i]);
-	shuffle(cids.begin(), cids.end(), g);
-
-	for (uint i = 0; i < numCards; i++)
-		cards[i].set(cids[i]);
+	initCards(nx,ny,matchsize);
 
 	numMaxOpenCards = matchsize;
 	gameStarted = false;
@@ -193,8 +220,12 @@ int Game::closeCards()
 			cards[openCardIds[i]].clear();
 			numCardsLeft--;
 			if (numCardsLeft == 0) {
-				gameover = true;
-				ret |= GF_GAMEOVER;
+				if (mode == GM_SURVIVOR)
+					initNextSurvivorStage();
+				else {
+					gameover = true;
+					ret |= GF_GAMEOVER;
+				}
 			}
 		}
 		getCurrentPlayer().incScore();
@@ -202,8 +233,12 @@ int Game::closeCards()
 		ret |= GF_CARDSREMOVED;
 	} else {
 		if (checkError()) {
-			getCurrentPlayer().incErrors();
+			Player &p = getCurrentPlayer();
+			p.incErrors();
 			ret |= GF_ERRORSCHANGED;
+			if (mode == GM_SURVIVOR)
+				if (p.errors > p.score)
+					ret |= GF_GAMEOVER;
 		}
 		for (uint i = 0; i < numOpenCards; i++)
 			cards[openCardIds[i]].toggle();
@@ -450,4 +485,17 @@ uint Game::cpuTryCard(uint pos)
 		pos = cpuSelectRandomCard();
 
 	return pos;
+}
+
+/* Increase stage, gain some score and init next set of cards */
+void Game::initNextSurvivorStage()
+{
+	uint rows[] = {4,4,5,5,6,6,6,6,7,7};
+	uint cols[] = {4,5,5,6,6,7,8,9,9,10};
+	players[0].score += stage;
+	if (stage < 10)
+		initCards(cols[stage],rows[stage],2);
+	else
+		initCards(10,7,2);
+	stage++;
 }

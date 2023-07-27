@@ -89,7 +89,7 @@ void View::init(string t, uint f)
 	if (noGameYet) {
 		changeWallpaper();
 		game.init(renderer.rx2sx(1), renderer.ry2sy(0.90),
-				GM_SOLO, GM_HUGE, 2, config.fullscreen, theme.numMotifs*2);
+				GM_SOLO, GM_HUGE, 2, config.fullscreen, theme.numMotifs);
 	} else
 		startGame();
 	cxoff = renderer.rx2sx(0.00);
@@ -425,7 +425,7 @@ void View::createMenus()
 	const char *fpsLimitNames[] = {_("No Limit"),_("200 FPS"),_("100 FPS") } ;
 	const int bufSizes[] = { 256, 512, 1024, 2048, 4096 };
 	const int channelNums[] = { 8, 16, 32 };
-	const char *modeNames[] = {_("Solo"), _("Vs CPU"), _("Vs Human") };
+	const char *modeNames[] = {_("Solo"), _("Vs CPU"), _("Vs Human"), _("Survivor")};
 	const char *captionModeNames[] = {_("Off"),_("On Shift"),_("Always")};
 
 	/* XXX too lazy to set fonts for each and every item...
@@ -447,8 +447,8 @@ void View::createMenus()
 	mNewGame->add(new MenuItem(_("Start Game"),"",AID_STARTGAME));
 	mNewGame->add(new MenuItemSep());
 	mNewGame->add(new MenuItemList(_("Mode"),
-			_("You can play alone (Solo) or against a human or CPU opponent."),
-			AID_NONE,config.gamemode,modeNames,3));
+			_("You can play alone or against a human or CPU opponent.\n\nIn Survivor you play endlessly with increasing set sizes until you made too many mistakes. In Survivor you always match pairs so the match size option below is ignored."),
+			AID_NONE,config.gamemode,modeNames,4));
 	mNewGame->add(new MenuItemList(_("Set Size"),
 			_("Small=6x4, Medium=8x4, Large=10x5, Huge=12x6.\nNote, that it's slightly different in window mode to match the different ratio."),
 			AID_NONE,config.setsize,diffNames,4));
@@ -673,7 +673,7 @@ void View::startGame()
 	changeWallpaper();
 	game.init(renderer.rx2sx(1), renderer.ry2sy(0.90),
 			config.gamemode, config.setsize, config.matchsize,
-			config.fullscreen, theme.numMotifs*config.matchsize);
+			config.fullscreen, theme.numMotifs);
 	noGameYet = false;
 	lblTime.setText(theme.fNormal, _("Time: 0:00"));
 	renderPlayerInfo();
@@ -735,14 +735,19 @@ bool View::skipAnimatedCard(uint cid)
 void View::renderPlayerInfo()
 {
 	string s;
-	if (game.numPlayers == 1) {
+	if (game.mode == GM_SURVIVOR) {
+		strprintf(s, _("Score: %d - %d"), game.players[0].getScore(),
+						game.players[0].getErrors());
+		lblScore.setText(theme.fNormal, s);
+		strprintf(s, _("Stage: %d"), game.stage);
+		lblErrors.setText(theme.fNormal, s);
+	} else if (game.mode == GM_SOLO) {
 		strprintf(s, _("Matches: %d/%d"),
 				game.players[0].getScore(),
 				game.numCards/config.matchsize);
 		lblScore.setText(theme.fNormal, s);
 		strprintf(s, _("Errors: %d"), game.players[0].getErrors());
 		lblErrors.setText(theme.fNormal, s);
-
 	} else {
 		/* two-player mode, use errors for second players score */
 		strprintf(s, _("%s: %d"),game.players[0].getName().c_str(),

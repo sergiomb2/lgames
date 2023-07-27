@@ -9,7 +9,13 @@ then). That means if you switch from window to fullscreen while playing
 (menu can be accessed any time by ESC) your current game gets restarted.
 
 You can also try to match triplets and quadruplets (fun, but hard...) and
-play against a CPU opponent (or another human player). 
+play against a CPU opponent (or another human player).
+
+In mode Survivor you get one point for each match. It starts with 4x4 cards
+and gets gradually harder. The game ends when you made more mistakes than
+you gained score. Clearing a stage gives you the stage number as bonus
+points. The largest set is 10x7 which theoretically you can play endlessly
+if you are good enough.
 
 Themes
 ------

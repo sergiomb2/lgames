@@ -28,8 +28,10 @@ enum {
 	GM_SOLO = 0,
 	GM_VSCPU,
 	GM_VSHUMAN,
+	GM_SURVIVOR,
 
-	GM_SMALL = 0,
+	GM_TINY = 0,
+	GM_SMALL,
 	GM_MEDIUM,
 	GM_LARGE,
 	GM_HUGE,
@@ -167,13 +169,17 @@ class Game {
 	friend View;
 
 	Config &config;
+	uint gbWidth, gbHeight; /* virtual screen size of game board for cards */
+	uint numMotifs; /* number of motifs from current theme */
 
 	Player players[MAXPLAYERNUM];
 	uint numPlayers;
 	uint curPlayer;
 
+	uint mode;
 	bool gameStarted; /* first click happened? */
 	bool gameover;
+	uint stage; /* current set played for modes with multiple sets or 0 */
 	uint gtime; /* gaming time in ms */
 
 	Card cards[MAXCARDS];
@@ -195,13 +201,16 @@ class Game {
 	uint cpuFindBestKnownPairCard();
 	uint cpuSelectRandomCard();
 	uint cpuTryCard(uint cid);
+	void initNextSurvivorStage();
 public:
-	Game(Config &cfg) : config(cfg), numPlayers(1), curPlayer(0),
-			gameStarted(false), gameover(false), gtime(0),
+	Game(Config &cfg) : config(cfg), gbWidth(0), gbHeight(0), numMotifs(0),
+			numPlayers(1), curPlayer(0), mode(0),
+			gameStarted(false), gameover(false), stage(0), gtime(0),
 			numCards(0), numCardsLeft(0), numMaxOpenCards(2),
 			numOpenCards(0), cgap(0), isMatch(false) {}
 	void init(uint w, uint h, uint mode, uint setsize,
-				uint matchsize, int fscreen, uint climit);
+				uint matchsize, int fscreen, uint nmotifs);
+	void initCards(uint cols, uint rows, uint matchsize);
 	int update(uint ms, int button, int bx, int by);
 	int handleClick(int cx, int cy);
 	Player &getCurrentPlayer() {
