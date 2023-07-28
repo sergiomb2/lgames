@@ -232,12 +232,12 @@ int Game::closeCards()
 		ret |= GF_SCORECHANGED;
 		ret |= GF_CARDSREMOVED;
 	} else {
-		if (checkError()) {
+		if (checkMistake()) {
 			Player &p = getCurrentPlayer();
-			p.incErrors();
-			ret |= GF_ERRORSCHANGED;
+			p.incMistakes();
+			ret |= GF_MISTAKESCHANGED;
 			if (mode == GM_SURVIVOR)
-				if (p.errors > p.score)
+				if (p.mistakes > p.score)
 					ret |= GF_GAMEOVER;
 		}
 		for (uint i = 0; i < numOpenCards; i++)
@@ -271,10 +271,10 @@ int Game::closeCards()
 /** Check mismatched open cards. Last opened card must be the mismatch
  * because for more than 2 cards to be matched it stops at a mismatch.
  *
- * If last opened card is known it's an error.
- * If any closed matching card for first card is known it's an error.
+ * If last opened card is known it's a mistake.
+ * If any closed matching card for first card is known it's a mistake.
  */
-bool Game::checkError()
+bool Game::checkMistake()
 {
 	if (numOpenCards < 2)
 		return false; /* should never happen but make sure */

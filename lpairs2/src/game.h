@@ -38,7 +38,7 @@ enum {
 
 	GF_NONE = 0,
 	GF_SCORECHANGED = 1,
-	GF_ERRORSCHANGED = 2,
+	GF_MISTAKESCHANGED = 2,
 	GF_TIMECHANGED = 4,
 	GF_CARDSCLOSED = 8,
 	GF_CARDSREMOVED = 16,
@@ -56,7 +56,7 @@ class Player {
 
 	string name;
 	uint score; /* number of pairs collected */
-	uint errors; /* misclicks of known cards */
+	uint mistakes; /* misclicks of known cards */
 	uint control;
 
 	/* CPU memory settings */
@@ -70,7 +70,7 @@ public:
 	void init(const string &n, uint ctrl) {
 		name = n;
 		score = 0;
-		errors = 0;
+		mistakes = 0;
 		control = ctrl;
 
 		cmMinThreshold = 0.1;
@@ -84,14 +84,14 @@ public:
 	void incScore() {
 		score++;
 	}
-	void incErrors() {
-		errors++;
+	void incMistakes() {
+		mistakes++;
 	}
 	uint getScore() {
 		return score;
 	}
-	uint getErrors() {
-		return errors;
+	uint getMistakes() {
+		return mistakes;
 	}
 	const string &getName() {
 		return name;
@@ -195,7 +195,7 @@ class Game {
 	bool isMatch;
 
 	int closeCards();
-	bool checkError();
+	bool checkMistake();
 
 	uint cpuFindKnownMatch(uint cid);
 	uint cpuFindBestKnownPairCard();

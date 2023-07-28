@@ -62,7 +62,7 @@ class View {
 	Texture imgBackground;
 	int cxoff, cyoff;
 	int shadowOffset; /* shadow offset */
-	Label lblScore, lblTime, lblErrors;
+	Label lblInfoLeft, lblTime, lblInfoRight;
 	Label lblRestart, lblResult;
 	int mcx, mcy; /* mouse cursor position */
 	list<unique_ptr<Sprite>> sprites;

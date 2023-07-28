@@ -29,7 +29,7 @@ View::View(Renderer &r, Config &cfg, Game &gm)
 	  lblCredits1(true), lblCredits2(true), noGameYet(true),
 	  state(VS_IDLE),
 	  game(gm), quitReceived(false),
-	  lblScore(true), lblTime(true), lblErrors(true),
+	  lblInfoLeft(true), lblTime(true), lblInfoRight(true),
 	  mcx(-1), mcy(-1),
 	  captionKeyPressed(0),
 	  fpsCycles(0), fpsStart(0), fps(0)
@@ -223,7 +223,7 @@ void View::run()
 			renderPlayerInfo();
 			mixer.play(theme.sRemove);
 		}
-		if (flags & GF_ERRORSCHANGED)
+		if (flags & GF_MISTAKESCHANGED)
 			if (game.numPlayers == 1)
 				renderPlayerInfo();
 		if (flags & GF_CARDOPENED) {
@@ -332,9 +332,9 @@ void View::render()
 
 	/* labels */
 	lblTime.copy(renderer.rx2sx(0.5),renderer.ry2sy(0.025));
-	lblScore.copy(renderer.rx2sx(0.01),renderer.ry2sy(0.975),
+	lblInfoLeft.copy(renderer.rx2sx(0.01),renderer.ry2sy(0.975),
 			ALIGN_X_LEFT | ALIGN_Y_CENTER);
-	lblErrors.copy(renderer.rx2sx(0.99),renderer.ry2sy(0.975),
+	lblInfoRight.copy(renderer.rx2sx(0.99),renderer.ry2sy(0.975),
 			ALIGN_X_RIGHT | ALIGN_Y_CENTER);
 
 	if (game.gameover && !menuActive) {
@@ -421,7 +421,7 @@ bool View::showInfo(const vector<string> &text, int type)
 void View::createMenus()
 {
 	Menu *mNewGame, *mAudio, *mGraphics;
-	const char *diffNames[] = {_("Small"),_("Medium"),_("Large"),_("Huge") } ;
+	const char *diffNames[] = {_("Tiny"),_("Small"),_("Medium"),_("Large"),_("Huge") } ;
 	const char *fpsLimitNames[] = {_("No Limit"),_("200 FPS"),_("100 FPS") } ;
 	const int bufSizes[] = { 256, 512, 1024, 2048, 4096 };
 	const int channelNums[] = { 8, 16, 32 };
@@ -450,8 +450,8 @@ void View::createMenus()
 			_("You can play alone or against a human or CPU opponent.\n\nIn Survivor you play endlessly with increasing set sizes until you made too many mistakes. In Survivor you always match pairs so the match size option below is ignored."),
 			AID_NONE,config.gamemode,modeNames,4));
 	mNewGame->add(new MenuItemList(_("Set Size"),
-			_("Small=6x4, Medium=8x4, Large=10x5, Huge=12x6.\nNote, that it's slightly different in window mode to match the different ratio."),
-			AID_NONE,config.setsize,diffNames,4));
+			_("Tiny=4x4, Small=6x4, Medium=8x4, Large=10x5, Huge=12x6.\nNote, that it's slightly different in window mode to match the different ratio."),
+			AID_NONE,config.setsize,diffNames,5));
 	mNewGame->add(new MenuItemRange(_("Match Size"),
 			"2 = Pairs, 3 = Triplets, 4 = Quadruplets\nNote that you always have to turn over that many cards regardless of a mismatch.",
 			AID_NONE,config.matchsize,2,4,1));
@@ -731,36 +731,36 @@ bool View::skipAnimatedCard(uint cid)
 	return false;
 }
 
-/** Either render score and errors in solo mode or both scores in two-player */
+/** Either render score and mistakes in solo mode or both scores in two-player */
 void View::renderPlayerInfo()
 {
 	string s;
 	if (game.mode == GM_SURVIVOR) {
-		strprintf(s, _("Score: %d - %d"), game.players[0].getScore(),
-						game.players[0].getErrors());
-		lblScore.setText(theme.fNormal, s);
+		strprintf(s, _("Score: %d (%d Mistakes)"), game.players[0].score,
+						game.players[0].mistakes);
+		lblInfoLeft.setText(theme.fNormal, s);
 		strprintf(s, _("Stage: %d"), game.stage);
-		lblErrors.setText(theme.fNormal, s);
+		lblInfoRight.setText(theme.fNormal, s);
 	} else if (game.mode == GM_SOLO) {
 		strprintf(s, _("Matches: %d/%d"),
-				game.players[0].getScore(),
+				game.players[0].score,
 				game.numCards/config.matchsize);
-		lblScore.setText(theme.fNormal, s);
-		strprintf(s, _("Errors: %d"), game.players[0].getErrors());
-		lblErrors.setText(theme.fNormal, s);
+		lblInfoLeft.setText(theme.fNormal, s);
+		strprintf(s, _("Mistakes: %d"), game.players[0].mistakes);
+		lblInfoRight.setText(theme.fNormal, s);
 	} else {
-		/* two-player mode, use errors for second players score */
-		strprintf(s, _("%s: %d"),game.players[0].getName().c_str(),
-				game.players[0].getScore());
+		/* two-player mode */
+		strprintf(s, _("%s: %d"),game.players[0].name.c_str(),
+				game.players[0].score);
 		if (game.curPlayer == 0)
-			lblScore.setText(theme.fNormalHighlighted, s);
+			lblInfoLeft.setText(theme.fNormalHighlighted, s);
 		else
-			lblScore.setText(theme.fNormal, s);
-		strprintf(s, _("%s: %d"),game.players[1].getName().c_str(),
-				game.players[1].getScore());
+			lblInfoLeft.setText(theme.fNormal, s);
+		strprintf(s, _("%s: %d"),game.players[1].name.c_str(),
+				game.players[1].score);
 		if (game.curPlayer == 1)
-			lblErrors.setText(theme.fNormalHighlighted, s);
+			lblInfoRight.setText(theme.fNormalHighlighted, s);
 		else
-			lblErrors.setText(theme.fNormal, s);
+			lblInfoRight.setText(theme.fNormal, s);
 	}
 }
