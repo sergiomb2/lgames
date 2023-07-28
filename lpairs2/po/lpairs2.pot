@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: lpairs2 2.2.1\n"
+"Project-Id-Version: lpairs2 2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-10 10:45+0200\n"
+"POT-Creation-Date: 2023-07-28 18:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +23,10 @@ msgstr ""
 #: src/view.cpp:215
 #, c-format
 msgid "Time: %d:%02d"
+msgstr ""
+
+#: src/view.cpp:424
+msgid "Tiny"
 msgstr ""
 
 #: src/view.cpp:424
@@ -65,6 +69,10 @@ msgstr ""
 msgid "Vs Human"
 msgstr ""
 
+#: src/view.cpp:428
+msgid "Survivor"
+msgstr ""
+
 #: src/view.cpp:429
 msgid "Off"
 msgstr ""
@@ -86,7 +94,12 @@ msgid "Mode"
 msgstr ""
 
 #: src/view.cpp:450
-msgid "You can play alone (Solo) or against a human or CPU opponent."
+msgid ""
+"You can play alone or against a human or CPU opponent.\n"
+"\n"
+"In Survivor you play endlessly with increasing set sizes until you made too "
+"many mistakes. In Survivor you always match pairs so the match size option "
+"below is ignored."
 msgstr ""
 
 #: src/view.cpp:452
@@ -95,7 +108,7 @@ msgstr ""
 
 #: src/view.cpp:453
 msgid ""
-"Small=6x4, Medium=8x4, Large=10x5, Huge=12x6.\n"
+"Tiny=4x4, Small=6x4, Medium=8x4, Large=10x5, Huge=12x6.\n"
 "Note, that it's slightly different in window mode to match the different "
 "ratio."
 msgstr ""
@@ -211,15 +224,25 @@ msgstr ""
 
 #: src/view.cpp:739
 #, c-format
+msgid "Score: %d (%d Mistakes)"
+msgstr ""
+
+#: src/view.cpp:742
+#, c-format
+msgid "Stage: %d"
+msgstr ""
+
+#: src/view.cpp:745
+#, c-format
 msgid "Matches: %d/%d"
 msgstr ""
 
-#: src/view.cpp:743
+#: src/view.cpp:749
 #, c-format
-msgid "Errors: %d"
+msgid "Mistakes: %d"
 msgstr ""
 
-#: src/view.cpp:748 src/view.cpp:754
+#: src/view.cpp:753 src/view.cpp:759
 #, c-format
 msgid "%s: %d"
 msgstr ""
