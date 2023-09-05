@@ -31,8 +31,8 @@ else
 
 dnl check SDL
 AM_PATH_SDL(1.0.0,, AC_MSG_ERROR(lib SDL is needed))
-CFLAGS="$CFLAGS $(sdl-config --cflags)"
-LIBS="$LIBS $(sdl-config --libs)"
+CFLAGS="$CFLAGS $($SDL_CONFIG --cflags)"
+LIBS="$LIBS $($SDL_CONFIG --libs)"
 
 fi
 

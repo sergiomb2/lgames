@@ -1,3 +1,4 @@
+- use SDL_CONFIG instead of sdl_config (2023/09/04 Artemys)
 - added compile, removed intl and acinclude.m4 (2023/09/04 MS)
 - properly install icons (2023/02/03 MS)
 
