@@ -51,7 +51,7 @@ MainWindow::MainWindow(const char *title, int _w, int _h, int _full)
 	mrc = mr;
 
 	/* back to black */
-	SDL_SetRenderDrawColor(mrc,0,0,0,0);
+	SDL_SetRenderDrawColor(mrc,0,0,0,255);
 	SDL_RenderClear(mrc);
 }
 MainWindow::~MainWindow()

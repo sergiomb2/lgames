@@ -114,7 +114,7 @@ void View::init(string t, uint r)
 	int sw, sh;
 	if (r == 0) {
 		/* fullscreen is tricky... might also be 16:10,4:3,...
-		 * use width to get 16:9 leaving space at bottom */
+		 * set largest possible 16:9 viewport centered */
 		SDL_DisplayMode mode;
 		SDL_GetCurrentDisplayMode(cpdix,&mode);
 		/* TEST  mode.w = 1600; mode.h = 1200; */
@@ -132,7 +132,9 @@ void View::init(string t, uint r)
 			}
 			viewport.w = sw;
 			viewport.h = sh;
-			_loginfo("Fullscreen resolution not 16:9! Using %dx%d\n",sw,sh);
+			_loginfo("Fullscreen resolution %dx%d not 16:9\n",mode.w,mode.h);
+			_loginfo("  Using viewport x=%d,y=%d,w=%d,h=%d\n",
+					viewport.x, viewport.y, viewport.w, viewport.h);
 		} else
 			_loginfo("Using fullscreen resolution %dx%d\n",mode.w,mode.h);
 	} else {
