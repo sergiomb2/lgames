@@ -490,7 +490,9 @@ void View::run()
 		SDL_FlushEvent(SDL_MOUSEMOTION); /* prevent event loop from dying */
 	}
 
-	if (resumeLater)
+	if (editor.testRequested()) {
+		/* do nothing */
+	} else if (resumeLater)
 		saveGame();
 	else {
 		/* check hiscores */
