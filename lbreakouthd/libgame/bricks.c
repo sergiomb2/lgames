@@ -33,8 +33,8 @@ Extra_Conv extra_conv_table[EX_NUMBER] = {
 	{ EX_SCORE5000,  '4' },
 	{ EX_SCORE10000, '5' },
 	{ EX_GOLDSHOWER, 'g' },
-	{ EX_LENGTHEN,   '+' },
 	{ EX_SHORTEN,    '-' },
+	{ EX_LENGTHEN,   '+' },
 	{ EX_LIFE,       'l' },
 	{ EX_SLIME,      's' },
 	{ EX_METAL,      'm' },
@@ -1236,7 +1236,9 @@ char brick_get_char( int type )
 
 char extra_get_char(int type)
 {
-	if (type >= 0 && type < EX_NUMBER)
-		return extra_conv_table[type].c;
+	int i;
+	for ( i = 0; i < EX_NUMBER; i++ )
+		if ( extra_conv_table[i].type == type )
+			return extra_conv_table[i].c;
 	return ' ';
 }

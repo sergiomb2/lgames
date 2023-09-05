@@ -59,8 +59,8 @@ void Editor::init(const string &setname) {
 	numLevels = 0;
 	addNewLevel(0);
 	gotoLevel(0);
-	selBrickId = 0;
-	selExtraId = -1; /* bricks are on */
+	selBrickListId = 0;
+	selExtraListId = -1; /* bricks are on */
 	editWidth = EDIT_WIDTH;
 	editHeight = EDIT_HEIGHT;
 	brickWidth = bw;
@@ -122,19 +122,20 @@ void Editor::init(const string &setname) {
 	SDL_SetRenderTarget(mrc,background.getTex());
 
 	numBrickCols = numExtraCols = 5;
-	numBricks = theme.bricks.getGridSizeX();
+	numBricks = BRICK_COUNT_REGULAR; /* number of different bricks for editing */
 	numExtras = EX_NUMBER;
 	rBricks.x = dx;
 	rBricks.y = dy;
 	rBricks.w = numBrickCols * bw;
 	rBricks.h = bh;
 	for (uint i = 0; i < numBricks; i++) {
-		if (i == INVIS_BRICK_ID) {
+		if (brick_conv_table[i].id == INVIS_BRICK_ID) {
 			theme.bricks.setAlpha(32);
-			theme.bricks.copy(i-1,0,dx,dy); /* XXX use brick before */
+			/* XXX use previous brick */
+			theme.bricks.copy(brick_conv_table[i].id-1,0,dx,dy);
 			theme.bricks.clearAlpha();
 		} else
-			theme.bricks.copy(i,0,dx,dy);
+			theme.bricks.copy(brick_conv_table[i].id,0,dx,dy);
 		if (((i+1) % numBrickCols) == 0) {
 			dy += bh;
 			rBricks.h += bh;
@@ -149,7 +150,7 @@ void Editor::init(const string &setname) {
 	rExtras.w = numExtraCols * bw;
 	rExtras.h = bh;
 	for (uint i = 0; i < numExtras; i++) {
-		theme.extras.copy(i,0,dx,dy);
+		theme.extras.copy(extra_conv_table[i].type,0,dx,dy);
 		if (((i+1) % numExtraCols) == 0) {
 			dy += bh;
 			rExtras.h += bh;
@@ -232,8 +233,9 @@ char Editor::brickId2Char(int id) {
 	return '.'; /* empty tile for id -1 or invalid id */
 }
 char Editor::extraId2Char(int id) {
-	if (id >= 0 && id < EX_NUMBER)
-		return extra_conv_table[id].c;
+	for (uint k = 0; k < EX_NUMBER; k++)
+		if (extra_conv_table[k].type == id)
+			return extra_conv_table[k].c;
 	return '.'; /* empty tile for id -1 or invalid id */
 }
 int Editor::brickChar2Id(char c)
@@ -247,7 +249,7 @@ int Editor::extraChar2Id(char c)
 {
 	for (uint k = 0; k < EX_NUMBER; k++)
 		if (extra_conv_table[k].c == c)
-			return k;
+			return extra_conv_table[k].type;
 	return -1; /* -1 for empty or invalid */
 }
 
@@ -438,28 +440,28 @@ void Editor::handleClick(int mx, int my, int mb)
 		rx = (mx - rBricks.x) / brickWidth;
 		ry = (my - rBricks.y) / brickHeight;
 		if (ry * numBrickCols + rx < numBricks) {
-			selBrickId = ry * numBrickCols + rx;
-			selExtraId = -1;
+			selBrickListId = ry * numBrickCols + rx;
+			selExtraListId = -1;
 		}
 	}
 	if (inRect(mx, my, rExtras)) {
 		rx = (mx - rExtras.x) / brickWidth;
 		ry = (my - rExtras.y) / brickHeight;
 		if (ry * numExtraCols + rx < numExtras) {
-			selExtraId = ry * numExtraCols + rx;
-			selBrickId = -1;
+			selExtraListId = ry * numExtraCols + rx;
+			selBrickListId = -1;
 		}
 	}
 	if (inRect(mx, my, rMap)) {
 		rx = (mx - rMap.x) / brickWidth;
 		ry = (my - rMap.y) / brickHeight;
 		if (mb == SDL_BUTTON_LEFT) {
-			if (selBrickId != -1)
-				curLevel->bricks[rx][ry] = selBrickId;
+			if (selBrickListId != -1)
+				curLevel->bricks[rx][ry] = brick_conv_table[selBrickListId].id;
 			else if (curLevel->bricks[rx][ry] != -1)
-				curLevel->extras[rx][ry] = selExtraId;
+				curLevel->extras[rx][ry] = extra_conv_table[selExtraListId].type;
 		} else if (mb == SDL_BUTTON_RIGHT) {
-			if (selBrickId != -1) {
+			if (selBrickListId != -1) {
 				/* if brick gets deleted, delete extra as well */
 				curLevel->bricks[rx][ry] = -1;
 				curLevel->extras[rx][ry] = -1;
@@ -496,12 +498,12 @@ void Editor::render() {
 	font.write(rAuthor.x+rAuthor.w, rAuthor.y,
 				_("Author: ")+levels[curLevelId].author);
 
-	if (selBrickId != -1)
-		selFrame.copy(rBricks.x + (selBrickId%numBrickCols)*brickWidth,
-				rBricks.y + (selBrickId/numBrickCols)*brickHeight);
-	if (selExtraId != -1)
-		selFrame.copy(rExtras.x + (selExtraId%numExtraCols)*brickWidth,
-				rExtras.y + (selExtraId/numExtraCols)*brickHeight);
+	if (selBrickListId != -1)
+		selFrame.copy(rBricks.x + (selBrickListId%numBrickCols)*brickWidth,
+				rBricks.y + (selBrickListId/numBrickCols)*brickHeight);
+	if (selExtraListId != -1)
+		selFrame.copy(rExtras.x + (selExtraListId%numExtraCols)*brickWidth,
+				rExtras.y + (selExtraListId/numExtraCols)*brickHeight);
 
 	for (uint j = 0; j < editHeight; j++)
 		for (uint i = 0; i < editWidth; i++) {
@@ -524,7 +526,7 @@ void Editor::render() {
 					alpha = tick/4;
 				else
 					alpha = (2000-tick)/4;
-				if (selExtraId != -1)
+				if (selExtraListId != -1)
 					alpha = 255;
 				theme.extras.setAlpha(alpha);
 				theme.extras.copy(curLevel->extras[i][j],0,

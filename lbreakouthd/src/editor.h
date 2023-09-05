@@ -73,7 +73,7 @@ class Editor {
 	uint numLevels; /* number of levels in set */
 	uint curLevelId; /* current level id */
 	EditorLevel *curLevel; /* pointer to current level in array */
-	int selBrickId, selExtraId; /* selected brick/extra */
+	int selBrickListId, selExtraListId; /* selected brick/extra */
 	uint editWidth, editHeight; /* size of editable part */
 
 	void init(const string &setname);
@@ -105,7 +105,7 @@ public:
 			  numBrickCols(0), numExtraCols(0),
 			  numBricks(0), numExtras(0), btnFocus(-1),
 			  version("1.00"), numLevels(0), curLevelId(0), curLevel(NULL),
-			  selBrickId(0), selExtraId(0),
+			  selBrickListId(0), selExtraListId(0),
 			  editWidth(EDIT_WIDTH), editHeight(EDIT_HEIGHT) {
 		/* set shortcuts and tooltips for buttons */
 		btnShortcuts[EB_FIRST] = SDL_SCANCODE_UP;
