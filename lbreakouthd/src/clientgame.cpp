@@ -103,7 +103,7 @@ int ClientGame::initTestlevel(const string &title, const string &author, int bri
 	curPlayer = 0;
 	players.clear();
 	players.push_back(unique_ptr<ClientPlayer>(
-				new ClientPlayer(config.player_names[0],
+				new ClientPlayer(_("Testplayer"),
 						diffs[config.diff].lives,
 						diffs[config.diff].max_lives)));
 	/* build single level levelset */
