@@ -1,5 +1,5 @@
 AC_PREREQ([2.71])
-AC_INIT([ltris],[1.2.6])
+AC_INIT([ltris],[1.2.7])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_TARGET
