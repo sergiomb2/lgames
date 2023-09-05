@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = intl m4 po src icons
+SUBDIRS = m4 po src icons
 EXTRA_DIST = config.rpath  AUTHORS COPYING ChangeLog INSTALL \
 README TODO touchall ABOUT-NLS po/tr.po_full po/pt.po_full \
 po/nonascii.pl ltris48.png ltris.desktop \

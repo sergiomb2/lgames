@@ -1,3 +1,4 @@
+- added compile, removed intl and acinclude.m4 (2023/09/04 MS)
 - properly install icons (2023/02/03 MS)
 
 1.2.6:

@@ -1,14 +1,13 @@
-AC_PREREQ([2.69])
-AC_INIT(ltris,1.2.6)
+AC_PREREQ([2.71])
+AC_INIT([ltris],[1.2.6])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 
 AC_USE_SYSTEM_EXTENSIONS
+AM_GNU_GETTEXT([external])
 
-dnl Checks for programs.
-AM_GNU_GETTEXT
 AC_PROG_CC
 AC_PROG_RANLIB
 
@@ -87,4 +86,5 @@ AC_SUBST(hi_inst_flag)
 AC_SUBST(dis_flag)
 AC_SUBST(locdir_flag)
 
-AC_OUTPUT(Makefile src/Makefile icons/Makefile src/sounds/Makefile src/gfx/Makefile intl/Makefile po/Makefile.in m4/Makefile )
+AC_CONFIG_FILES([Makefile src/Makefile icons/Makefile src/sounds/Makefile src/gfx/Makefile po/Makefile.in m4/Makefile ])
+AC_OUTPUT
