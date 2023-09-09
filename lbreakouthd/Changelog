@@ -1,3 +1,4 @@
+- bugfix: set correct fullscreen resolution for non-16:9 (2023/09/09 MS)
 - fixed switched shrink/expand extras in editor (2023/09/05 MS)
 - don't overwrite saved game when testing levels (2023/09/05 MS)
 - properly fill new window with black (2023/09/05 MS)

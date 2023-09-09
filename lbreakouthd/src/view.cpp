@@ -111,36 +111,39 @@ void View::init(string t, uint r)
 	_loginfo("Using display %d\n",cpdix);
 
 	/* determine resolution and scale factor */
-	int sw, sh;
+	int ww, wh; /* size of sdl window */
+	int sw, sh; /* either screen or viewport size, is used to scale assets */
 	if (r == 0) {
 		/* fullscreen is tricky... might also be 16:10,4:3,...
 		 * set largest possible 16:9 viewport centered */
 		SDL_DisplayMode mode;
 		SDL_GetCurrentDisplayMode(cpdix,&mode);
 		/* TEST  mode.w = 1600; mode.h = 1200; */
+		ww = mode.w;
+		wh = mode.h;
 		sw = mode.w;
 		sh = mode.w/16*9;
-		if (sh != mode.h) {
-			if (sh < mode.h) { /* e.g. 4:3 */
+		if (sh != wh) {
+			if (sh < wh) { /* e.g. 4:3 */
 				viewport.x = 0;
-				viewport.y = (mode.h - sh)/2;
+				viewport.y = (wh - sh)/2;
 			} else { /* e.g. 21:9 */
-				sh = mode.h;
+				sh = wh;
 				sw = sh / 9 * 16;
-				viewport.x = (mode.w - sw)/2;
+				viewport.x = (ww - sw)/2;
 				viewport.y = 0;
 			}
 			viewport.w = sw;
 			viewport.h = sh;
-			_loginfo("Fullscreen resolution %dx%d not 16:9\n",mode.w,mode.h);
+			_loginfo("Fullscreen resolution %dx%d not 16:9\n",ww,wh);
 			_loginfo("  Using viewport x=%d,y=%d,w=%d,h=%d\n",
 					viewport.x, viewport.y, viewport.w, viewport.h);
 		} else
-			_loginfo("Using fullscreen resolution %dx%d\n",mode.w,mode.h);
+			_loginfo("Using fullscreen, resolution %dx%d\n",ww,wh);
 	} else {
-		sh = r;
-		sw = sh * 16 / 9;
-		_loginfo("Using window resolution %dx%d\n",sw,sh);
+		wh = sh = r;
+		ww = sw = sh * 16 / 9;
+		_loginfo("Using window mode, size %dx%d\n",ww,wh);
 	}
 
 	/* depending on screen ratio we don't fit all of the screen with bricks */
@@ -155,7 +158,7 @@ void View::init(string t, uint r)
 	/* (re)create main window */
 	if (mw)
 		delete mw;
-	mw = new MainWindow("LBreakoutHD", sw, sh, (r==0) );
+	mw = new MainWindow("LBreakoutHD", ww, wh, (r==0) );
 
 	/* load theme (scaled if necessary) */
 	theme.load(t, sw, sh, brickScreenWidth, brickScreenHeight, config.antialiasing);
