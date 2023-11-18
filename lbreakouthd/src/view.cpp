@@ -1776,9 +1776,9 @@ void View::showHelp()
 		"  - w to warp to next level (if enough bricks were destroyed)\n"
 		"  - p to pause/unpause the game\n"
 		"  - d to destroy a brick (workaround for bad level design)\n\n"
-		"If you leave a game you can resume it later (no hiscores entry yet).\n\n"
-		"If you loose all lives you can buy a continue (score set to 0, initial number of lives restored). "
-		"If you don't buy a continue the game is over (hiscores entry is checked) and can no longer be resumed. "
+		"If you leave a game, you can resume it later (no hiscores entry yet).\n\n"
+		"If you lose all lives, you can buy a continue (score set to 0, initial number of lives restored). "
+		"If you don't buy a continue, the game is over (hiscores entry is checked) and can no longer be resumed. "
 		"\n\nEnjoy the game!\n"
 		"          Michael Speck"
 		);
