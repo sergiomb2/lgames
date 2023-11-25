@@ -6,5 +6,6 @@ src/view.cpp
 src/clientgame.cpp
 src/selectdlg.cpp
 src/sdl.h
+src/sdl.cpp
 src/menu.h
 
