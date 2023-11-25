@@ -1,3 +1,4 @@
+- added gettext support for yes/no keys (2023/11/25 MS)
 - added spanish translation (2023/11/18 Jorge)
 - fixed comma typos (2023/11/18 Jorge)
 

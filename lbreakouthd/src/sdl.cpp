@@ -764,18 +764,32 @@ int runEditDialog(Font &font, const string &caption, string &str)
  * changed, 0 if not, -1 if quit requested. */
 int runConfirmDialog(Font &font, const string &caption)
 {
-	int ret = 0;
-	bool done = false;
-	SDL_Event event;
 	Image img;
 
 	img.createFromScreen();
-	img.setAlpha(64);
-
+	img.setAlpha(32);
+	SDL_SetRenderDrawColor(mrc,0,0,0,255);
+	SDL_RenderClear(mrc);
+	img.copy();
 	font.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
+	font.write(img.getWidth()/2, img.getHeight()/2, caption);
+	SDL_RenderPresent(mrc);
 
+	return waitForConfirmation();
+}
+
+/** Wait for confirmation key.
+ * Returns 1 = confirmed, 0 = cancel, -1 = quit requested */
+int waitForConfirmation()
+{
+	int ret = 0;
+	bool done = false;
+	bool esc_pressed = false;
+	SDL_Event event;
+
+	SDL_StartTextInput();
 	while (!done) {
-		if (SDL_PollEvent(&event)) {
+		if (SDL_WaitEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:
 				done = true;
@@ -783,30 +797,42 @@ int runConfirmDialog(Font &font, const string &caption)
 				break;
 			case SDL_KEYDOWN:
 				switch (event.key.keysym.scancode) {
-				case SDL_SCANCODE_Y:
-				case SDL_SCANCODE_Z:
+				case SDL_SCANCODE_ESCAPE: /* ESC = cancel */
+					done = true;
+					esc_pressed = true;
+					break;
+				case SDL_SCANCODE_RETURN: /* Return = confirm */
 					ret = 1;
 					done = true;
 					break;
-				default:
-					ret = 0;
+				default: break;
+				}
+				break;
+			case SDL_TEXTINPUT:
+				/* check UTF-8 text input against single character strings */
+				if (string(event.text.text) == string(_("y"))) {
 					done = true;
-					break;
+					ret = 1;
+				} else if (string(event.text.text) == string(_("n"))) {
+					done = true;
+					ret = 0;
 				}
 				break;
 			}
 		}
-
-		/* redraw */
-		SDL_SetRenderDrawColor(mrc,0,0,0,255);
-		SDL_RenderClear(mrc);
-		img.copy();
-		font.write(img.getWidth()/2, img.getHeight()/2,caption);
-		SDL_RenderPresent(mrc);
-		SDL_Delay(10);
 		SDL_FlushEvent(SDL_MOUSEMOTION);
+	}
+	SDL_StopTextInput();
+
+	/* prevent ESC loop */
+	if (esc_pressed) {
+		done = false;
+		while (!done) {
+			if (SDL_WaitEvent(&event) && event.type == SDL_KEYUP
+				&& event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+				done = true;
+		}
 	}
 
 	return ret;
-
 }

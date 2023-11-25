@@ -371,4 +371,8 @@ int runEditDialog(Font &font, const string &caption, string &str);
  * changed, 0 if not, -1 if quit requested. */
 int runConfirmDialog(Font &font, const string &caption);
 
+/** Wait for confirmation key.
+ * Returns 1 = confirmed, 0 = cancel, -1 = quit requested */
+int waitForConfirmation();
+
 #endif /* SDL_H_ */

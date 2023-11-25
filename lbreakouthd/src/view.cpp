@@ -949,7 +949,10 @@ bool View::showInfo(const vector<string> &text, int type)
 	SDL_RenderPresent(mrc);
 
 	grabInput(0);
-	ret = waitForKey(type);
+	if (type == WT_YESNO)
+		ret = waitForConfirmation();
+	else
+		ret = waitForKey(WT_ANYKEY);
 	grabInput(1);
 	return ret;
 }
@@ -1629,7 +1632,7 @@ void View::showFinalHiscores()
 	y = h/2;
 	renderHiscore(theme.fNormal, theme.fNormal, x,y,w,h,true);
 	SDL_RenderPresent(mrc);
-	waitForKey(false);
+	waitForKey(WT_ANYKEY);
 }
 
 int View::waitForKey(int type)
@@ -1848,7 +1851,7 @@ void View::showHelp()
 	SDL_RenderPresent(mrc);
 
 	waitForInputRelease();
-	waitForKey(false);
+	waitForKey(WT_ANYKEY);
 }
 
 void View::runBrickDestroyDlg()
