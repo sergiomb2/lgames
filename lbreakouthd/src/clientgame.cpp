@@ -387,7 +387,7 @@ const string &ClientGame::getBonusLevelInfo()
 				game->blBarrierLevel, game->blBarrierLevel+2);
 		break;
 	case LT_SITTING_DUCKS:
-		strprintf(info, _("Total Hits: %d, Current Price: %d"),
+		strprintf(info, _("Total Hits: %d, Current Prize: %d"),
 				game->blNumCompletedRuns, game->blMaxScore);
 		break;
 	case LT_DEFENDER:
@@ -402,11 +402,11 @@ const string &ClientGame::getBonusLevelInfo()
 				game->bricks_left, game->blCancerSimLimit);
 		break;
 	case LT_HUNTER:
-		strprintf(info, _("Hits: %d, Current Price: %d, Time: %d secs"),
+		strprintf(info, _("Hits: %d, Current Prize: %d, Time: %d secs"),
 				game->blNumCompletedRuns, game->blMaxScore, game->blHunterTimeLeft/1000);
 		break;
 	case LT_JUMPING_JACK:
-		strprintf(info, _("Hits: %d, Current Price: %d, Time: %d secs"),
+		strprintf(info, _("Hits: %d, Current Prize: %d, Time: %d secs"),
 				game->blNumCompletedRuns, game->blMaxScore, game->bl_jj_time/1000);
 		break;
 	}
