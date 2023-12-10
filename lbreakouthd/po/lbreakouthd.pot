@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.1.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-02 12:22+0100\n"
+"POT-Creation-Date: 2023-12-10 09:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -769,7 +769,7 @@ msgstr ""
 
 #: src/clientgame.cpp:390
 #, c-format
-msgid "Total Hits: %d, Current Price: %d"
+msgid "Total Hits: %d, Current Prize: %d"
 msgstr ""
 
 #: src/clientgame.cpp:394
@@ -784,7 +784,7 @@ msgstr ""
 
 #: src/clientgame.cpp:405 src/clientgame.cpp:409
 #, c-format
-msgid "Hits: %d, Current Price: %d, Time: %d secs"
+msgid "Hits: %d, Current Prize: %d, Time: %d secs"
 msgstr ""
 
 #: src/selectdlg.cpp:55
