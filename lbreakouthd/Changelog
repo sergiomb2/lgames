@@ -1,3 +1,4 @@
+- non-blocking wait for key/confirm to workaround SDL bug (2024/01/03 MS)
 - fixed more typos (2023/12/10 Jorge)
 
 1.1.5:

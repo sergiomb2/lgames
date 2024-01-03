@@ -789,7 +789,7 @@ int waitForConfirmation()
 
 	SDL_StartTextInput();
 	while (!done) {
-		if (SDL_WaitEvent(&event)) {
+		if (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:
 				done = true;
@@ -820,6 +820,9 @@ int waitForConfirmation()
 				break;
 			}
 		}
+
+		SDL_Delay(20);
+		SDL_RenderPresent(mrc);
 		SDL_FlushEvent(SDL_MOUSEMOTION);
 	}
 	SDL_StopTextInput();

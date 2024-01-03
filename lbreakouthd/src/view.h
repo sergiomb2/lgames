@@ -32,8 +32,7 @@ enum {
 
 	/* waitForKey types */
 	WT_ANYKEY = 0,
-	WT_YESNO,
-	WT_PAUSE
+	WT_YESNO
 };
 
 class View {
@@ -114,7 +113,7 @@ class View {
 	void saveGame();
 	int resumeGame();
 	void showFinalHiscores();
-	int waitForKey(int type);
+	int waitForKey();
 	void darkenScreen(int alpha = 32);
 	void initTitleLabel();
 	void updateResumeGameTooltip();
