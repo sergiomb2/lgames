@@ -27,7 +27,6 @@ SDL_Renderer *mrc = NULL; /* main window render context, got only one */
 
 MainWindow::MainWindow(const char *title, int _w, int _h, int _full)
 {
-	int flags = 0;
 	if (_w <= 0 || _h <= 0) { /* no width or height, use desktop setting */
 		SDL_DisplayMode mode;
 		SDL_GetCurrentDisplayMode(0,&mode);
@@ -35,8 +34,6 @@ MainWindow::MainWindow(const char *title, int _w, int _h, int _full)
 		_h = mode.h;
 		_full = 1;
 	}
-	if (_full)
-		flags = SDL_WINDOW_FULLSCREEN;
 	w = _w;
 	h = _h;
 	/* TEST  w = 1600; h = 1200; flags = 0; */
@@ -44,8 +41,10 @@ MainWindow::MainWindow(const char *title, int _w, int _h, int _full)
 	Geom::sh = h;
 	_loginfo("Creating main window with %dx%d, fullscreen=%d\n",w,h,_full);
 	if( (mw = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
-				SDL_WINDOWPOS_CENTERED, w, h, flags)) == NULL)
+				SDL_WINDOWPOS_CENTERED, w, h, 0)) == NULL)
 		_logsdlerr();
+	if (_full)
+		SDL_SetWindowFullscreen(mw, SDL_WINDOW_FULLSCREEN);
 	if ((mr = SDL_CreateRenderer(mw, -1, SDL_RENDERER_ACCELERATED)) == NULL)
 		_logsdlerr();
 	mrc = mr;
