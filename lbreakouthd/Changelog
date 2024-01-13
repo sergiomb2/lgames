@@ -1,3 +1,4 @@
+- allow windowed mode if resolution has at least its height (2024/01/13 MS)
 - added russian translation (2024/01/13 Olesya Gerasimenko)
 - set fullscreen after creating window to prevent flickering (2024/01/13 MS)
 - non-blocking wait for key/confirm to workaround SDL bug (2024/01/03 MS)

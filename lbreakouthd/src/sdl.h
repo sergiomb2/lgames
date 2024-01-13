@@ -45,11 +45,11 @@ public:
 		list.clear();
 		list.push_back(_("Fullscreen"));
 		list.push_back(_("853x480 Window"));
-		if (mode.h > 720)
+		if (mode.h >= 720)
 			list.push_back(_("1280x720 Window"));
-		if (mode.h > 768)
+		if (mode.h >= 768)
 			list.push_back(_("1366x768 Window"));
-		if (mode.h > 1080)
+		if (mode.h >= 1080)
 			list.push_back(_("1920x1080 Window"));
 		return list.size();
 	}
