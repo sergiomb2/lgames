@@ -786,6 +786,9 @@ int waitForConfirmation()
 	bool done = false;
 	bool esc_pressed = false;
 	SDL_Event event;
+	Image sshot;
+
+	sshot.createFromScreen();
 
 	SDL_StartTextInput();
 	while (!done) {
@@ -822,6 +825,7 @@ int waitForConfirmation()
 		}
 
 		SDL_Delay(20);
+		sshot.copy();
 		SDL_RenderPresent(mrc);
 		SDL_FlushEvent(SDL_MOUSEMOTION);
 	}

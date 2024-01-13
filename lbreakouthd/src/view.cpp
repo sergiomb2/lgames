@@ -1640,6 +1640,9 @@ int View::waitForKey()
 	SDL_Event ev;
 	bool ret = true;
 	bool leave = false;
+	Image sshot;
+
+	sshot.createFromScreen();
 
 	SDL_PumpEvents();
 	SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
@@ -1653,6 +1656,7 @@ int View::waitForKey()
 		}
 
 		SDL_Delay(10);
+		sshot.copy();
 		SDL_RenderPresent(mrc);
 		SDL_FlushEvent(SDL_MOUSEMOTION);
 	}
