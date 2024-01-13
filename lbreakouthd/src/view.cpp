@@ -288,7 +288,7 @@ void View::run()
 					gamepad.open();
 					break;
 				case SDL_SCANCODE_P:
-					showInfo(_("Pause"),WT_ANYKEY);
+					showInfo(_("Pause"),WT_PAUSE);
 					ticks.reset();
 					break;
 				case SDL_SCANCODE_F:
@@ -952,7 +952,7 @@ bool View::showInfo(const vector<string> &text, int type)
 	if (type == WT_YESNO)
 		ret = waitForConfirmation();
 	else
-		ret = waitForKey();
+		ret = waitForKey(type);
 	grabInput(1);
 	return ret;
 }
@@ -1632,10 +1632,10 @@ void View::showFinalHiscores()
 	y = h/2;
 	renderHiscore(theme.fNormal, theme.fNormal, x,y,w,h,true);
 	SDL_RenderPresent(mrc);
-	waitForKey();
+	waitForKey(WT_ANYKEY);
 }
 
-int View::waitForKey()
+int View::waitForKey(int type)
 {
 	SDL_Event ev;
 	bool ret = true;
@@ -1651,7 +1651,11 @@ int View::waitForKey()
 		if (SDL_PollEvent(&ev)) {
 			if (ev.type == SDL_QUIT)
 				quitReceived = leave = true;
-			if (ev.type == SDL_KEYUP || ev.type == SDL_MOUSEBUTTONUP)
+			else if (ev.type == SDL_KEYUP) {
+				if (type == WT_ANYKEY || (type == WT_PAUSE &&
+						ev.key.keysym.scancode == SDL_SCANCODE_P))
+					leave = true;
+			} else if (ev.type == SDL_MOUSEBUTTONUP && type == WT_ANYKEY)
 				leave = true;
 		}
 
@@ -1844,7 +1848,7 @@ void View::showHelp()
 	SDL_RenderPresent(mrc);
 
 	waitForInputRelease();
-	waitForKey();
+	waitForKey(WT_ANYKEY);
 }
 
 void View::runBrickDestroyDlg()

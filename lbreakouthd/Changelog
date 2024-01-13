@@ -1,3 +1,4 @@
+- unpause only with key p to allow switching windows (2024/01/13 MS)
 - allow windowed mode if resolution has at least its height (2024/01/13 MS)
 - added russian translation (2024/01/13 Olesya Gerasimenko)
 - set fullscreen after creating window to prevent flickering (2024/01/13 MS)
