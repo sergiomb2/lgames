@@ -93,6 +93,13 @@ int Image::create(int w, int h)
 	return 1;
 }
 
+/* Create texture from pixels in current render target. This only works
+ * if the render target has not been yet presented with SDL_RenderPresent()
+ * as otherwise the double buffer is flipped and we get the old contents.
+ * So the way to go is: build the render target, call this function, then
+ * render the present target and copy this image before a new
+ * SDL_RenderPresent().
+ */
 int Image::createFromScreen()
 {
 	int w, h;
@@ -772,13 +779,14 @@ int runConfirmDialog(Font &font, const string &caption)
 	img.copy();
 	font.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
 	font.write(img.getWidth()/2, img.getHeight()/2, caption);
-	SDL_RenderPresent(mrc);
 
 	return waitForConfirmation();
 }
 
 /** Wait for confirmation key.
- * Returns 1 = confirmed, 0 = cancel, -1 = quit requested */
+ * Returns 1 = confirmed, 0 = cancel, -1 = quit requested.
+ * The render target must not have been presented yet otherwise we get
+ * the wrong buffer content for createFromScreen(). */
 int waitForConfirmation()
 {
 	int ret = 0;
@@ -788,6 +796,7 @@ int waitForConfirmation()
 	Image sshot;
 
 	sshot.createFromScreen();
+	SDL_RenderPresent(mrc);
 
 	SDL_StartTextInput();
 	while (!done) {

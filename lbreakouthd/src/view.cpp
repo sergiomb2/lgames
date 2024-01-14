@@ -946,8 +946,6 @@ bool View::showInfo(const vector<string> &text, int type)
 		ty += font.getLineHeight();
 	}
 
-	SDL_RenderPresent(mrc);
-
 	grabInput(0);
 	if (type == WT_YESNO)
 		ret = waitForConfirmation();
@@ -1631,10 +1629,13 @@ void View::showFinalHiscores()
 	x = (mw->getWidth() - w)/2;
 	y = h/2;
 	renderHiscore(theme.fNormal, theme.fNormal, x,y,w,h,true);
-	SDL_RenderPresent(mrc);
+
 	waitForKey(WT_ANYKEY);
 }
 
+/* Wait for any or pause key.
+ * The render target must not have been presented yet otherwise we get
+ * the wrong buffer content for createFromScreen(). */
 int View::waitForKey(int type)
 {
 	SDL_Event ev;
@@ -1643,6 +1644,7 @@ int View::waitForKey(int type)
 	Image sshot;
 
 	sshot.createFromScreen();
+	SDL_RenderPresent(mrc);
 
 	SDL_PumpEvents();
 	SDL_FlushEvents(SDL_FIRSTEVENT,SDL_LASTEVENT);
@@ -1659,7 +1661,7 @@ int View::waitForKey(int type)
 				leave = true;
 		}
 
-		SDL_Delay(10);
+		SDL_Delay(20);
 		sshot.copy();
 		SDL_RenderPresent(mrc);
 		SDL_FlushEvent(SDL_MOUSEMOTION);
@@ -1844,8 +1846,6 @@ void View::showHelp()
 	y += 1.2*brickScreenHeight;
 	renderExtraHelp(theme.bricks, 18, 0, _("Explosive Brick"), x, y);
 	renderExtraHelp(theme.bricks, 19, 0, _("Growing Brick"), x2, y);
-
-	SDL_RenderPresent(mrc);
 
 	waitForInputRelease();
 	waitForKey(WT_ANYKEY);
