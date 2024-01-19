@@ -1,7 +1,7 @@
 - unpause only with key p to allow switching windows (2024/01/13 MS)
 - allow windowed mode if resolution has at least its height (2024/01/13 MS)
 - added russian translation (2024/01/13 Olesya Gerasimenko)
-- set fullscreen after creating window to prevent flickering (2024/01/13 MS)
+- workaround for possible flickering when setting fullscreen (2024/01/13 Alex)
 - non-blocking wait for key/confirm to workaround SDL bug (2024/01/03 MS)
 - fixed more typos (2023/12/10 Jorge)
 

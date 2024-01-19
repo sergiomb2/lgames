@@ -40,11 +40,14 @@ MainWindow::MainWindow(const char *title, int _w, int _h, int _full)
 	Geom::sw = w;
 	Geom::sh = h;
 	_loginfo("Creating main window with %dx%d, fullscreen=%d\n",w,h,_full);
-	if( (mw = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
-				SDL_WINDOWPOS_CENTERED, w, h, 0)) == NULL)
+ 	if (_full) {
+		mw = SDL_CreateWindow(title, 0,0,0,0,0);
+		SDL_SetWindowFullscreen(mw, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	} else
+		mw = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED,
+					SDL_WINDOWPOS_CENTERED, w, h, 0);
+	if(mw == NULL)
 		_logsdlerr();
-	if (_full)
-		SDL_SetWindowFullscreen(mw, SDL_WINDOW_FULLSCREEN);
 	if ((mr = SDL_CreateRenderer(mw, -1, SDL_RENDERER_ACCELERATED)) == NULL)
 		_logsdlerr();
 	mrc = mr;
