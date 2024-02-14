@@ -1286,11 +1286,13 @@ void bowl_check_lockdelay(Bowl *bowl)
 		return;
 	if (bowl->ldelay_cur > 0) {
 		if (bowl_piece_can_drop(bowl)) {
+			/* running lock delay obsolete, reset */
 			bowl->ldelay_cur = 0;
 			bowl->block.cur_y = bowl->block.y * bowl->block_size;
 		}
 	} else {
 		if (!bowl_piece_can_drop(bowl)) {
+			/* start lock delay */
 			bowl->ldelay_cur = bowl->ldelay_max;
 			bowl->block.cur_y = bowl->block.y * bowl->block_size;
 		}
@@ -1478,6 +1480,8 @@ void bowl_update( Bowl *bowl, int ms, BowlControls *bc, int game_over )
         	if (bowl->block_drop_vel > vy)
         		if (config.modern || (bc->lshift!=CS_PRESSED && bc->rshift!=CS_PRESSED))
         			vy = bowl->block_drop_vel;
+        if (bowl->cpu_player)
+        	vy *= 3;
         if (!bowl->zero_gravity && bowl->ldelay_cur == 0) {
         	bowl->block.cur_y += vy * ms;
         	bowl->block.y = bowl_convert_cury2y(bowl);
