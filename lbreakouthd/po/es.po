@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.1.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-20 12:55+0100\n"
+"POT-Creation-Date: 2024-02-14 11:15+0100\n"
 "PO-Revision-Date: 2023-10-09 14:04+0200\n"
 "Last-Translator: Jorge Maldonado Ventura <jorgesumle@freakspot.net>\n"
 "Language-Team: \n"
@@ -845,15 +845,15 @@ msgstr "Ladrillo que crece"
 msgid "Plane of Inner Stability"
 msgstr "Plano de estabilidad interna"
 
-#: src/view.cpp:1872
-#, fuzzy, c-format
+#: src/view.cpp:1873
+#, fuzzy, no-c-format
 #| msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr ""
 "Haz clic derecho en cualquier ladrillo para destruirlo (cuesta un 10 % de la "
 "puntuación)."
 
-#: src/view.cpp:1875
+#: src/view.cpp:1876
 msgid "Press any key to cancel selection."
 msgstr "Pulsa cualquier tecla para cancelar la selección."
 

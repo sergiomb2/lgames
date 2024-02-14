@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-20 12:55+0100\n"
+"POT-Creation-Date: 2024-02-14 11:15+0100\n"
 "PO-Revision-Date: 2022-07-07 17:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -844,14 +844,14 @@ msgstr "Växande tegelsten"
 msgid "Plane of Inner Stability"
 msgstr "Plane of Inner Stability"
 
-#: src/view.cpp:1872
-#, c-format
+#: src/view.cpp:1873
+#, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr ""
-"Vänsterklicka på vilken tegelsten som helst för att rasera den (kostar "
-"10% score)."
+"Vänsterklicka på vilken tegelsten som helst för att rasera den (kostar 10% "
+"score)."
 
-#: src/view.cpp:1875
+#: src/view.cpp:1876
 msgid "Press any key to cancel selection."
 msgstr "Tryck på valfri tangent för att avbryta markering."
 

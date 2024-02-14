@@ -1869,6 +1869,7 @@ void View::runBrickDestroyDlg()
 	texty += theme.fNormal.getLineHeight();
 	theme.fSmall.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
 	theme.fSmall.write(imgBricksX+imgBricks.getWidth()/2, texty,
+				/* xgettext:no-c-format */
 				_("Left-click on any brick to destroy it (costs 10% score)."));
 	texty += theme.fSmall.getLineHeight();
 	theme.fSmall.write(imgBricksX+imgBricks.getWidth()/2, texty,

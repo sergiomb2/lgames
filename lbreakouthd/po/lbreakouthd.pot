@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.1.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-20 12:55+0100\n"
+"POT-Creation-Date: 2024-02-14 11:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -739,12 +739,12 @@ msgstr ""
 msgid "Plane of Inner Stability"
 msgstr ""
 
-#: src/view.cpp:1872
-#, c-format
+#: src/view.cpp:1873
+#, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr ""
 
-#: src/view.cpp:1875
+#: src/view.cpp:1876
 msgid "Press any key to cancel selection."
 msgstr ""
 

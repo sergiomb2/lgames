@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-20 12:55+0100\n"
+"POT-Creation-Date: 2024-02-14 11:15+0100\n"
 "PO-Revision-Date: 2019-06-26 10:11+0200\n"
 "Last-Translator: Wuzzy <almikes@aol.com>\n"
 "Language-Team: \n"
@@ -840,12 +840,12 @@ msgstr "Brique grandissante"
 msgid "Plane of Inner Stability"
 msgstr "Zone de stabilité"
 
-#: src/view.cpp:1872
-#, fuzzy, c-format
+#: src/view.cpp:1873
+#, fuzzy, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr "Clique gauche sur une brique pour l'effacer (coute 10% des points)."
 
-#: src/view.cpp:1875
+#: src/view.cpp:1876
 msgid "Press any key to cancel selection."
 msgstr "Appuyer sur une touche pour annuler la sélection."
 
