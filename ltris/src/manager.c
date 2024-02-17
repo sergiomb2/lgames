@@ -93,6 +93,7 @@ Hint strings for the menu.
 #define HINT_SENDTETRIS _("If this option is enabled your opponent will receive all four lines of your tetris ignoring the 'Send All' setting.")
 #define HINT_CPUDROP _("This is the delay in milliseconds the CPU waits before dropping a block.")
 #define HINT_CPUAGGR _("The more aggressive the style is the more priority is put on completing multiple lines at the expense of a balanced bowl contents.")
+#define HINT_CPUSFACTOR _("Multiplier in percent for dropping speed of pieces, e.g.,#50% = half the regular speed#100% = regular speed#200% = doubled speed#Can range between 50% and 400%.")
 #define HINT_ADV _("Some advanced options.")
 #define HINT_CPUALG _("Test the CPU analyze algorithm in cpu.c and give an average score for a number of games.")
 #define HINT_VIS _("If you turn visualization off the results will be computed faster. If you turn them on you can see a general game behaviour and judge the algorithm by this behaviour.")
@@ -384,7 +385,7 @@ void manager_create()
     menu_add( game, item_create_link( _("Multiplayer Options"), HINT_MPMENU, twoplayer ) );
     menu_add( game, item_create_separator( "" ) );
     menu_add( game, item_create_link( _("Back"), HINT_, _main ) );
-    /* twoplayer options */
+    /* multiplayer options */
     menu_add( twoplayer, item_create_separator( "" ) );
     menu_add( twoplayer, item_create_range( _("Holes:"), HINT_HOLES, &config.holes, 1, 9, 1 ) );
     menu_add( twoplayer, item_create_switch( _("Random Holes:"), HINT_RANDHOLES, &config.rand_holes, _("Off"), _("On") ) );
@@ -393,6 +394,7 @@ void manager_create()
     menu_add( twoplayer, item_create_separator( "" ) );
     menu_add( twoplayer, item_create_switch_x( _("CPU Style:"), HINT_CPUAGGR, &config.cpu_aggr, str_cpu_aggr, 4 ) );
     menu_add( twoplayer, item_create_range( _("CPU Drop Delay:"), HINT_CPUDROP, &config.cpu_delay, 0, 2000, 100 ) );
+    menu_add( twoplayer, item_create_range( _("CPU Speed:"), HINT_CPUSFACTOR, &config.cpu_sfactor, 50, 400, 25 ) );
     menu_add( twoplayer, item_create_separator( "" ) );
     menu_add( twoplayer, item_create_link( _("Back"), HINT_, game ) );
     /* all keys used */

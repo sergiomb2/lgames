@@ -75,9 +75,10 @@ typedef struct {
     int send_all;
     int send_tetris;
     /* cpu */
-    int cpu_aggr; /* how much plays the cpu on completing multiple lines */
-    int cpu_delay; /* delay in ms that CPU waits before moving down fast */
-    int cpu_rot_delay; /* delay between rotative steps */
+    int cpu_aggr; /* cpu aggression level (the higher the more it plays for multiple lines) */
+    int cpu_delay; /* delay in ms before CPU soft drops */
+    int cpu_rot_delay; /* delay between rotation steps */
+    int cpu_sfactor; /* multiplier for dropping speed in 0.25 steps */
     /* controls */
     int	as_delay;
     int	as_speed;

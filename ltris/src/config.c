@@ -77,6 +77,7 @@ void config_reset()
     config.cpu_aggr = 1;
     config.cpu_delay = 700;
     config.cpu_rot_delay = 100;
+    config.cpu_sfactor = 100;
     /* controls */
     config.as_delay = 170;
     config.as_speed = 50;
@@ -192,6 +193,7 @@ void config_load( )
     parser_get_int( pd, "cpu_aggr", &config.cpu_aggr );
     parser_get_int( pd, "cpu_delay", &config.cpu_delay );
     parser_get_int( pd, "cpu_rot_delay", &config.cpu_rot_delay );
+    parser_get_int( pd, "cpu_sfactor", &config.cpu_sfactor );
     parser_get_int( pd, "sound", &config.sound );
     parser_get_int( pd, "volume", &config.volume );
     parser_get_int( pd, "shiftsound", &config.shiftsound );
@@ -264,6 +266,7 @@ void config_save( )
         fprintf( file, "cpu_aggr=%i\n", config.cpu_aggr );
         fprintf( file, "cpu_delay=%i\n", config.cpu_delay );
         fprintf( file, "cpu_rot_delay=%i\n", config.cpu_rot_delay );
+        fprintf( file, "cpu_sfactor=%d\n", config.cpu_sfactor );
         fprintf( file, "sound=%i\n", config.sound );
         fprintf( file, "volume=%i\n", config.volume );
         fprintf( file, "shiftsound=%i\n", config.shiftsound );
