@@ -396,40 +396,83 @@ void bowl_add_tile( Bowl *bowl )
         bowl_compute_help_pos( bowl );
 }
 
+/** Fill array @line of static length BOWL_WIDTH with random tiles and
+ * @numholes holes (id = -1) in it.
+ */
+static void set_line(int *line, int numholes) {
+	int holes[BOWL_WIDTH];
+
+	/* set indices and random tiles */
+	for (int i = 0; i < BOWL_WIDTH; i++) {
+		holes[i] = i;
+		line[i] = rand() % BLOCK_TILE_COUNT;
+	}
+	/* shuffle indices */
+	for (int i = 0; i < BOWL_WIDTH*100; i++) {
+		int pos1 = rand() % BOWL_WIDTH;
+		int pos2 = rand() % BOWL_WIDTH;
+		int aux = holes[pos1];
+		holes[pos1] = holes[pos2];
+		holes[pos2] = aux;
+	}
+
+	/* add holes according to first indices in list */
+	for (int i = 0; i < numholes; i++) {
+		line[holes[i]] = -1;
+	}
+
+	/* DEBUG printf("Line: ");
+	for (int i = 0; i < BOWL_WIDTH; i++)
+		printf("%d ", line[i]);
+	printf("\n"); */
+}
+
 /*
 ====================================================================
 Add a line at the bottom of a bowl and return False if bowl 
 is filled to the top. If the block position becomes invalid by this
 move it's positioned one up.
+@wanted_holes is either the number of random gaps or -1 to use
+array @line which contains tile ids including gaps.
 ====================================================================
 */
-int bowl_add_line( Bowl * bowl, int wanted_holes, int *holes_pos)
+int bowl_add_line( Bowl * bowl, int wanted_holes, int *line)
 {
-    int i, j, holes = 0, hole_x;
-    /* if the first line containts a tile the game is over! */
+    int newline[BOWL_WIDTH];
+    int i, j = 0;
+
+    if (bowl->game_over)
+	    return 0;
+
+    /* if the first line contains a tile the game is over! */
     for ( i = 0; i < bowl->w; i++ )
         if ( bowl->contents[i][0] != -1 )
             return 0;
+
     /* move all lines one up */
     for ( j = 0; j < bowl->h - 1; j++ )
         for ( i = 0; i < bowl->w; i++ )
             bowl_set_tile( bowl, i, j, bowl->contents[i][j + 1] );
-    /* add a random line */
-    for ( i = 0; i < bowl->w; i++ )
-        bowl_set_tile( bowl, i, bowl->h - 1, rand() % BLOCK_TILE_COUNT );
-    /* add holes */
-    while ( holes < wanted_holes ) {
-        if ( holes_pos ) {
-	    hole_x = holes_pos[holes];
-	} else {
-            hole_x = rand() % bowl->w;
-	}
 
-        if ( bowl->contents[hole_x][bowl->h - 1] != -1 ) {
-            bowl_set_tile( bowl, hole_x, bowl->h - 1, -1 );
-            holes++;
-        }
+    /* adjust cleared line indices as lines might be received during ARE
+     * thus between inserting a block and collapsing the bowl. */
+    if (bowl->cleared_line_count > 0)
+	    for (int i = 0; i < bowl->cleared_line_count; i++)
+		    bowl->cleared_line_y[i]--;
+
+    if (wanted_holes == -1) {
+	    /* use content of line */
+	    for (i = 0; i < BOWL_WIDTH; i++)
+		    newline[i] = line[i];
+    } else {
+	    /* generate random line */
+	    set_line(newline, wanted_holes);
     }
+
+    /* set new line at bottom of bowl */
+    for (i = 0; i < BOWL_WIDTH; i++)
+	    bowl_set_tile(bowl, i, BOWL_HEIGHT-1, newline[i]);
+
     /* check if block position became invalid */
     if (bowl_check_piece_position(bowl,
 		    bowl->block.x, bowl->block.y,
@@ -437,8 +480,10 @@ int bowl_add_line( Bowl * bowl, int wanted_holes, int *holes_pos)
         bowl->block.y -= 1;
         bowl->block.cur_y = bowl->block.y * bowl->block_size;
     }
+
     /* update helping shadow */
     bowl_compute_help_pos( bowl );
+
     return 1;
 }
 
@@ -553,10 +598,10 @@ If game is over only insert block.
 */
 void bowl_insert_block( Bowl *bowl )
 {
-  int i, j, k, l;
+  int i, j;
   int full;
   int send_count;
-  int *hole_pos = 0;
+  int newline[BOWL_WIDTH]; /* tile id >= 0 or -1 for hole */
   int max_y; /* lowest block position in tiles */
 
   /* insert block */
@@ -661,47 +706,28 @@ void bowl_insert_block( Bowl *bowl )
   bowl->draw_contents = 1;
 
   /* send completed lines to all other bowls */
-  if ( bowl->cleared_line_count > 1 )
-    {
+  if ( bowl->cleared_line_count > 1 ) {
       send_count = bowl->cleared_line_count;
       if ( !config.send_all )
 	send_count--;
       if ( bowl->cleared_line_count == 4 && config.send_tetris )
 	send_count = 4;
 
-      for ( i = 0; i < BOWL_COUNT; i++ )
-	if ( bowls[i] && bowls[i] != bowl && !bowls[i]->game_over)
-	  {
-	    if ( !config.rand_holes )
-	      {
-		hole_pos = calloc(config.holes,sizeof(int));
-		for ( j = 0; j < config.holes; )
-		  {
-		    l = rand() % bowls[i]->w;
-		    for (k=0;k<j;k++)
-		      if(hole_pos[k]==l)
-			break;
-		    if (k==j)
-		      {
-			hole_pos[j] = l;
-			j++;
+      for ( i = 0; i < BOWL_COUNT; i++ ) {
+	      if (!bowls[i] || bowls[i] == bowl || bowls[i]->game_over)
+		      continue;
+
+	      set_line(newline, config.holes);
+
+	      for (j = 0; j < send_count; j++)
+		      if (!bowl_add_line( bowls[i],
+				      	      (config.rand_holes)?config.holes:-1, newline)) {
+			      bowl_finish_game( bowls[i] );
+			      break;
 		      }
-		  }
-	      }
-	    
-	    for ( j = 0; j < send_count; j++ )
-	      if ( !bowl_add_line( bowls[i], config.holes, hole_pos ) )
-		{
-		  bowl_finish_game( bowls[i] );
-		  return;
-		}
-	    bowls[i]->draw_contents = 1;
-	    
-	    if ( hole_pos )
-	      free( hole_pos );
-	    hole_pos = 0;
-	  }
-    }
+	      bowls[i]->draw_contents = 1;
+      }
+  }
 }
 
 /*
