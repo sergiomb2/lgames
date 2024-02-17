@@ -1493,30 +1493,31 @@ void bowl_update( Bowl *bowl, int ms, BowlControls *bc, int game_over )
         /* check lock delay */
         if (bowl->ldelay_cur > 0) {
         	bowl->ldelay_cur -= ms;
+        	/* if lock delay runs out, insert block */
         	if (bowl->ldelay_cur <= 0) {
         		bowl->ldelay_cur = 0;
 			bowl_insert_block(bowl);
         	}
         } else {
-        	/* insert block or start lock delay on y-position change */
-        	if (bowl->block.y - old_y > 1)
-        		fprintf(stderr, "Oops, non-consecutive y-values...\n");
-        	if (bowl->ldelay_max == 0) {
-        	        /* without lock delay, check if new tile was entered and
-        	         * insert block one above on collision
-        	         * FIXME: this requires enough frames to not skip lines
-        	         * otherwise we might tunnel through blocked lines */
-        		if (bowl_check_piece_position(bowl,
-        				bowl->block.x, bowl->block.y,
-        				bowl->block.rot_id) != POSVALID) {
-        			bowl->block.y -= 1;
-        			bowl->block.cur_y = bowl->block.y * bowl->block_size;
-        			bowl_insert_block(bowl);
+        	/* no active lock delay, check all y-positions between last
+        	 * and current position (might be more than one due to fast drop
+        	 * on low frame rates). if position is blocked, either start
+        	 * lock delay or insert block directly. */
+        	for (int i = old_y+1; i <= bowl->block.y; i++) {
+        		if (bowl_check_piece_position(bowl, bowl->block.x, i,
+						bowl->block.rot_id) != POSVALID) {
+        			/* reset position to last valid position */
+				bowl->block.y = i - 1;
+				bowl->block.cur_y = bowl->block.y * bowl->block_size;
+
+        			if (bowl->ldelay_max == 0) {
+        				/* lock delay disabled, insert directly */
+					bowl_insert_block(bowl);
+        			} else {
+        				/* start lock delay */
+        				bowl->ldelay_cur = bowl->ldelay_max;
+        			}
         		}
-        	} else {
-        		/* with lock delay check if we can drop further.
-        		 * if not start lock delay */
-        	        bowl_check_lockdelay(bowl);
         	}
         }
 
