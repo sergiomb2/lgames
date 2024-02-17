@@ -9,9 +9,16 @@ i686-w64-mingw32-gcc is the 32 bit compiler
 
 ./configure --build=i686-w64-mingw32 --host=i686-w64-mingw32 --disable-install
 
+potential problems:
+- AM_GNU_GETTEXT might be unknown, comment it out
+- AM_PATH_SDL might not work, just use AC_CHECK_LIB
+- SDL_mixer might need another AC_CHECK_LIB before the one setting the flags
+
 make
 
-Copy dlls from /usr/i686-w64-mingw32/sys-root/mingw/bin to src
+copy ltris.exe, gfx and sounds directory into a new folder
+
+copy dlls from /usr/i686-w64-mingw32/sys-root/mingw/bin to src
 SDL.dll
 SDL_mixer.dll
 iconv.dll
