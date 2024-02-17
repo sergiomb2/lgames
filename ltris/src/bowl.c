@@ -1182,7 +1182,10 @@ void bowl_show( Bowl *bowl )
                     /* block */
                     if (bowl->are == 0) {
                 	    int id = block_masks[bowl->block.id].blockid;
-                	    if (bowl->ldelay_cur > 0)
+                	    /* use special block id to indicate lock delay
+                	     * unless soft drop was used which will insert
+                	     * the block on the next cycle */
+                	    if (bowl->ldelay_cur > 0 && !bowl->sdrop_pressed)
                 		    id = 10;
 			    DEST( sdl.screen, x, y, bowl->block_size, bowl->block_size );
 			    SOURCE( bowl->blocks,id * bowl->block_size, 0 );
@@ -1311,6 +1314,9 @@ void bowl_update( Bowl *bowl, int ms, BowlControls *bc, int game_over )
 
     if ( game_over )
 	    return;
+
+    /* soft drop used? */
+    bowl->sdrop_pressed = (bc->sdrop == CS_PRESSED);
 
     /* ARE */
     if (bowl->are > 0) {

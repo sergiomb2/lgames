@@ -1,3 +1,4 @@
+- do not show special piece on lock delay if soft drop pressed (2024/02/17 MS)
 - properly insert/lock pieces if dropping more than one tile (2024/02/17 MS)
 
 1.2.7:
