@@ -675,7 +675,7 @@ extern int count_occ( int *array, int size, int min, int max )
             count++;
     return count;
 }
-void tetris_make_stat()
+void tetris_test_cpu_algorithm()
 {
     int i;
     int game_count = 50;
@@ -731,71 +731,3 @@ void tetris_make_stat()
     
     bowl_delete( bowl );
 }
-#ifdef _1
-void tetris_make_stat()
-{
-    int i;
-    int game_count = 10;
-    double total = 0;
-    int total_lines = 0;
-    int scores[1024];
-    int lines[1024];
-    Bowl *bowl = 0;
-    int ms = 4;
-    SDL_Event event;
-    int leave = 0;
-    char str[256];
-    
-    font->align = ALIGN_X_LEFT | ALIGN_Y_TOP;
-    tetris_recreate_bkgnd( 0 );
-    DEST( sdl.screen, 300, 0, 320, 480 ); fill_surf( 0x0 );
-    refresh_screen( 0, 0, 0, 0 );
-    if ( config.visualize )
-        shrapnells_init();
-    
-    for ( i = 0; i < game_count; i++ ) {
-        bowl = bowl_create( 0, 0, -1, -1, blocks, qmark, "Demo", 0 );
-        if ( config.visualize )
-            bowl->blind = 0;
-        else
-            bowl->blind = 1;
-        bowl->mute = 1;
-        while ( !bowl->game_over && !leave ) {
-            if ( SDL_PollEvent( &event ) && event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE )
-                leave = 1;
-            bowl_update( bowl, ms, 0 );
-            if ( config.visualize )
-                refresh_rects();
-        }
-        lines[i] = bowl->lines;
-        scores[i] = counter_get_target( bowl->score );
-        sprintf( str, "%4i\n", lines[i] );
-        write_text( font, sdl.screen, 310 + ( i % 7 ) * 42, 10 + ( i / 7 ) * 16, str, OPAQUE );
-        refresh_screen( 0, 0, 0, 0 );
-        total += scores[i];
-        total_lines += bowl->lines;
-        bowl_delete( bowl );
-        printf( "%3i: %12i\n", i, scores[i] ); /* DEBUG */
-        if ( leave ) break;
-    }
-    
-    if ( config.visualize ) 
-        shrapnells_delete();
-    
-    if ( i != game_count )
-        game_count = i;
-    if ( game_count <= 0 ) return;
-    
-    sprintf( str, "Avg Score: %i Avg. Lines: %i\n", (int)(total / game_count), total_lines / game_count );
-    write_text( font, sdl.screen, 330, 428, str, OPAQUE );
-    
-    sprintf( str, "0-200: %i 201-400:: %i\n", count_occ( lines, game_count, 0, 200 ), count_occ( lines, game_count, 201, 400 ) );
-    write_text( font, sdl.screen, 330, 444, str, OPAQUE );
-    sprintf( str, "401-600: %i >601: %i\n", count_occ( lines, game_count, 401, 600 ), count_occ( lines, game_count, 601, 10000 ) );
-    write_text( font, sdl.screen, 330, 460, str, OPAQUE );
-
-    refresh_screen( 0, 0, 0, 0 );
-        
-    wait_for_click();
-}
-#endif

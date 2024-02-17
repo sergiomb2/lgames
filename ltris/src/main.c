@@ -37,10 +37,11 @@ extern int display_w, display_h, video_forced_w, video_forced_h;
 
 int main(int argc, char *argv[])
 {
-	int c;
+    int c;
     int result = ACTION_NONE;
     int leave = 0;
     const SDL_VideoInfo* info;
+    int test_alg = 0;
 
     /* i18n */
 #ifdef ENABLE_NLS
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
     strcpy(gametype_names[8],_("Training"));
     config_load();
 
-    while ( ( c = getopt( argc, argv, "fwr:" ) ) != -1 )
+    while ( ( c = getopt( argc, argv, "tfwr:" ) ) != -1 )
       {
         switch (c)
   	{
@@ -90,6 +91,9 @@ int main(int argc, char *argv[])
   		sscanf(optarg, "%dx%d", &video_forced_w, &video_forced_h);
   		printf("Trying to force resolution %dx%d\n",
   				video_forced_w, video_forced_h);
+  		break;
+  	case 't':
+  		test_alg = 1; /* test CPU algorithm in console */
   		break;
   	}
       }
@@ -137,14 +141,18 @@ int main(int argc, char *argv[])
     /* run game */
     manager_fade( FADE_IN );
     while( !leave && !term_game ) {
+
+	    /* test algorithm on console? */
+	    if (test_alg) {
+		    tetris_test_cpu_algorithm();
+		    break;
+	    }
+
         result = manager_run();
         switch( result ) {
-            case ACTION_QUIT: leave = 1; break;
-            case ACTION_MAKE_STAT:
-                manager_fade( FADE_OUT );
-                tetris_make_stat();
-                manager_fade( FADE_IN );
-                break;
+            case ACTION_QUIT:
+        	    leave = 1;
+        	    break;
             case ACTION_PLAY:
                 manager_fade( FADE_OUT );
                 if ( tetris_init() ) {
@@ -159,8 +167,8 @@ int main(int argc, char *argv[])
     manager_fade( FADE_OUT );
     /* delete stuff */
     tetris_delete();
-	manager_delete();
-	chart_save();
+    manager_delete();
+    chart_save();
     chart_delete();
     hint_delete_res();
     
