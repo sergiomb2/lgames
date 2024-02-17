@@ -69,8 +69,8 @@ void config_reset()
     config.expert = 0;
     config.modern = 1;
     /* multiplayer */
-    config.holes = 2;
-    config.rand_holes = 1;
+    config.holes = 1;
+    config.rand_holes = 0;
     config.send_all = 0;
     config.send_tetris = 1;
     /* cpu */
