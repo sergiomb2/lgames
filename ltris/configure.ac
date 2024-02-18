@@ -8,8 +8,12 @@ AM_INIT_AUTOMAKE
 AC_USE_SYSTEM_EXTENSIONS
 AM_GNU_GETTEXT([external])
 
+# Checks for programs.
 AC_PROG_CC
 AC_PROG_RANLIB
+
+# Checks for libraries.
+AC_CHECK_LIB(SDL, main,, AC_MSG_ERROR(lib SDL is needed))
 
 CFLAGS="$CFLAGS -Wall -Wno-int-conversion -Wno-format -Wno-implicit-function-declaration"
 
@@ -29,12 +33,15 @@ if test "x$host" = "xi686-w64-mingw32"; then
 
 else
 
-dnl check SDL
-AM_PATH_SDL(1.0.0,, AC_MSG_ERROR(lib SDL is needed))
-CFLAGS="$CFLAGS $($SDL_CONFIG --cflags)"
-LIBS="$LIBS $($SDL_CONFIG --libs)"
+	CFLAGS="$CFLAGS $(sdl-config --cflags)"
+	LIBS="$LIBS $(sdl-config --libs)"
 
 fi
+
+dnl debugging
+AC_ARG_ENABLE( debug,
+[  --enable-debug       Add debug symbols, no optimization.], 
+CFLAGS="$CFLAGS -O0 -g")
 
 dnl check SDL_mixer
 AC_CHECK_LIB(SDL_mixer, main,
