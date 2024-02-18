@@ -1723,7 +1723,6 @@ Play an optimized mute game. (used for stats)
 void bowl_quick_game( Bowl *bowl, int aggr )
 {
     int old_level;
-    int line_score;
     int line_count;
     int line_y[4];
     int i, j, l;
@@ -1738,6 +1737,7 @@ void bowl_quick_game( Bowl *bowl, int aggr )
             bowl->contents[i][j] = -1;
     }
     bowl->score.value = 0;
+    bowl->preview = 1; /* avoid no preview bonus */
     bowl->lines = bowl->level = bowl->use_figures = 0;
     bowl->game_over = 0;
     bowl->add_lines = bowl->add_tiles = 0;
@@ -1785,11 +1785,7 @@ void bowl_quick_game( Bowl *bowl, int aggr )
             bowl->contents[i][0] = -1;
         }
         /* score */
-        line_score = 100 * ( bowl->level + 1 );
-        for ( i = 0; i < line_count; i++ ) {
-            bowl->score.value += line_score;
-            line_score *= 2;
-        }
+        bowl_add_score(bowl, line_count);
         /* line and level update */
         old_level = bowl->lines / 10;
         bowl->lines += line_count;
@@ -1798,6 +1794,12 @@ void bowl_quick_game( Bowl *bowl, int aggr )
             bowl->level++;
             bowl_set_vert_block_vel( bowl );
         }
+        /* stop at 2500 lines max */
+        if (bowl->lines >= 2500) {
+        	bowl->game_over = 1;
+        	break;
+        }
+
     }
 }
 
