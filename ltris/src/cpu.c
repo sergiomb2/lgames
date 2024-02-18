@@ -19,13 +19,6 @@
 #include "list.h"
 #include "cpu.h"
 
-typedef struct {
-	int x, y, rot; /* destination data used by bowl */
-	int score; /* score of this destination. highest score wins */
-	/* debug score mods */
-	int holes_mod, complete_mod, alt_mod, steep_mod, abyss_mod, block_mod;
-} CPU_Dest;
-
 /*
 ====================================================================
 Locals
@@ -175,7 +168,7 @@ int CPU_SCORE_LINE   =   17;   /* each line completed */
 int CPU_SCORE_STEEP  =   -3;   /* steepness score */
 int CPU_SCORE_ABYSS  =   -7;   /* an abyss hole counts this score */
 int CPU_SCORE_BLOCK  =   -5;   /* every tile above the last hole belonging to the inserted block cashes this penalty */ 
-void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Dest *dest)
+void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 {
 	int i, j;
 	int line_count;
@@ -207,52 +200,52 @@ void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Dest *dest)
 		case 0:
 			/* defensive */
 			if (max_alt > 9)
-				dest->complete_mod = line_score;
+				eval->complete_mod = line_score;
 			break;
 		case 1:
 			/* normal */
 			if (max_alt <= 5)
-				dest->complete_mod = -line_score;
+				eval->complete_mod = -line_score;
 			else
 				if (max_alt <= 12)
-					dest->complete_mod = -(line_score/2);
+					eval->complete_mod = -(line_score/2);
 			break;
 		case 2:
 			/* aggressive */
 			if (max_alt <= 12)
-				dest->complete_mod = -line_score;
+				eval->complete_mod = -line_score;
 			break;
 		case 3:
 			/* kamikaze */
 			if (max_alt <= 8)
-				dest->complete_mod = -(line_score * 2);
+				eval->complete_mod = -(line_score * 2);
 			else
 				if (max_alt <= 14)
-					dest->complete_mod = -line_score;
+					eval->complete_mod = -line_score;
 			break;
 		}
 	}
 	else
-		dest->complete_mod = line_score * line_count * line_count;
+		eval->complete_mod = line_score * line_count * line_count;
 
 	/* HOLES */
 	/* each hole simply count a score */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		for (j = cpu_data->bowl_h - 1; j > cpu_data->bowl_h - 1 - cpu_get_alt(cpu_data, i); j--) {
 			if (!cpu_data->bowl[i][j])
-				dest->holes_mod += CPU_SCORE_HOLE;
+				eval->holes_mod += CPU_SCORE_HOLE;
 		}
 	}
 
 	/* ALTITUDE */
 	/* the deeper you place the tile the better */
-	dest->alt_mod = CPU_SCORE_ALT * dest->y;
+	eval->alt_mod = CPU_SCORE_ALT * eval->y;
 
 	/* STEEPNESS */
 	/* height difference to the neighbored tiles */
 	for (i = 1; i < BOWL_WIDTH - 1; i++) {
 		diff = abs(cpu_get_alt(cpu_data, i) - cpu_get_alt(cpu_data, i - 1)) + abs(cpu_get_alt(cpu_data, i) - cpu_get_alt(cpu_data, i + 1));
-		dest->steep_mod += CPU_SCORE_STEEP*diff;
+		eval->steep_mod += CPU_SCORE_STEEP*diff;
 	}
 
 	/* ABYSS */
@@ -274,7 +267,7 @@ void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Dest *dest)
 		}
 		/* we're at position above the abyss and have it's height */
 		if (abyss_depth >= 2)
-			dest->abyss_mod += CPU_SCORE_ABYSS * abyss_depth;
+			eval->abyss_mod += CPU_SCORE_ABYSS * abyss_depth;
 	}
 
 	/* BLOCK */
@@ -286,14 +279,14 @@ void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Dest *dest)
 		y = cpu_data->bowl_h - cpu_get_alt(cpu_data, i);
 		while (y < cpu_data->bowl_h && cpu_data->bowl[i][y]) {
 			if (cpu_data->bowl[i][y] == 2)
-				dest->block_mod += CPU_SCORE_BLOCK;
+				eval->block_mod += CPU_SCORE_BLOCK;
 			y++;
 		}
 	}
 
 	/* score together */
-	dest->score = CPU_SCORE_BASIC + dest->holes_mod + dest->complete_mod +
-			dest->alt_mod + dest->abyss_mod + dest->steep_mod + dest->block_mod;
+	eval->score = CPU_SCORE_BASIC + eval->holes_mod + eval->complete_mod +
+			eval->alt_mod + eval->abyss_mod + eval->steep_mod + eval->block_mod;
 }
 
 /*
@@ -333,37 +326,31 @@ You want your own AI... edit this function!.
 void cpu_analyze_data(CPU_Data *cpu_data)
 {
 	int x, rot, y;
-	CPU_Dest *dest, *best_dest;
-	List *list = list_create(LIST_AUTO_DELETE, LIST_NO_CALLBACK);
+	CPU_Eval cur_eval;
+	int first_eval = 1;
 
 	/* get and analyze valid positions of block */
 	cpu_data->block = cpu_data->original_block;
 	for (rot = 0; rot < 4; rot++) {
 		for (x = -4; x < 14; x++) {
 			cpu_reset_bowl(cpu_data);
-			if (cpu_insert_block(cpu_data, x, rot, &y)) {
-				dest = calloc(1, sizeof(CPU_Dest));
-				dest->x = x;
-				dest->y = y;
-				dest->rot = rot;
-				cpu_analyze_bowl(cpu_data, dest);
-				list_add(list, dest);
-			}
+			if (!cpu_insert_block(cpu_data, x, rot, &y))
+				continue;
+
+			memset(&cur_eval,0,sizeof(CPU_Eval));
+			cur_eval.x = x;
+			cur_eval.y = y;
+			cur_eval.rot = rot;
+			cpu_analyze_bowl(cpu_data, &cur_eval);
+
+			/* better than current result? replace! */
+			if (first_eval || cur_eval.score > cpu_data->result.score ||
+					(cur_eval.score == cpu_data->result.score &&
+							cur_eval.y > cpu_data->result.y))
+				cpu_data->result = cur_eval;
+			first_eval = 0;
 		}
 	}
-	/* get highest score as final dest -- same score the deeper block is used */
-	best_dest = list_first(list);
-	while ((dest = list_next(list)) != 0) {
-		if (dest->score > best_dest->score)
-			best_dest = dest;
-		else
-			if (dest->score == best_dest->score && dest->y > best_dest->y)
-				best_dest = dest;
-	}
-	cpu_data->dest_x = best_dest->x;
-	cpu_data->dest_y = best_dest->y;
-	cpu_data->dest_rot = best_dest->rot;
-	cpu_data->dest_score = best_dest->score;
 
 	/* DEBUG */
 	/*    printf("DESTINATION: %i/%i\n", best_dest->x, best_dest->rot);
@@ -375,5 +362,4 @@ void cpu_analyze_data(CPU_Data *cpu_data)
     printf("Blocking:   %6i\n", best_dest->block_mod);
     printf("----------  %6i\n", best_dest->score);*/
 
-	list_delete(list);
 }

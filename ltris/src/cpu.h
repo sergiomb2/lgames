@@ -18,13 +18,22 @@
 #ifndef __CPU_H
 #define __CPU_H
 
+typedef struct {
+	/* piece information */
+	int x, y, rot; /* piece position and rotation */
+	int score; /* eval score */
+
+	/* debug score mods */
+	int holes_mod, complete_mod, alt_mod, steep_mod, abyss_mod, block_mod;
+} CPU_Eval;
+
 /*
 ====================================================================
 CPU_Data containing the situation CPU has to analyze:
 original_bowl: 0 - empty
                1 - blocked
 bowl:          2 - inserted block
-               3 - removed line 
+               3 - removed line
 ====================================================================
  */
 typedef struct {
@@ -36,7 +45,7 @@ typedef struct {
                                                  and restores by cpu_restore_bowl() */
 	int bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* this bowl is used to actually compute stuff */
 	Block_Mask *block; /* actual block tested */
-	int dest_x, dest_y, dest_rot, dest_score; /* this is the CPU result for this data */
+	CPU_Eval result; /* this is the CPU result for this data */
 } CPU_Data;
 
 /*

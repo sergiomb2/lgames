@@ -143,9 +143,9 @@ void bowl_compute_cpu_dest( Bowl *bowl )
             cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
     /* get best destination */
     cpu_analyze_data( &cpu_data );
-    bowl->cpu_dest_x = cpu_data.dest_x;
-    bowl->cpu_dest_rot = cpu_data.dest_rot;
-    bowl->cpu_dest_score = cpu_data.dest_score;
+    bowl->cpu_dest_x = cpu_data.result.x;
+    bowl->cpu_dest_rot = cpu_data.result.rot;
+    bowl->cpu_dest_score = cpu_data.result.score;
 }
 
 /** Initialize bowl's block structure to hold piece with id at top of bowl
@@ -1758,12 +1758,12 @@ void bowl_quick_game( Bowl *bowl, int aggr )
         /* insert -- no additional checks as there is no chance for an illegal block else the fucking CPU sucks!!!! */
         for ( i = 0; i < 4; i++ ) {
             for ( j = 0; j < 4; j++ )
-                if ( block_masks[bowl->block.id].mask[cpu_data.dest_rot][i][j] ) {
-                    if ( j + cpu_data.dest_y < 0 ) {
+                if ( block_masks[bowl->block.id].mask[cpu_data.result.rot][i][j] ) {
+                    if ( j + cpu_data.result.y < 0 ) {
                         bowl->game_over = 1;
                         break;
                     }
-                    bowl->contents[i + cpu_data.dest_x][j + cpu_data.dest_y] = 1;
+                    bowl->contents[i + cpu_data.result.x][j + cpu_data.result.y] = 1;
                 }
             if ( bowl->game_over ) break;
         }
