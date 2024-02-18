@@ -684,8 +684,6 @@ void tetris_test_cpu_algorithm()
     double scores[1024];
     int lines[1024];
     Bowl *bowl = 0;
-    SDL_Event event;
-    int leave = 0;
     FILE *file = 0;
     
     printf( "*****\n" );
@@ -700,15 +698,16 @@ void tetris_test_cpu_algorithm()
     printf( "Computing: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
         
     for ( i = 0; i < game_count; i++ ) {
-        if ( SDL_PollEvent( &event ) && event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_ESCAPE )
-            leave = 1;
+	    SDL_PumpEvents();
+	    unsigned char *keys = SDL_GetKeyState(NULL);
+	    if (keys[SDLK_ESCAPE])
+		    break;
         bowl_quick_game( bowl, 1 );
         lines[i] = bowl->lines;
         total_lines += lines[i];
         scores[i] = bowl->score.value;
         total += scores[i];
         printf( "%3i: %5i: %14.0f\n", i, lines[i], scores[i] );
-        if ( leave ) return;
     }
     
     if ( i != game_count ) game_count = i;
