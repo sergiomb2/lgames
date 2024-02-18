@@ -144,7 +144,9 @@ int main(int argc, char *argv[])
 
 	    /* test algorithm on console? */
 	    if (test_alg) {
+		    tetris_init();
 		    tetris_test_cpu_algorithm();
+		    tetris_clear();
 		    break;
 	    }
 
