@@ -41,8 +41,6 @@ typedef struct {
 	Block_Mask *original_block, *original_preview; /* the two blocks tested */
 	int bowl_w, bowl_h;
 	int original_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* set by bowl before calling cpu_analyze_data() */
-	int backup_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* this bowl stores the bowl information by cpu_backup_bowl()
-                                                 and restores by cpu_restore_bowl() */
 	int bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* this bowl is used to actually compute stuff */
 	Block_Mask *block; /* actual block tested */
 	CPU_Eval result; /* this is the CPU result for this data */

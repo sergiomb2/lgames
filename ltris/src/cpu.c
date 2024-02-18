@@ -291,26 +291,6 @@ void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 
 /*
 ====================================================================
-Backup/restore bowl information. Used for preview analyzes.
-====================================================================
- */
-void cpu_backup_bowl(CPU_Data *cpu_data)
-{
-	int i, j;
-	for (i = 0; i < cpu_data->bowl_w; i++)
-		for (j = 0; j < cpu_data->bowl_h; j++)
-			cpu_data->backup_bowl[i][j] = cpu_data->bowl[i][j];
-}
-void cpu_restore_bowl(CPU_Data *cpu_data)
-{
-	int i, j;
-	for (i = 0; i < cpu_data->bowl_w; i++)
-		for (j = 0; j < cpu_data->bowl_h; j++)
-			cpu_data->bowl[i][j] = cpu_data->backup_bowl[i][j];
-}
-
-/*
-====================================================================
 Publics
 ====================================================================
  */
