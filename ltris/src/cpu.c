@@ -19,20 +19,8 @@
 #include "list.h"
 #include "cpu.h"
 
-/*
-====================================================================
-Locals
-====================================================================
- */
-
-/*
-====================================================================
-Reset bowl with original data:
-empty = 0
-blocked = 1
-====================================================================
- */
-void cpu_reset_bowl(CPU_Data *cpu_data)
+/** Reset bowl to original content (0 = empty, 1 = tile). */
+static void cpu_reset_bowl(CPU_Data *cpu_data)
 {
 	int i, j;
 	for (i = 0; i < cpu_data->bowl_w; i++)
@@ -40,17 +28,14 @@ void cpu_reset_bowl(CPU_Data *cpu_data)
 			cpu_data->bowl[i][j] = cpu_data->original_bowl[i][j];
 }
 
-/*
-====================================================================
-Check if cpu_block fits in at this position.
-====================================================================
- */
-int cpu_validate_block_pos(CPU_Data *cpu_data, int x, int y, int rot)
+/** Check if cpu_data->piece fits at this position.
+ * Return 0 if invalid or 1 if valid. */
+static int cpu_validate_piece_pos(CPU_Data *cpu_data, int x, int y, int rot)
 {
 	int i, j;
 	for (j = 3; j >= 0; j--)
 		for (i = 3; i >= 0; i--)
-			if (cpu_data->block->mask[rot][i][j]) {
+			if (cpu_data->piece->mask[rot][i][j]) {
 				if (x + i < 0 || x + i >= cpu_data->bowl_w)
 					return 0;
 				if (y + j >= cpu_data->bowl_h)
@@ -63,41 +48,37 @@ int cpu_validate_block_pos(CPU_Data *cpu_data, int x, int y, int rot)
 	return 1;
 }
 
-/*
-====================================================================
-Check if the passed position is valid for cpu_data->block, drop the 
-block and insert to cpu_bowl with index 2.
-====================================================================
- */
-int cpu_insert_block(CPU_Data *cpu_data, int x, int rot, int *y)
+/** Drop and insert piece to bowl if possible with tile id 2.
+ * Return 1 on success, 0 otherwise. */
+static int cpu_insert_piece(CPU_Data *cpu_data, int x, int rot, int *y)
 {
 	int i, j;
+
 	/* check if out of bowl at the sides*/
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++)
-			if (cpu_data->block->mask[rot][i][j])
+			if (cpu_data->piece->mask[rot][i][j])
 				if (x + i < 0 || x + i >= cpu_data->bowl_w)
 					return 0;
 	}
+
 	/* drop tile down */
 	*y = -3;
-	while (cpu_validate_block_pos(cpu_data, x, *y + 1, rot))
+	while (cpu_validate_piece_pos(cpu_data, x, *y + 1, rot))
 		(*y)++;
+
 	/* insert block */
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++)
-			if (cpu_data->block->mask[rot][i][j])
+			if (cpu_data->piece->mask[rot][i][j])
 				cpu_data->bowl[x + i][(*y) + j] = 2;
 	}
+
 	return 1;
 }
 
-/*
-====================================================================
-Count number of completed lines.
-====================================================================
- */
-int cpu_count_compl_lines(CPU_Data *cpu_data)
+/** Count number of completed lines and set tile id to 3 for these */
+static int cpu_count_completed_lines(CPU_Data *cpu_data)
 {
 	int i, j, line_count;
 	line_count = 0;
@@ -113,37 +94,31 @@ int cpu_count_compl_lines(CPU_Data *cpu_data)
 	return line_count;
 }
 
-/*
-====================================================================
-Remove completed lines.
-====================================================================
- */
-void cpu_remove_compl_lines(CPU_Data *cpu_data)
+/** Remove completed lines. */
+static void cpu_remove_completed_lines(CPU_Data *cpu_data)
 {
 	int i, j, l;
 	int line_count = 0;
 	int line_y[4];
+
 	/* count lines and get pos */
 	for (j = 0; j < cpu_data->bowl_h; j++) {
 		if (cpu_data->bowl[0][j] == 3) {
 			line_y[line_count++] = j;
 		}
 	}
+
 	/* remove */
 	for (j = 0; j < line_count; j++)
 		for (i = 0; i < cpu_data->bowl_w; i++) {
 			for (l = line_y[j]; l > 0; l--)
-				cpu_data->bowl[i][l] =  cpu_data->bowl[i][l - 1];
+				cpu_data->bowl[i][l] = cpu_data->bowl[i][l - 1];
 			cpu_data->bowl[i][0] = 0;
 		}
 }
 
-/*
-====================================================================
-Get alteration of column.
-====================================================================
- */
-int cpu_get_alt(CPU_Data *cpu_data, int col)
+/** Get altitude of column. */
+static int cpu_get_alt(CPU_Data *cpu_data, int col)
 {
 	int j;
 	if (col == -1 || col == cpu_data->bowl_w)
@@ -154,13 +129,9 @@ int cpu_get_alt(CPU_Data *cpu_data, int col)
 	return cpu_data->bowl_h - j;
 }
 
-/*
-====================================================================
-This is the main analyze function.
-CPU_Data::bowl has the block already added and 'dest' already 
-contains the position of the block and does only need the score.
-====================================================================
- */
+/** This is the main analyze function. cpu_data's bowl already contains
+ * the positioned piece (id=2) and we have to evaluate the placement and
+ * return the result in eval->score. */
 int CPU_SCORE_BASIC  =   100;  /* starting score */
 int CPU_SCORE_HOLE   =  -26;   /* each single hole */
 int CPU_SCORE_ALT    =    5;   /* each altitude level (tile) */
@@ -168,7 +139,7 @@ int CPU_SCORE_LINE   =   17;   /* each line completed */
 int CPU_SCORE_STEEP  =   -3;   /* steepness score */
 int CPU_SCORE_ABYSS  =   -7;   /* an abyss hole counts this score */
 int CPU_SCORE_BLOCK  =   -5;   /* every tile above the last hole belonging to the inserted block cashes this penalty */ 
-void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
+static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 {
 	int i, j;
 	int line_count;
@@ -179,8 +150,8 @@ void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	int aux_alt;
 
 	/* count completed lines -- lines that will be removed are marked as 3 */
-	line_count = cpu_count_compl_lines(cpu_data);
-	cpu_remove_compl_lines(cpu_data);
+	line_count = cpu_count_completed_lines(cpu_data);
+	cpu_remove_completed_lines(cpu_data);
 	/* get maximum alt */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		if (max_alt < cpu_get_alt(cpu_data, i))
@@ -289,20 +260,8 @@ void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 			eval->alt_mod + eval->abyss_mod + eval->steep_mod + eval->block_mod;
 }
 
-/*
-====================================================================
-Publics
-====================================================================
- */
-
-/*
-====================================================================
-Analyze situation and set CPU_Data::dest_x and CPU_Data::dest_rot
-which is used by bowl to move the block.
-The important part is the cpu_analyze_bowl() function above.
-You want your own AI... edit this function!.
-====================================================================
- */
+/** Analyze cpu_data's original bowl and piece by testing all possible
+ * piece placements. Return the best placement as cpu_data.result. */
 void cpu_analyze_data(CPU_Data *cpu_data)
 {
 	int x, rot, y;
@@ -310,11 +269,11 @@ void cpu_analyze_data(CPU_Data *cpu_data)
 	int first_eval = 1;
 
 	/* get and analyze valid positions of block */
-	cpu_data->block = cpu_data->original_block;
+	cpu_data->piece = cpu_data->original_piece;
 	for (rot = 0; rot < 4; rot++) {
 		for (x = -4; x < 14; x++) {
 			cpu_reset_bowl(cpu_data);
-			if (!cpu_insert_block(cpu_data, x, rot, &y))
+			if (!cpu_insert_piece(cpu_data, x, rot, &y))
 				continue;
 
 			memset(&cur_eval,0,sizeof(CPU_Eval));

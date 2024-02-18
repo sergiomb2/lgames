@@ -27,31 +27,28 @@ typedef struct {
 	int holes_mod, complete_mod, alt_mod, steep_mod, abyss_mod, block_mod;
 } CPU_Eval;
 
-/*
-====================================================================
-CPU_Data containing the situation CPU has to analyze:
-original_bowl: 0 - empty
-               1 - blocked
-bowl:          2 - inserted block
-               3 - removed line
-====================================================================
+/* CPU Data contains the original bowl and piece to be evaluated and internal
+ * data to do so. After testing and evaluating all positions of the piece in
+ * the bowl, the best position is set in dest_*.
  */
 typedef struct {
-	int aggr; /* if playing aggressive for multiplayer action we punish single lines */
-	Block_Mask *original_block, *original_preview; /* the two blocks tested */
-	int bowl_w, bowl_h;
-	int original_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* set by bowl before calling cpu_analyze_data() */
+	/* current piece+bowl information set by bowl_quick_game()
+	 * before calling cpu_analyze_data() */
+	int aggr; /* aggressive play style */
+	int bowl_w, bowl_h; /* must be BOWL_WIDTH and BOWL_HEIGHT */
+	Block_Mask *original_piece, *original_preview;
+	int original_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* original bowl content: 0 - empty, 1 - tile */
+
+	/* internal stuff for analysis */
 	int bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* this bowl is used to actually compute stuff */
-	Block_Mask *block; /* actual block tested */
-	CPU_Eval result; /* this is the CPU result for this data */
+	Block_Mask *piece; /* actual piece tested (pointer to original_*) */
+
+	/* result */
+	CPU_Eval result;
 } CPU_Data;
 
-/*
-====================================================================
-Analyze situation and set CPU_Data::dest_x and CPU_Data::dest_rot
-which is used by bowl to move the block.
-====================================================================
- */
-void cpu_analyze_data( CPU_Data *cpu_data );
+/** Analyze cpu_data.original_bowl and cpu_data.original_piece and find
+ * best position and rotation and store in cpu_data.result. */
+void cpu_analyze_data(CPU_Data *cpu_data);
 
 #endif

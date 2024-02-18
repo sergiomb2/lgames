@@ -136,7 +136,7 @@ void bowl_compute_cpu_dest( Bowl *bowl )
         cpu_data.aggr = config.cpu_aggr; /* else use the wanted setting */
     cpu_data.bowl_w = bowl->w;
     cpu_data.bowl_h = bowl->h;
-    cpu_data.original_block = &block_masks[bowl->block.id];
+    cpu_data.original_piece = &block_masks[bowl->block.id];
     cpu_data.original_preview = &block_masks[bowl->next_block_id];
     for ( i = 0; i < bowl->w; i++ )
         for ( j = 0; j < bowl->h; j++ )
@@ -1749,7 +1749,7 @@ void bowl_quick_game( Bowl *bowl, int aggr )
             bowl->next_block_id = rand() % BLOCK_COUNT; 
         } while ( bowl->next_block_id == bowl->block.id );
         /* compute cpu dest */
-        cpu_data.original_block = &block_masks[bowl->block.id];
+        cpu_data.original_piece = &block_masks[bowl->block.id];
         cpu_data.original_preview = &block_masks[bowl->next_block_id];
         for ( i = 0; i < bowl->w; i++ )
             for ( j = 0; j < bowl->h; j++ )
