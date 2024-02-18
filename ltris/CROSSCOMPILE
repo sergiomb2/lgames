@@ -31,5 +31,7 @@ libvorbis-0.dll
 libvorbisfile-3.dll
 libwinpthread-1.dll
 
-use link instead of batch to set any command line options otherwise the
-program will hang on exit
+fullscreen/window switch doesn't work in windows
+use batch file with command line options
+links do not work as target is hardcoded with path
+
