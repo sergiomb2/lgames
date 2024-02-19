@@ -678,7 +678,7 @@ extern int count_occ( int *array, int size, int min, int max )
 void tetris_test_cpu_algorithm()
 {
     int i;
-    int game_count = 50;
+    int game_count = 100;
     double total = 0;
     int total_lines = 0;
     double scores[1024];
@@ -695,7 +695,7 @@ void tetris_test_cpu_algorithm()
     memset( lines, 0, sizeof( lines ) );
     memset( scores, 0, sizeof( scores ) );
         
-    printf( "Computing: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
+    //printf( "Computing: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
         
     for ( i = 0; i < game_count; i++ ) {
 	    SDL_PumpEvents();
@@ -715,7 +715,7 @@ void tetris_test_cpu_algorithm()
     
     /* write to file */
     file = fopen( "stats", "a+" );
-    fprintf( file, "SETTING: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
+    //fprintf( file, "SETTING: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
     for (i = 0; i < game_count;i++)
         fprintf( file, "%3i: %5i: %14.0f\n", i, lines[i], scores[i] );
     fprintf( file, "-----\n" );

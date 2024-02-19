@@ -18,13 +18,21 @@
 #ifndef __CPU_H
 #define __CPU_H
 
+/* set with scores for all evaluated criteria */
 typedef struct {
-	/* piece information */
-	int x, y, rot; /* piece position and rotation */
-	int score; /* eval score */
+	int lines; /* score for completed lines */
+	int height; /* score for height of bowl content */
+	int slope; /* score for profile of bowl content */
+	int holes; /* score for new holes */
+	int block; /* score for new piece tiles blocking existing holes */
+	int abyss; /* obsolete */
+} CPU_ScoreSet;
 
-	/* debug score mods */
-	int holes_mod, complete_mod, alt_mod, steep_mod, abyss_mod, block_mod;
+/* evaluation result for a piece */
+typedef struct {
+	int x, y, rot; /* piece position and rotation */
+	int score; /* evaluation score (total of values in score_set) */
+	CPU_ScoreSet score_set; /* single evaluations (for debugging) */
 } CPU_Eval;
 
 /* CPU Data contains the original bowl and piece to be evaluated and internal
@@ -38,6 +46,8 @@ typedef struct {
 	int bowl_w, bowl_h; /* must be BOWL_WIDTH and BOWL_HEIGHT */
 	Block_Mask *original_piece, *original_preview;
 	int original_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* original bowl content: 0 - empty, 1 - tile */
+
+	CPU_ScoreSet base_scores; /* basic multipliers for evaluated criteria */
 
 	/* internal stuff for analysis */
 	int bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* this bowl is used to actually compute stuff */
