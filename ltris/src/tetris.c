@@ -18,6 +18,7 @@
 #include "ltris.h"
 #include "event.h"
 #include "chart.h"
+#include "cpu.h"
 #include "bowl.h"
 #include "shrapnells.h"
 #include "tetris.h"
@@ -653,80 +654,82 @@ void tetris_run()
     SDL_ShowCursor( 1 );
 }
 
-/*
-====================================================================
-Run a number of CPU games to get an average score gained so you'll
-see if your analyze algorithm in cpu.c cpu_analyze_bowl() sucks
-or rocks!
-====================================================================
-*/
-extern int CPU_SCORE_HOLE;
-extern int CPU_SCORE_ALT;
-extern int CPU_SCORE_LINE;
-extern int CPU_SCORE_STEEP;
-extern int CPU_SCORE_ABYSS;
-extern int CPU_SCORE_BLOCK;
-extern int count_occ( int *array, int size, int min, int max )
+/** Get average of values in array @arr of length @len excluding the
+ * best/worst value (like in speed cubing). */
+static double get_avg(double *arr, int len)
 {
-    int i, count;
-    count = 0;
-    for ( i = 0; i < size; i++ )
-        if ( array[i] >= min && array[i] <= max )
-            count++;
-    return count;
+	double min = arr[0], max = arr[0];
+	double sum = 0, count = 0;
+
+	/* get best and worst value */
+	for (int i = 0; i < len; i++) {
+		if (arr[i] < min)
+			min = arr[i];
+		if (arr[i] > max)
+			max = arr[i];
+	}
+
+	/* average values excluding best/worst */
+	for (int i = 0; i < len; i++) {
+		/* only exclude worst game for now, since we have a line cap
+		 * so many games have the same largest line count */
+		if (arr[i] > min/* && arr[i] < max*/) {
+			sum += arr[i];
+			count++;
+		}
+	}
+
+	if (count == 0)
+		return 0;
+	else
+		return sum / count;
 }
+
+/** Test CPU algorithm by running a number of games and printing some stats. */
 void tetris_test_cpu_algorithm()
 {
-    int i;
-    int game_count = 100;
-    double total = 0;
-    int total_lines = 0;
-    double scores[1024];
-    int lines[1024];
-    Bowl *bowl = 0;
-    FILE *file = 0;
-    
-    printf( "*****\n" );
-    
-    bowl = bowl_create( 0, 0, -1, -1, -1, -1, blocks, qmark, "Demo", 0 );
-    
-    /* reset counters */
-    total = 0; total_lines = 0;
-    memset( lines, 0, sizeof( lines ) );
-    memset( scores, 0, sizeof( scores ) );
-        
-    //printf( "Computing: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
-        
-    for ( i = 0; i < game_count; i++ ) {
-	    SDL_PumpEvents();
-	    unsigned char *keys = SDL_GetKeyState(NULL);
-	    if (keys[SDLK_ESCAPE])
-		    break;
-        bowl_quick_game( bowl, 1 );
-        lines[i] = bowl->lines;
-        total_lines += lines[i];
-        scores[i] = bowl->score.value;
-        total += scores[i];
-        printf( "%3i: %5i: %14.0f\n", i, lines[i], scores[i] );
-    }
-    
-    if ( i != game_count ) game_count = i;
-    if ( game_count <= 0 ) return;
-    
-    /* write to file */
-    file = fopen( "stats", "a+" );
-    //fprintf( file, "SETTING: %3i %3i %3i %3i %3i %3i\n", CPU_SCORE_HOLE, CPU_SCORE_ALT, CPU_SCORE_LINE, CPU_SCORE_STEEP, CPU_SCORE_ABYSS, CPU_SCORE_BLOCK );
-    for (i = 0; i < game_count;i++)
-        fprintf( file, "%3i: %5i: %14.0f\n", i, lines[i], scores[i] );
-    fprintf( file, "-----\n" );
-    fprintf( file, "  0-100: %4i  101-200: %4i  201-400: %4i\n", 
-             count_occ( lines, game_count, 0, 100 ), count_occ( lines, game_count, 101, 200 ), count_occ( lines, game_count, 201, 400 ) );
-    fprintf( file, "401-600: %4i  601-800: %4i  rest:    %4i\n", 
-             count_occ( lines, game_count, 401, 600 ), count_occ( lines, game_count, 601, 800 ), count_occ( lines, game_count, 801, 100000 ) );
-    fprintf( file, "-----\n" );
-    fprintf( file, "Avg.Lines: %i Avg.Score: %i\n", total_lines / game_count, (int)(total / game_count) );
-    fprintf( file, "\n" );
-    fclose( file );
-    
-    bowl_delete( bowl );
+	int i;
+	int numgames = 50;
+	double scores[numgames];
+	double lines[numgames];
+	Bowl *bowl = 0;
+	CPU_ScoreSet bscores;
+
+	printf( "**********\n" );
+
+	bowl = bowl_create( 0, 0, -1, -1, -1, -1, blocks, qmark, "Demo", 0 );
+
+	/* clear counters */
+	memset(lines, 0, sizeof( lines ));
+	memset(scores, 0, sizeof( scores ));
+
+	/* set base scores */
+	bscores.lines = 17;
+	bscores.holes = -26;
+	bscores.height = 5;
+	bscores.slope = -3;
+	bscores.abyss = -7;
+	bscores.block = -5;
+
+	printf( "  Evaluating: l=%d h=%d a=%d s=%d a=%d b=%d\n",
+			bscores.lines, bscores.holes, bscores.height,
+			bscores.slope, bscores.abyss, bscores.block);
+
+	for (i = 0; i < numgames; i++) {
+		/* check if quit requested */
+		SDL_PumpEvents();
+		unsigned char *keys = SDL_GetKeyState(NULL);
+		if (keys[SDLK_ESCAPE])
+			break;
+
+		/* run silent game and store results */
+		bowl_quick_game(bowl, &bscores);
+		lines[i] = bowl->lines;
+		scores[i] = bowl->score.value;
+		printf( "  %3d: lines=%5.0f, score=%14.0f\n", i, lines[i], scores[i] );
+	}
+	printf("  -> avg: lines=%.0f, score=%.0f\n",
+		get_avg(lines,numgames), get_avg(scores, numgames));
+
+	bowl_delete(bowl);
 }

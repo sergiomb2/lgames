@@ -253,14 +253,6 @@ void cpu_analyze_data(CPU_Data *cpu_data)
 	CPU_Eval cur_eval;
 	int first_eval = 1;
 
-	/* TEST: set fixed base scores */
-	cpu_data->base_scores.lines = 17;
-	cpu_data->base_scores.holes = -26;
-	cpu_data->base_scores.height = 5;
-	cpu_data->base_scores.slope = -3;
-	cpu_data->base_scores.abyss = -7;
-	cpu_data->base_scores.block = -5;
-
 	/* get and analyze valid positions of block */
 	cpu_data->piece = cpu_data->original_piece;
 	for (rot = 0; rot < 4; rot++) {

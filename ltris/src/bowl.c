@@ -1720,17 +1720,19 @@ void bowl_toggle_pause( Bowl *bowl )
 Play an optimized mute game. (used for stats)
 ====================================================================
 */
-void bowl_quick_game( Bowl *bowl, int aggr )
+void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores )
 {
     int old_level;
     int line_count;
     int line_y[4];
     int i, j, l;
     CPU_Data cpu_data;
+
     /* constant cpu data */
     cpu_data.bowl_w = bowl->w;
     cpu_data.bowl_h = bowl->h;
-    cpu_data.aggr = aggr;
+    cpu_data.aggr = 1;
+
     /* reset bowl */
     for ( i = 0; i < bowl->w; i++ ) {
         for ( j = 0; j < bowl->h; j++ )
@@ -1751,6 +1753,7 @@ void bowl_quick_game( Bowl *bowl, int aggr )
         /* compute cpu dest */
         cpu_data.original_piece = &block_masks[bowl->block.id];
         cpu_data.original_preview = &block_masks[bowl->next_block_id];
+        cpu_data.base_scores = *bscores;
         for ( i = 0; i < bowl->w; i++ )
             for ( j = 0; j < bowl->h; j++ )
                 cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
