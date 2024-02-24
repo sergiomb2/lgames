@@ -163,6 +163,28 @@ static int get_wval(int v) {
 	return wv;
 }
 
+/** Get height difference with right column. >0 increasing, <0 decreasing. */
+static int cpu_get_height_diff_r(CPU_Data *cpu_data, int col)
+{
+	if (col < 0 || col >= cpu_data->bowl_w-1) {
+		printf("%s: illegal column index %d",__FILE__,col);
+		return 0;
+	}
+	return cpu_get_column_height(cpu_data, col+1) -
+				cpu_get_column_height(cpu_data, col);
+}
+
+/** Get height difference with left column. >0 increasing, <0 decreasing. */
+static int cpu_get_height_diff_l(CPU_Data *cpu_data, int col)
+{
+	if (col < 1 || col >= cpu_data->bowl_w) {
+		printf("%s: illegal column index %d",__FILE__,col);
+		return 0;
+	}
+	return cpu_get_column_height(cpu_data, col-1) -
+				cpu_get_column_height(cpu_data, col);
+}
+
 /** This is the main analyze function. cpu_data's bowl already contains
  * the positioned piece (id=2) and we have to evaluate the placement and
  * return the result in eval->score. */
@@ -173,7 +195,6 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	int bheight = 0;
 	int line_score;
 	int y, abyss_depth;
-	int diff;
 	CPU_ScoreSet *bscores = &cpu_data->base_scores;
 
 	/* get bowl height */
@@ -196,7 +217,8 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	} else
 		eval->score_set.lines = line_score * get_wval(line_count);
 
-	/* holes: each gives some (negative) score */
+	/* holes: each gives some (negative) score, new holes appear by placed piece,
+	 * old holes might disappear on clearing lines, so we need the total balance */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		int sy = cpu_get_column_starty(cpu_data, i);
 		for (j = sy; j < cpu_data->bowl_h; j++)
@@ -206,11 +228,10 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 
 	/* slope: height difference to adjacent columns */
 	for (i = 1; i < BOWL_WIDTH - 1; i++) {
-		diff = abs(cpu_get_column_height(cpu_data, i) -
-					cpu_get_column_height(cpu_data, i - 1)) +
-			abs(cpu_get_column_height(cpu_data, i) -
-					cpu_get_column_height(cpu_data, i + 1));
-		eval->score_set.slope += bscores->slope * diff;
+		eval->score_set.slope += bscores->slope *
+				abs(cpu_get_height_diff_r(cpu_data, i));
+		eval->score_set.slope += bscores->slope *
+				abs(cpu_get_height_diff_l(cpu_data, i));
 	}
 
 	/* abyss: depth of a single column gap */
