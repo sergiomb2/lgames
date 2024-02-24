@@ -129,6 +129,7 @@ void bowl_compute_cpu_dest( Bowl *bowl )
 {
     int i, j;
     CPU_Data cpu_data;
+
     /* pass bowl contents to the cpu bowl */
     if ( config.gametype == 0 ) /* demo is supposed to get the highest scores */
         cpu_data.aggr = 0; /* so play defensive */
@@ -141,6 +142,15 @@ void bowl_compute_cpu_dest( Bowl *bowl )
     for ( i = 0; i < bowl->w; i++ )
         for ( j = 0; j < bowl->h; j++ )
             cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
+
+    /* use this hardcoded score set for eval */
+    cpu_data.base_scores.lines = 17;
+    cpu_data.base_scores.holes = -26;
+    cpu_data.base_scores.height = 5;
+    cpu_data.base_scores.slope = -3;
+    cpu_data.base_scores.abyss = -7;
+    cpu_data.base_scores.block = -5;
+
     /* get best destination */
     cpu_analyze_data( &cpu_data );
     bowl->cpu_dest_x = cpu_data.result.x;
