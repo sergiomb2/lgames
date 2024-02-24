@@ -126,14 +126,22 @@ static int cpu_get_column_height(CPU_Data *cpu_data, int col)
 	if (col == -1 || col == cpu_data->bowl_w)
 		return cpu_data->bowl_h;
 
-	if (col < 0 || col > cpu_data->bowl_w)
+	if (col < 0 || col >= cpu_data->bowl_w) {
+		printf("%s: illegal column index %d",__FILE__,col);
 		return 0; /* illegal column */
+	}
 
 	for (j = 0; j < cpu_data->bowl_h; j++)
 		if (cpu_data->bowl[col][j] != 0)
 			break;
 
 	return cpu_data->bowl_h - j;
+}
+
+/* Get y-value for first tile in column. bowl_h means no tiles in column. */
+static int cpu_get_column_starty(CPU_Data *cpu_data, int col) {
+	int h = cpu_get_column_height(cpu_data, col);
+	return cpu_data->bowl_h - h;
 }
 
 /** Get bowl height by checking all columns. */
@@ -158,7 +166,6 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	int line_score;
 	int y, abyss_depth;
 	int diff;
-	int aux_alt;
 	CPU_ScoreSet *bscores = &cpu_data->base_scores;
 
 	/* get maximum height */
@@ -184,10 +191,10 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	/* HOLES */
 	/* each hole simply count a score */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
-		for (j = cpu_data->bowl_h - 1; j > cpu_data->bowl_h - 1 - cpu_get_column_height(cpu_data, i); j--) {
+		int sy = cpu_get_column_starty(cpu_data, i);
+		for (j = sy; j < cpu_data->bowl_h; j++)
 			if (!cpu_data->bowl[i][j])
 				eval->score_set.holes += bscores->holes;
-		}
 	}
 
 	/* ALTITUDE */
@@ -205,22 +212,18 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	}
 
 	/* ABYSS */
-	/* depth of a gap */
+	/* depth of a single column gap */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
-		/* get deepest point */
-		aux_alt = cpu_get_column_height(cpu_data, i - 1);
-		if (cpu_get_column_height(cpu_data, i + 1) < aux_alt)
-			aux_alt = cpu_get_column_height(cpu_data, i + 1);
-		/* if column is higher than adjacent columns no abyss */
-		if (cpu_get_column_height(cpu_data, i) >= aux_alt)
-			continue;
-		y = cpu_data->bowl_h - aux_alt - 1;
-		/* compute depth */
-		abyss_depth = 0;
-		while (y + 1 < cpu_data->bowl_h && !cpu_data->bowl[i][y + 1]) {
-			abyss_depth++;
-			y++;
-		}
+		/* get lowest neighbor height */
+		int nh = cpu_get_column_height(cpu_data, i - 1);
+		if (cpu_get_column_height(cpu_data, i + 1) < nh)
+			nh = cpu_get_column_height(cpu_data, i + 1);
+
+		abyss_depth = nh - cpu_get_column_height(cpu_data, i);
+
+		if (abyss_depth < 0)
+			continue; /* column is higher than its neighbors */
+
 		if (abyss_depth >= 2) /* small gaps for j and l pieces are ok */
 			eval->score_set.abyss += bscores->abyss * abyss_depth;
 	}
@@ -231,7 +234,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	 * we just score the current block. */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		/* first col tile */
-		y = cpu_data->bowl_h - cpu_get_column_height(cpu_data, i);
+		y = cpu_get_column_starty(cpu_data, i);
 		while (y < cpu_data->bowl_h && cpu_data->bowl[i][y]) {
 			if (cpu_data->bowl[i][y] == 2)
 				eval->score_set.block += bscores->block;
