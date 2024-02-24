@@ -144,10 +144,10 @@ void bowl_compute_cpu_dest( Bowl *bowl )
             cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
 
     /* use this hardcoded score set for eval */
-    cpu_data.base_scores.lines = 17;
-    cpu_data.base_scores.holes = -26;
+    cpu_data.base_scores.lines = 15;
+    cpu_data.base_scores.holes = -28;
     cpu_data.base_scores.height = 5;
-    cpu_data.base_scores.slope = -3;
+    cpu_data.base_scores.slope = -2;
     cpu_data.base_scores.abyss = -7;
     cpu_data.base_scores.block = -5;
 

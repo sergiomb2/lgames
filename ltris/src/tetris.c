@@ -685,51 +685,88 @@ static double get_avg(double *arr, int len)
 		return sum / count;
 }
 
-/** Test CPU algorithm by running a number of games and printing some stats. */
-void tetris_test_cpu_algorithm()
+/** Run a single game. */
+double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 {
-	int i;
 	int numgames = 50;
 	double scores[numgames];
 	double lines[numgames];
-	Bowl *bowl = 0;
-	CPU_ScoreSet bscores;
-
-	printf( "**********\n" );
-
-	bowl = bowl_create( 0, 0, -1, -1, -1, -1, blocks, qmark, "Demo", 0 );
 
 	/* clear counters */
 	memset(lines, 0, sizeof( lines ));
 	memset(scores, 0, sizeof( scores ));
 
-	/* set base scores */
-	bscores.lines = 17;
-	bscores.holes = -26;
-	bscores.height = 5;
-	bscores.slope = -3;
-	bscores.abyss = -7;
-	bscores.block = -5;
+	printf( "Evaluating: l=%d h=%d a=%d s=%d a=%d b=%d\n",
+			bscores->lines, bscores->holes, bscores->height,
+			bscores->slope, bscores->abyss, bscores->block);
+	if (!verbose)
+		printf("  ");
 
-	printf( "  Evaluating: l=%d h=%d a=%d s=%d a=%d b=%d\n",
-			bscores.lines, bscores.holes, bscores.height,
-			bscores.slope, bscores.abyss, bscores.block);
-
-	for (i = 0; i < numgames; i++) {
+	for (int i = 0; i < numgames; i++) {
 		/* check if quit requested */
 		SDL_PumpEvents();
 		unsigned char *keys = SDL_GetKeyState(NULL);
 		if (keys[SDLK_ESCAPE])
-			break;
+			return 0;
 
 		/* run silent game and store results */
-		bowl_quick_game(bowl, &bscores);
+		bowl_quick_game(bowl, bscores);
 		lines[i] = bowl->lines;
 		scores[i] = bowl->score.value;
-		printf( "  %3d: lines=%5.0f, score=%14.0f\n", i, lines[i], scores[i] );
+		if (verbose)
+			printf( "  %3d: lines=%5.0f, score=%14.0f\n", i, lines[i], scores[i] );
+		else if (i % 2) {
+			printf(".");
+			fflush(stdout);
+		}
 	}
 	printf("  -> avg: lines=%.0f, score=%.0f\n",
 		get_avg(lines,numgames), get_avg(scores, numgames));
+	return get_avg(scores, numgames);
+}
+
+/** Test CPU algorithm by running a number of games and printing some stats. */
+void tetris_test_cpu_algorithm()
+{
+	Bowl *bowl = 0;
+	CPU_ScoreSet bscores;
+	CPU_ScoreSet bestset; /* result with highest game score */
+	double score, maxscore = 0;
+
+	printf( "**********\n" );
+
+	bowl = bowl_create( 0, 0, -1, -1, -1, -1, blocks, qmark, "Demo", 0 );
+
+	/* set base scores */
+	bscores.lines = 15;
+	bscores.holes = -28;
+	bscores.height = 5;
+	bscores.slope = -2;
+	bscores.abyss = -7;
+	bscores.block = -5;
+
+	tetris_test_cpu_single(bowl, &bscores, 1);
+
+	/* test variations of base scores
+	for (int i = 16; i <= 19; i++)
+		for (int j = -28; j <= -24; j++)
+			for (int k = -5; k <= -1; k++) {
+				bscores.lines = i;
+				bscores.holes = j;
+				bscores.slope = k;
+
+				score = tetris_test_cpu_single(bowl, &bscores, 0);
+
+				if (score > maxscore) {
+					bestset = bscores;
+					maxscore = score;
+				}
+			}
+
+	printf( "Best result: score=%0.f for l=%d h=%d a=%d s=%d a=%d b=%d\n",
+			maxscore,
+			bestset.lines, bestset.holes, bestset.height,
+			bestset.slope, bestset.abyss, bestset.block); */
 
 	bowl_delete(bowl);
 }
