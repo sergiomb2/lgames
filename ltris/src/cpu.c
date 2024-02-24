@@ -155,6 +155,14 @@ static int cpu_get_bowl_height(CPU_Data *cpu_data)
 	return height;
 }
 
+/** Weigh a value by building sum, so each +1 gets more and more significance */
+static int get_wval(int v) {
+	int wv = 0;
+	for (int i = 1; i <= v; i++)
+		wv += i;
+	return wv;
+}
+
 /** This is the main analyze function. cpu_data's bowl already contains
  * the positioned piece (id=2) and we have to evaluate the placement and
  * return the result in eval->score. */
@@ -162,34 +170,33 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 {
 	int i, j;
 	int line_count;
-	int max_height = 0;
+	int bheight = 0;
 	int line_score;
 	int y, abyss_depth;
 	int diff;
 	CPU_ScoreSet *bscores = &cpu_data->base_scores;
 
-	/* get maximum height */
-	max_height = cpu_get_bowl_height(cpu_data);
+	/* get bowl height */
+	bheight = cpu_get_bowl_height(cpu_data);
 
 	/* count completed lines -- lines that will be removed are marked as 3 */
 	line_count = cpu_count_completed_lines(cpu_data);
 	cpu_remove_completed_lines(cpu_data);
 
-	/* ANALYZE */
+	/* evaluate */
 
-	/* LINES */
-	/* the higher the current bowl content the more valuable is removing lines */
-	line_score = bscores->lines + (max_height/2);
+	/* lines: the higher the current bowl content the more valuable is removing lines */
+	line_score = bscores->lines + (bscores->lines * bheight / cpu_data->bowl_h);
 	if (line_count == 1) {
-		if (max_height <= 5)
+		/* punish single clears for low bowl content */
+		if (bheight <= 5)
 			eval->score_set.lines = -line_score;
-		else if (max_height <= 12)
+		else if (bheight <= 12)
 			eval->score_set.lines = -(line_score/2);
 	} else
-		eval->score_set.lines = line_score * line_count * line_count;
+		eval->score_set.lines = line_score * get_wval(line_count);
 
-	/* HOLES */
-	/* each hole simply count a score */
+	/* holes: each gives some (negative) score */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		int sy = cpu_get_column_starty(cpu_data, i);
 		for (j = sy; j < cpu_data->bowl_h; j++)
@@ -197,12 +204,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 				eval->score_set.holes += bscores->holes;
 	}
 
-	/* ALTITUDE */
-	/* the further down you place the tile the better */
-	eval->score_set.height = bscores->height * eval->y;
-
-	/* STEEPNESS */
-	/* height difference to the adjacent columns */
+	/* slope: height difference to adjacent columns */
 	for (i = 1; i < BOWL_WIDTH - 1; i++) {
 		diff = abs(cpu_get_column_height(cpu_data, i) -
 					cpu_get_column_height(cpu_data, i - 1)) +
@@ -211,8 +213,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 		eval->score_set.slope += bscores->slope * diff;
 	}
 
-	/* ABYSS */
-	/* depth of a single column gap */
+	/* abyss: depth of a single column gap */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		/* get lowest neighbor height */
 		int nh = cpu_get_column_height(cpu_data, i - 1);
@@ -228,12 +229,15 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 			eval->score_set.abyss += bscores->abyss * abyss_depth;
 	}
 
-	/* BLOCK */
-	/* to keep the bowl down we need to complete lines and therefore keep the upper holes in reach.
+	/* block:
+	 * to keep the bowl down we need to complete lines and therefore keep the upper holes in reach.
 	 * therefore we punish each tile above the last hole. as already inserted blocks doesn't matter
-	 * we just score the current block. */
+	 * we just score the current block.
+	 * FIXME: this is completely broken as we never check if the column has any holes
+	 * still it significantly contributes to good piece placement... basically we just
+	 * count how many new piece tiles are left after placement thus rewarding completing
+	 * lines a little more. */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
-		/* first col tile */
 		y = cpu_get_column_starty(cpu_data, i);
 		while (y < cpu_data->bowl_h && cpu_data->bowl[i][y]) {
 			if (cpu_data->bowl[i][y] == 2)
@@ -242,7 +246,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 		}
 	}
 
-	/* score together */
+	/* total score */
 	eval->score = eval->score_set.holes + eval->score_set.lines +
 			eval->score_set.height + eval->score_set.abyss +
 			eval->score_set.slope + eval->score_set.block;
