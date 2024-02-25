@@ -294,8 +294,8 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 
 	/* total score */
 	eval->score = eval->score_set.holes + eval->score_set.lines +
-			eval->score_set.height + eval->score_set.abyss +
-			eval->score_set.slope + eval->score_set.block;
+			eval->score_set.abyss + eval->score_set.slope +
+			eval->score_set.block;
 }
 
 /** Analyze cpu_data's original bowl and piece by testing all possible

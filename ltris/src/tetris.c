@@ -696,8 +696,8 @@ double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 	memset(lines, 0, sizeof( lines ));
 	memset(scores, 0, sizeof( scores ));
 
-	printf( "Evaluating: l=%d h=%d a=%d s=%d a=%d b=%d\n",
-			bscores->lines, bscores->holes, bscores->height,
+	printf( "Evaluating: l=%d h=%d s=%d a=%d b=%d\n",
+			bscores->lines, bscores->holes,
 			bscores->slope, bscores->abyss, bscores->block);
 	if (!verbose)
 		printf("  ");
@@ -742,7 +742,6 @@ void tetris_test_cpu_algorithm(int type)
 	/* set base scores */
 	bscores.lines = 15;
 	bscores.holes = -28;
-	bscores.height = 5;
 	bscores.slope = -2;
 	bscores.abyss = -7;
 	bscores.block = -5;
@@ -770,9 +769,8 @@ void tetris_test_cpu_algorithm(int type)
 			}
 		}
 
-		printf( "Best result: score=%0.f for l=%d h=%d a=%d s=%d a=%d b=%d\n",
-				maxscore,
-				bestset.lines, bestset.holes, bestset.height,
+		printf( "Best result: score=%0.f for l=%d h=%d s=%d a=%d b=%d\n",
+				maxscore, bestset.lines, bestset.holes,
 				bestset.slope, bestset.abyss, bestset.block);
 	}
 

@@ -21,7 +21,6 @@
 /* set with scores for all evaluated criteria */
 typedef struct {
 	int lines; /* score for completed lines */
-	int height; /* score for height of bowl content */
 	int slope; /* score for profile of bowl content */
 	int holes; /* score for new holes */
 	int block; /* score for new piece tiles blocking existing holes */
