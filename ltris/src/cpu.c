@@ -185,6 +185,20 @@ static int cpu_get_height_diff_l(CPU_Data *cpu_data, int col)
 				cpu_get_column_height(cpu_data, col);
 }
 
+static int cpu_column_has_gap(CPU_Data *cpu_data, int col)
+{
+	if (col < 0 || col >= cpu_data->bowl_w) {
+		printf("%s: illegal column index %d",__FILE__,col);
+		return 0;
+	}
+
+	int y = cpu_get_column_starty(cpu_data, col);
+	for (int i = y; i < cpu_data->bowl_h; i++)
+		if (cpu_data->bowl[col][i] == 0)
+			return 1;
+	return 0;
+}
+
 /** This is the main analyze function. cpu_data's bowl already contains
  * the positioned piece (id=2) and we have to evaluate the placement and
  * return the result in eval->score. */
@@ -226,16 +240,24 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 				eval->score_set.holes += bscores->holes;
 	}
 
-	/* slope: height difference to adjacent columns */
-	for (i = 1; i < BOWL_WIDTH - 1; i++) {
+	/* slope: height difference to adjacent columns. the outer columns are only
+	 * measured once this way, since it is ok to have more difference there, e.g.
+	 * putting an i-piece at a far end is ok or having a gap for an i-piece there
+	 * is actually good. so we try to keep the middle of the bowl balanced. */
+	for (i = 1; i < cpu_data->bowl_w - 1; i++) {
 		eval->score_set.slope += bscores->slope *
 				abs(cpu_get_height_diff_r(cpu_data, i));
 		eval->score_set.slope += bscores->slope *
 				abs(cpu_get_height_diff_l(cpu_data, i));
 	}
 
-	/* abyss: depth of a single column gap */
+	/* abyss: punish deep single column gaps */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
+		/* don't punish abyss in last column if bowl is not too full
+		 * to allow using i-pieces for tetrises */
+		if (i == cpu_data->bowl_w-1 && bheight < cpu_data->bowl_h/3)
+			continue;
+
 		/* get lowest neighbor height */
 		int nh = cpu_get_column_height(cpu_data, i - 1);
 		if (cpu_get_column_height(cpu_data, i + 1) < nh)
@@ -250,22 +272,25 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 			eval->score_set.abyss += bscores->abyss * abyss_depth;
 	}
 
-	/* block:
-	 * to keep the bowl down we need to complete lines and therefore keep the upper holes in reach.
-	 * therefore we punish each tile above the last hole. as already inserted blocks doesn't matter
-	 * we just score the current block.
-	 * FIXME: this is completely broken as we never check if the column has any holes
-	 * still it significantly contributes to good piece placement... basically we just
-	 * count how many new piece tiles are left after placement thus rewarding completing
-	 * lines a little more. */
-	for (i = 0; i < cpu_data->bowl_w; i++) {
-		y = cpu_get_column_starty(cpu_data, i);
-		while (y < cpu_data->bowl_h && cpu_data->bowl[i][y]) {
-			if (cpu_data->bowl[i][y] == 2)
+	/* block: to keep the bowl down we need to complete lines and
+	 * therefore keep the upper holes in reach. so we punish each
+	 * new blocking tile if there is a gap in a column.
+	for (i = 0; i < cpu_data->bowl_w; i++)
+		if (bheight > cpu_data->bowl_h/2 || cpu_column_has_gap(cpu_data, i)) {
+			y = cpu_get_column_starty(cpu_data, i);
+			for (j = y; j < cpu_data->bowl_h; j++) {
+				if (cpu_data->bowl[i][j] == 2)
+					eval->score_set.block += bscores->block;
+				else
+					break;
+			}
+		} */
+	/* XXX old broken evaluation, which just counts remaining tiles of
+	 * new piece ... and gives way better results??? */
+	for (i = 0; i < cpu_data->bowl_w; i++)
+		for (j = 0; j < cpu_data->bowl_h; j++)
+			if (cpu_data->bowl[i][j] == 2)
 				eval->score_set.block += bscores->block;
-			y++;
-		}
-	}
 
 	/* total score */
 	eval->score = eval->score_set.holes + eval->score_set.lines +

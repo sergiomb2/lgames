@@ -748,20 +748,24 @@ void tetris_test_cpu_algorithm()
 	tetris_test_cpu_single(bowl, &bscores, 1);
 
 	/* test variations of base scores
-	for (int i = 16; i <= 19; i++)
-		for (int j = -28; j <= -24; j++)
-			for (int k = -5; k <= -1; k++) {
-				bscores.lines = i;
-				bscores.holes = j;
-				bscores.slope = k;
+	for (int i = 14; i <= 16; i++)
+	for (int j = -29; j <= -27; j++)
+	for (int k = -3; k <= -1; k++)
+	for (int l = -8; l <= -6; l++)
+	for (int m = -4; m <= 0; m++) {
+		bscores.lines = i;
+		bscores.holes = j;
+		bscores.slope = k;
+		bscores.abyss = l;
+		bscores.block = m;
 
-				score = tetris_test_cpu_single(bowl, &bscores, 0);
+		score = tetris_test_cpu_single(bowl, &bscores, 0);
 
-				if (score > maxscore) {
-					bestset = bscores;
-					maxscore = score;
-				}
-			}
+		if (score > maxscore) {
+			bestset = bscores;
+			maxscore = score;
+		}
+	}
 
 	printf( "Best result: score=%0.f for l=%d h=%d a=%d s=%d a=%d b=%d\n",
 			maxscore,
