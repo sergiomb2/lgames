@@ -688,7 +688,7 @@ static double get_avg(double *arr, int len)
 /** Run a single game. */
 double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 {
-	int numgames = 50;
+	int numgames = 100;
 	double scores[numgames];
 	double lines[numgames];
 
@@ -710,12 +710,12 @@ double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 			return 0;
 
 		/* run silent game and store results */
-		bowl_quick_game(bowl, bscores);
+		bowl_quick_game(bowl, bscores, config.cpu_aggr);
 		lines[i] = bowl->lines;
 		scores[i] = bowl->score.value;
 		if (verbose)
 			printf( "  %3d: lines=%5.0f, score=%14.0f\n", i, lines[i], scores[i] );
-		else if (i % 2) {
+		else if ((i % 5) == 0) {
 			printf(".");
 			fflush(stdout);
 		}
@@ -736,29 +736,38 @@ void tetris_test_cpu_algorithm(int type)
 	double score, maxscore = 0;
 
 	printf( "**********\n" );
+	printf( "modern=%d, aggr=%d\n", config.modern, config.cpu_aggr);
 
 	bowl = bowl_create( 0, 0, -1, -1, -1, -1, blocks, qmark, "Demo", 0 );
 
 	/* set base scores */
+	/* avg: 2300 lines, 14,5 mio but higher scores in maxed out games */
 	bscores.lines = 15;
 	bscores.holes = -28;
 	bscores.slope = -2;
 	bscores.abyss = -7;
 	bscores.block = -5;
 
+	/* avg: 2400 lines, 15,5 mio, but lower scores in maxed out games
+	bscores.lines = 13;
+	bscores.holes = -28;
+	bscores.slope = -2;
+	bscores.abyss = -7;
+	bscores.block = -4; */
+
 	if (type == 1)
 		tetris_test_cpu_single(bowl, &bscores, 1);
 	else {
 		/* test variations of base scores */
-		for (int i = 14; i <= 16; i++)
-		for (int j = -29; j <= -27; j++)
-		for (int k = -3; k <= -1; k++)
-		for (int l = -8; l <= -6; l++)
+		//for (int i = 14; i <= 16; i++)
+		//for (int j = -29; j <= -27; j++)
+		//for (int k = 13; k <= 17; k++)
+		for (int l = 12; l <= 13; l++)
 		for (int m = -4; m <= 0; m++) {
-			bscores.lines = i;
-			bscores.holes = j;
-			bscores.slope = k;
-			bscores.abyss = l;
+			bscores.lines = l;
+			//bscores.holes = l;
+			//bscores.slope = k;
+			//bscores.abyss = l;
 			bscores.block = m;
 
 			score = tetris_test_cpu_single(bowl, &bscores, 0);

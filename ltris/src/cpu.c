@@ -185,7 +185,9 @@ static int cpu_get_height_diff_l(CPU_Data *cpu_data, int col)
 				cpu_get_column_height(cpu_data, col);
 }
 
-static int cpu_column_has_gap(CPU_Data *cpu_data, int col)
+/** Get first gap y (from top) for column col. If not found (= no gap)
+ * return height of bowl as illegal position. */
+static int cpu_column_get_first_gapy(CPU_Data *cpu_data, int col)
 {
 	if (col < 0 || col >= cpu_data->bowl_w) {
 		printf("%s: illegal column index %d",__FILE__,col);
@@ -195,8 +197,8 @@ static int cpu_column_has_gap(CPU_Data *cpu_data, int col)
 	int y = cpu_get_column_starty(cpu_data, col);
 	for (int i = y; i < cpu_data->bowl_h; i++)
 		if (cpu_data->bowl[col][i] == 0)
-			return 1;
-	return 0;
+			return i;
+	return cpu_data->bowl_h;
 }
 
 /** This is the main analyze function. cpu_data's bowl already contains
@@ -254,8 +256,9 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	/* abyss: punish deep single column gaps */
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		/* don't punish abyss in last column if bowl is not too full
-		 * to allow using i-pieces for tetrises */
-		if (i == cpu_data->bowl_w-1 && bheight < cpu_data->bowl_h/3)
+		 * to allow using i-piece for tetris if playing aggressive */
+		if (cpu_data->aggr && i == cpu_data->bowl_w-1 &&
+						bheight < cpu_data->bowl_h/3)
 			continue;
 
 		/* get lowest neighbor height */
@@ -274,23 +277,40 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 
 	/* block: to keep the bowl down we need to complete lines and
 	 * therefore keep the upper holes in reach. so we punish each
-	 * new blocking tile if there is a gap in a column.
-	for (i = 0; i < cpu_data->bowl_w; i++)
-		if (bheight > cpu_data->bowl_h/2 || cpu_column_has_gap(cpu_data, i)) {
+	 * new blocking tile if there is a hole at max one tile below
+	 * new piece tiles in a column for aggressive play. this leads
+	 * to more "towers" in the middle of the bowl but less holes
+	 * and more multiple line clears. however, if the bowl content
+	 * gets to high we switch to a more balanced play style. */
+	if (cpu_data->aggr && bheight < cpu_data->bowl_h/2) {
+		for (i = 0; i < cpu_data->bowl_w; i++) {
+			int gy = cpu_column_get_first_gapy(cpu_data, i);
+			if (gy == cpu_data->bowl_h)
+				continue; /* no gap */
 			int y = cpu_get_column_starty(cpu_data, i);
+			int newtiles = 0;
 			for (j = y; j < cpu_data->bowl_h; j++) {
 				if (cpu_data->bowl[i][j] == 2)
-					eval->score_set.block += bscores->block;
+					newtiles++;
 				else
 					break;
 			}
-		} */
-	/* XXX old broken evaluation, which just counts remaining tiles of
-	 * new piece ... and gives way better results??? */
-	for (i = 0; i < cpu_data->bowl_w; i++)
-		for (j = 0; j < cpu_data->bowl_h; j++)
-			if (cpu_data->bowl[i][j] == 2)
-				eval->score_set.block += bscores->block;
+			if (newtiles && gy - j <= 1)
+				eval->score_set.block += newtiles *  bscores->block;
+		}
+	} else {
+		/* XXX old broken block evaluation... which just counts
+		 * remaining tiles of a new piece. this rewards using a piece
+		 * for line clears and shouldn't do much actually. except it
+		 * does give a HUGE edge for balanced long play ... I absolutely
+		 * don't know why but I'll take it. */
+		int debris = 0;
+		for (i = 0; i < cpu_data->bowl_w; i++)
+			for (j = 0; j < cpu_data->bowl_h; j++)
+				if (cpu_data->bowl[i][j] == 2)
+					debris++;
+		eval->score_set.block = debris * bscores->block;
+	}
 
 	/* total score */
 	eval->score = eval->score_set.holes + eval->score_set.lines +
