@@ -208,7 +208,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	int line_count;
 	int bheight = 0;
 	int line_score;
-	int y, abyss_depth;
+	int abyss_depth;
 	CPU_ScoreSet *bscores = &cpu_data->base_scores;
 
 	/* get bowl height */
@@ -277,7 +277,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	 * new blocking tile if there is a gap in a column.
 	for (i = 0; i < cpu_data->bowl_w; i++)
 		if (bheight > cpu_data->bowl_h/2 || cpu_column_has_gap(cpu_data, i)) {
-			y = cpu_get_column_starty(cpu_data, i);
+			int y = cpu_get_column_starty(cpu_data, i);
 			for (j = y; j < cpu_data->bowl_h; j++) {
 				if (cpu_data->bowl[i][j] == 2)
 					eval->score_set.block += bscores->block;

@@ -725,8 +725,10 @@ double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 	return get_avg(scores, numgames);
 }
 
-/** Test CPU algorithm by running a number of games and printing some stats. */
-void tetris_test_cpu_algorithm()
+/** Test CPU algorithm by running a number of games and printing some stats.
+ * type=1 - single run
+ * type=2 - test range of values */
+void tetris_test_cpu_algorithm(int type)
 {
 	Bowl *bowl = 0;
 	CPU_ScoreSet bscores;
@@ -745,32 +747,34 @@ void tetris_test_cpu_algorithm()
 	bscores.abyss = -7;
 	bscores.block = -5;
 
-	tetris_test_cpu_single(bowl, &bscores, 1);
+	if (type == 1)
+		tetris_test_cpu_single(bowl, &bscores, 1);
+	else {
+		/* test variations of base scores */
+		for (int i = 14; i <= 16; i++)
+		for (int j = -29; j <= -27; j++)
+		for (int k = -3; k <= -1; k++)
+		for (int l = -8; l <= -6; l++)
+		for (int m = -4; m <= 0; m++) {
+			bscores.lines = i;
+			bscores.holes = j;
+			bscores.slope = k;
+			bscores.abyss = l;
+			bscores.block = m;
 
-	/* test variations of base scores
-	for (int i = 14; i <= 16; i++)
-	for (int j = -29; j <= -27; j++)
-	for (int k = -3; k <= -1; k++)
-	for (int l = -8; l <= -6; l++)
-	for (int m = -4; m <= 0; m++) {
-		bscores.lines = i;
-		bscores.holes = j;
-		bscores.slope = k;
-		bscores.abyss = l;
-		bscores.block = m;
+			score = tetris_test_cpu_single(bowl, &bscores, 0);
 
-		score = tetris_test_cpu_single(bowl, &bscores, 0);
-
-		if (score > maxscore) {
-			bestset = bscores;
-			maxscore = score;
+			if (score > maxscore) {
+				bestset = bscores;
+				maxscore = score;
+			}
 		}
-	}
 
-	printf( "Best result: score=%0.f for l=%d h=%d a=%d s=%d a=%d b=%d\n",
-			maxscore,
-			bestset.lines, bestset.holes, bestset.height,
-			bestset.slope, bestset.abyss, bestset.block); */
+		printf( "Best result: score=%0.f for l=%d h=%d a=%d s=%d a=%d b=%d\n",
+				maxscore,
+				bestset.lines, bestset.holes, bestset.height,
+				bestset.slope, bestset.abyss, bestset.block);
+	}
 
 	bowl_delete(bowl);
 }

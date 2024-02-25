@@ -50,6 +50,6 @@ see if your analyze algorithm in cpu.c cpu_analyze_bowl() sucks
 or rocks!
 ====================================================================
 */
-void tetris_test_cpu_algorithm();
+void tetris_test_cpu_algorithm(int type);
 
 #endif

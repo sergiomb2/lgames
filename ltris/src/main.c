@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     strcpy(gametype_names[8],_("Training"));
     config_load();
 
-    while ( ( c = getopt( argc, argv, "tfwr:" ) ) != -1 )
+    while ( ( c = getopt( argc, argv, "Ttfwr:" ) ) != -1 )
       {
         switch (c)
   	{
@@ -93,7 +93,10 @@ int main(int argc, char *argv[])
   				video_forced_w, video_forced_h);
   		break;
   	case 't':
-  		test_alg = 1; /* test CPU algorithm in console */
+  		test_alg = 1; /* test CPU algorithm in console, single run */
+  		break;
+  	case 'T':
+  		test_alg = 2; /* test CPU algorithm in console, test range */
   		break;
   	}
       }
@@ -145,7 +148,7 @@ int main(int argc, char *argv[])
 	    /* test algorithm on console? */
 	    if (test_alg) {
 		    tetris_init();
-		    tetris_test_cpu_algorithm();
+		    tetris_test_cpu_algorithm(test_alg);
 		    tetris_clear();
 		    break;
 	    }
