@@ -257,8 +257,9 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	for (i = 0; i < cpu_data->bowl_w; i++) {
 		/* don't punish abyss in last column if bowl is not too full
 		 * to allow using i-piece for tetris if playing aggressive */
-		if (cpu_data->aggr && i == cpu_data->bowl_w-1 &&
-						bheight < cpu_data->bowl_h/3)
+		if (cpu_data->style >= CS_NORMAL &&
+					i == cpu_data->bowl_w-1 &&
+					bheight < cpu_data->bowl_h/3)
 			continue;
 
 		/* get lowest neighbor height */
@@ -282,7 +283,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	 * to more "towers" in the middle of the bowl but less holes
 	 * and more multiple line clears. however, if the bowl content
 	 * gets to high we switch to a more balanced play style. */
-	if (cpu_data->aggr && bheight < cpu_data->bowl_h/2) {
+	if (cpu_data->style >= CS_NORMAL && bheight < cpu_data->bowl_h/2) {
 		for (i = 0; i < cpu_data->bowl_w; i++) {
 			int gy = cpu_column_get_first_gapy(cpu_data, i);
 			if (gy == cpu_data->bowl_h)

@@ -1,3 +1,6 @@
+- tweaked cpu algorithm (2024/02/27 MS)
+
+1.2.8:
 - fixed bug in sending lines in multiplayer (2024/02/17 MS)
 - tweaked multiplayer defaults (2024/02/17 MS)
 - added option to customize cpu drop speed (2024/02/17 MS)

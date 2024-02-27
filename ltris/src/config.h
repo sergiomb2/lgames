@@ -31,7 +31,11 @@ enum {
     GAME_VS_HUMAN_CPU,
     GAME_VS_CPU_CPU,
     GAME_TRAINING,
-    GAME_TYPENUM
+    GAME_TYPENUM,
+
+    CS_DEFENSIVE = 0,
+    CS_NORMAL,
+    CS_AGGRESSIVE
 };
 
 typedef struct {
@@ -75,7 +79,7 @@ typedef struct {
     int send_all;
     int send_tetris;
     /* cpu */
-    int cpu_aggr; /* cpu aggression level (the higher the more it plays for multiple lines) */
+    int cpu_style; /* cpu style */
     int cpu_delay; /* delay in ms before CPU soft drops */
     int cpu_rot_delay; /* delay between rotation steps */
     int cpu_sfactor; /* multiplier for dropping speed in 0.25 steps */

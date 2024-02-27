@@ -132,9 +132,9 @@ void bowl_compute_cpu_dest( Bowl *bowl )
 
     /* pass bowl contents to the cpu bowl */
     if ( config.gametype == 0 ) /* demo is supposed to get the highest scores */
-        cpu_data.aggr = 0; /* so play defensive */
+        cpu_data.style = 0; /* so play defensive */
     else
-        cpu_data.aggr = config.cpu_aggr; /* else use the wanted setting */
+        cpu_data.style = config.cpu_style; /* else use the wanted setting */
     cpu_data.bowl_w = bowl->w;
     cpu_data.bowl_h = bowl->h;
     cpu_data.original_piece = &block_masks[bowl->block.id];
@@ -143,12 +143,21 @@ void bowl_compute_cpu_dest( Bowl *bowl )
         for ( j = 0; j < bowl->h; j++ )
             cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
 
-    /* use this hardcoded score set for eval */
-    cpu_data.base_scores.lines = 15;
-    cpu_data.base_scores.holes = -28;
-    cpu_data.base_scores.slope = -2;
-    cpu_data.base_scores.abyss = -7;
-    cpu_data.base_scores.block = -5;
+    /* use this hardcoded score set for eval
+     * see explanation in tetris.c:tetris_test_cpu_algorithm() */
+    if (config.cpu_style == CS_AGGRESSIVE) {
+	    cpu_data.base_scores.lines = 15;
+	    cpu_data.base_scores.holes = -28;
+	    cpu_data.base_scores.slope = -2;
+	    cpu_data.base_scores.abyss = -7;
+	    cpu_data.base_scores.block = -5;
+    } else {
+	    cpu_data.base_scores.lines = 13;
+	    cpu_data.base_scores.holes = -28;
+	    cpu_data.base_scores.slope = -2;
+	    cpu_data.base_scores.abyss = -7;
+	    cpu_data.base_scores.block = -4;
+    }
 
     /* get best destination */
     cpu_analyze_data( &cpu_data );
@@ -1727,9 +1736,10 @@ void bowl_toggle_pause( Bowl *bowl )
 /*
 ====================================================================
 Play an optimized mute game. (used for stats)
+@llimit is number of max lines or -1 for unlimited play
 ====================================================================
 */
-void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int aggr )
+void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int llimit )
 {
     int old_level;
     int line_count;
@@ -1740,7 +1750,7 @@ void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int aggr )
     /* constant cpu data */
     cpu_data.bowl_w = bowl->w;
     cpu_data.bowl_h = bowl->h;
-    cpu_data.aggr = aggr;
+    cpu_data.style = config.cpu_style;
 
     /* reset bowl */
     for ( i = 0; i < bowl->w; i++ ) {
@@ -1806,8 +1816,8 @@ void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int aggr )
             bowl->level++;
             bowl_set_vert_block_vel( bowl );
         }
-        /* stop at 2500 lines max */
-        if (bowl->lines >= 2500) {
+        /* stop at max lines */
+        if (llimit != -1 && bowl->lines >= llimit) {
         	bowl->game_over = 1;
         	break;
         }

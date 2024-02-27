@@ -92,7 +92,7 @@ Hint strings for the menu.
 #define HINT_SENDALL _("You'll have to complete more than one line to send any lines to your opponent. If this option is enabled all lines will be send else one will be substracted.##If disabled:#3 Line send -> 2 lines received##If enabled:#3 lines send -> 3 lines received")
 #define HINT_SENDTETRIS _("If this option is enabled your opponent will receive all four lines of your tetris ignoring the 'Send All' setting.")
 #define HINT_CPUDROP _("This is the delay in milliseconds the CPU waits before dropping a block.")
-#define HINT_CPUAGGR _("The more aggressive the style is the more priority is put on completing multiple lines at the expense of a balanced bowl contents.")
+#define HINT_CPUSTYLE _("The more aggressive the style is the more priority is put on completing multiple lines at the expense of a balanced bowl contents.")
 #define HINT_CPUSFACTOR _("Multiplier in percent for dropping speed of pieces, e.g.,#50% = half the regular speed#100% = regular speed#200% = doubled speed#Can range between 50% and 400%.")
 #define HINT_ADV _("Some advanced options.")
 #define HINT_CPUALG _("Test the CPU analyze algorithm in cpu.c and give an average score for a number of games.")
@@ -226,7 +226,7 @@ void manager_create()
     int filter[SDLK_LAST]; /* key filter */
     /* constant contence of switches */
     char *str_fps[] = { _("60 FPS"), _("50 FPS") };
-    char *str_cpu_aggr[] = { _("Defensive"), _("Normal"), _("Aggressive"), _("Kamikaze") ,};
+    char *str_cpu_style[] = { _("Defensive"), _("Normal"), _("Aggressive")};
 
     char aux[128];
     int i, j, k, l;
@@ -392,7 +392,7 @@ void manager_create()
     menu_add( twoplayer, item_create_switch( _("Send All Lines:"), HINT_SENDALL, &config.send_all, _("Off"), _("On") ) );
     menu_add( twoplayer, item_create_switch( _("Always Send Tetris:"), HINT_SENDTETRIS, &config.send_tetris, _("Off"), _("On") ) );
     menu_add( twoplayer, item_create_separator( "" ) );
-    menu_add( twoplayer, item_create_switch_x( _("CPU Style:"), HINT_CPUAGGR, &config.cpu_aggr, str_cpu_aggr, 4 ) );
+    menu_add( twoplayer, item_create_switch_x( _("CPU Style:"), HINT_CPUSTYLE, &config.cpu_style, str_cpu_style, 3 ) );
     menu_add( twoplayer, item_create_range( _("CPU Drop Delay:"), HINT_CPUDROP, &config.cpu_delay, 0, 2000, 100 ) );
     menu_add( twoplayer, item_create_range( _("CPU Speed:"), HINT_CPUSFACTOR, &config.cpu_sfactor, 50, 400, 25 ) );
     menu_add( twoplayer, item_create_separator( "" ) );

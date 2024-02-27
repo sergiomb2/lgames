@@ -41,7 +41,7 @@ typedef struct {
 typedef struct {
 	/* current piece+bowl information set by bowl_quick_game()
 	 * before calling cpu_analyze_data() */
-	int aggr; /* aggressive play style */
+	int style; /* defensive, normal, aggressive */
 	int bowl_w, bowl_h; /* must be BOWL_WIDTH and BOWL_HEIGHT */
 	Block_Mask *original_piece, *original_preview;
 	int original_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* original bowl content: 0 - empty, 1 - tile */
