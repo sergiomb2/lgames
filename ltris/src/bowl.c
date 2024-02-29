@@ -137,8 +137,10 @@ void bowl_compute_cpu_dest( Bowl *bowl )
         cpu_data.style = config.cpu_style; /* else use the wanted setting */
     cpu_data.bowl_w = bowl->w;
     cpu_data.bowl_h = bowl->h;
-    cpu_data.original_piece = &block_masks[bowl->block.id];
-    cpu_data.original_preview = &block_masks[bowl->next_block_id];
+    cpu_data.piece_id = bowl->block.id;
+    cpu_data.preview_id = bowl->next_block_id;
+    cpu_data.hold_active = bowl->hold_active;
+    cpu_data.hold_id = bowl->hold_id;
     for ( i = 0; i < bowl->w; i++ )
         for ( j = 0; j < bowl->h; j++ )
             cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
@@ -160,7 +162,9 @@ void bowl_compute_cpu_dest( Bowl *bowl )
     }
 
     /* get best destination */
-    cpu_analyze_data( &cpu_data );
+    cpu_analyze_data(&cpu_data);
+    if (cpu_data.use_hold)
+    	bowl_use_hold(bowl);
     bowl->cpu_dest_x = cpu_data.result.x;
     bowl->cpu_dest_rot = cpu_data.result.rot;
     bowl->cpu_dest_score = cpu_data.result.score;
@@ -1465,23 +1469,10 @@ void bowl_update( Bowl *bowl, int ms, BowlControls *bc, int game_over )
 		    }
 	    } else if (bc->hold == CS_DOWN && bowl->hold_active && !bowl->hold_used) {
 		    /* put current piece to hold, use piece in hold or next block */
-		    bowl->hold_used = 1;
 		    bowl->ldelay_cur = 0; /* reset lock delay if any */
-		    if (bowl->hold_id == -1) {
-			    bowl->hold_id = bowl->block.id;
-			    bowl_select_next_block(bowl);
-		    } else {
-			    int iswap = bowl->block.id;
-			    bowl->block.id = bowl->hold_id;
-			    bowl->hold_id = iswap;
-			    bowl_init_current_piece(bowl, bowl->block.id);
-			    /* opposite to select_next_block init_current_piece
-			     * does not check for game over so we do this here */
-			    if (bowl_check_piece_position(bowl,
-					    bowl->block.x, bowl->block.y,
-					    bowl->block.rot_id) != POSVALID)
-				    bowl_finish_game(bowl);
-		    }
+		    bowl_use_hold(bowl);
+		    if (bowl->game_over)
+			bowl_finish_game(bowl);
 	    }
 
         /* update horizontal bowl position */
@@ -1733,6 +1724,32 @@ void bowl_toggle_pause( Bowl *bowl )
     }
 }
 
+/** Switch current and hold piece (or store piece and get next piece if
+ * hold is empty). If switching pieces ends the game bowl->game_over is
+ * set and can be checked afterwards to finish the game. */
+void bowl_use_hold(Bowl *bowl) {
+	if (!bowl->hold_active)
+		return;
+
+	bowl->hold_used = 1;
+
+	if (bowl->hold_id != -1) {
+		int iswap = bowl->hold_id;
+		bowl->hold_id = bowl->block.id;
+		bowl->block.id = iswap;
+		bowl_init_current_piece(bowl, bowl->block.id);
+		/* opposite to select_next_block init_current_piece
+		 * does not check for game over so we do this here */
+		if (bowl_check_piece_position(bowl,
+				bowl->block.x, bowl->block.y,
+				bowl->block.rot_id) != POSVALID)
+			bowl->game_over = 1;
+	} else {
+		bowl->hold_id = bowl->block.id;
+	        bowl_select_next_block(bowl);
+	}
+}
+
 /*
 ====================================================================
 Play an optimized mute game. (used for stats)
@@ -1762,25 +1779,29 @@ void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int llimit )
     bowl->lines = bowl->level = bowl->use_figures = 0;
     bowl->game_over = 0;
     bowl->add_lines = bowl->add_tiles = 0;
-    bowl->next_block_id = rand() % BLOCK_COUNT; 
+    bowl->next_block_id = next_blocks[bowl->next_blocks_pos++];
     while ( !bowl->game_over ) {
         /* get next block */
-        bowl->block.id = bowl->next_block_id;
-        do { 
-            bowl->next_block_id = rand() % BLOCK_COUNT; 
-        } while ( bowl->next_block_id == bowl->block.id );
+        bowl_select_next_block(bowl);
         /* compute cpu dest */
-        cpu_data.original_piece = &block_masks[bowl->block.id];
-        cpu_data.original_preview = &block_masks[bowl->next_block_id];
+        cpu_data.piece_id = bowl->block.id;
+        cpu_data.preview_id = bowl->next_block_id;
+        cpu_data.hold_active = bowl->hold_active;
+        cpu_data.hold_id = bowl->hold_id;
         cpu_data.base_scores = *bscores;
         for ( i = 0; i < bowl->w; i++ )
             for ( j = 0; j < bowl->h; j++ )
                 cpu_data.original_bowl[i][j] = ( bowl->contents[i][j] != -1 );
         cpu_analyze_data( &cpu_data );
+        /* switch pieces if eval says hold is better */
+        if (cpu_data.use_hold)
+        	bowl_use_hold(bowl);
+        if (cpu_data.result.id != bowl->block.id)
+        	printf("Oopsy... id mismatch after CPU eval???\n");
         /* insert -- no additional checks as there is no chance for an illegal block else the fucking CPU sucks!!!! */
         for ( i = 0; i < 4; i++ ) {
             for ( j = 0; j < 4; j++ )
-                if ( block_masks[bowl->block.id].mask[cpu_data.result.rot][i][j] ) {
+                if ( block_masks[cpu_data.result.id].mask[cpu_data.result.rot][i][j] ) {
                     if ( j + cpu_data.result.y < 0 ) {
                         bowl->game_over = 1;
                         break;

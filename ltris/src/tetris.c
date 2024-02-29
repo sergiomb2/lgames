@@ -759,6 +759,10 @@ void tetris_test_cpu_algorithm(int type)
 	printf( "modern=%d, style=%d\n", config.modern, config.cpu_style);
 
 	bowl = bowl_create( 0, 0, -1, -1, -1, -1, blocks, qmark, "Demo", 0 );
+	if (config.modern) {
+		bowl->hold_active = 1;
+		bowl->hold_id = -1;
+	}
 
 	if (config.cpu_style == CS_AGGRESSIVE) {
 		/* slightly more aggressive play

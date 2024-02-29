@@ -19,6 +19,8 @@
 #include "list.h"
 #include "cpu.h"
 
+extern Block_Mask block_masks[BLOCK_COUNT];
+
 /** Reset bowl to original content (0 = empty, 1 = tile). */
 static void cpu_reset_bowl(CPU_Data *cpu_data)
 {
@@ -326,38 +328,48 @@ void cpu_analyze_data(CPU_Data *cpu_data)
 	int x, rot, y;
 	CPU_Eval cur_eval;
 	int first_eval = 1;
+	int pid = 0;
+
+	cpu_data->use_hold = 0;
 
 	/* get and analyze valid positions of block */
-	cpu_data->piece = cpu_data->original_piece;
-	for (rot = 0; rot < 4; rot++) {
-		for (x = -4; x < 14; x++) {
-			cpu_reset_bowl(cpu_data);
-			if (!cpu_insert_piece(cpu_data, x, rot, &y))
-				continue;
+	for (int i = 0; i < 2; i++) {
+		if (i == 0) {/* test current piece */
+			pid = cpu_data->piece_id;
+		} else if (cpu_data->hold_active) {
+			/* if hold allowed, test hold piece or preview piece if none yet */
+			if (cpu_data->hold_id != -1) {
+				pid = cpu_data->hold_id;
+			} else {
+				pid = cpu_data->preview_id;
+			}
+		} else
+			break;
 
-			memset(&cur_eval,0,sizeof(CPU_Eval));
-			cur_eval.x = x;
-			cur_eval.y = y;
-			cur_eval.rot = rot;
-			cpu_analyze_bowl(cpu_data, &cur_eval);
+		cpu_data->piece = &block_masks[pid];
+		for (rot = 0; rot < 4; rot++) {
+			for (x = -4; x < 14; x++) {
+				cpu_reset_bowl(cpu_data);
+				if (!cpu_insert_piece(cpu_data, x, rot, &y))
+					continue;
 
-			/* better than current result? replace! */
-			if (first_eval || cur_eval.score > cpu_data->result.score ||
-					(cur_eval.score == cpu_data->result.score &&
-							cur_eval.y > cpu_data->result.y))
-				cpu_data->result = cur_eval;
-			first_eval = 0;
+				memset(&cur_eval,0,sizeof(CPU_Eval));
+				cur_eval.id = pid;
+				cur_eval.x = x;
+				cur_eval.y = y;
+				cur_eval.rot = rot;
+				cpu_analyze_bowl(cpu_data, &cur_eval);
+
+				/* better than current result? replace! */
+				if (first_eval || cur_eval.score > cpu_data->result.score ||
+						(cur_eval.score == cpu_data->result.score &&
+								cur_eval.y > cpu_data->result.y)) {
+					cpu_data->result = cur_eval;
+					if (i == 1) /* testing hold option */
+						cpu_data->use_hold = 1;
+				}
+				first_eval = 0;
+			}
 		}
 	}
-
-	/* DEBUG
-	printf("DESTINATION: %d/%d\n", cpu_data->result.x, cpu_data->result.rot);
-	printf("Lines:      %6d\n", cpu_data->result.score_set.lines);
-	printf("Alt:        %6d\n", cpu_data->result.score_set.height);
-	printf("Holes:      %6d\n", cpu_data->result.score_set.holes);
-	printf("Steepness:  %6d\n", cpu_data->result.score_set.slope);
-	printf("Abyss:      %6d\n", cpu_data->result.score_set.abyss);
-	printf("Blocking:   %6d\n", cpu_data->result.score_set.block);
-	printf("----------  %6d\n", cpu_data->result.score); */
-
 }

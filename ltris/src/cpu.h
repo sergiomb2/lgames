@@ -29,7 +29,7 @@ typedef struct {
 
 /* evaluation result for a piece */
 typedef struct {
-	int x, y, rot; /* piece position and rotation */
+	int id, x, y, rot; /* tested piece info */
 	int score; /* evaluation score (total of values in score_set) */
 	CPU_ScoreSet score_set; /* single evaluations (for debugging) */
 } CPU_Eval;
@@ -43,16 +43,17 @@ typedef struct {
 	 * before calling cpu_analyze_data() */
 	int style; /* defensive, normal, aggressive */
 	int bowl_w, bowl_h; /* must be BOWL_WIDTH and BOWL_HEIGHT */
-	Block_Mask *original_piece, *original_preview;
+	int piece_id, preview_id, hold_active, hold_id;
 	int original_bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* original bowl content: 0 - empty, 1 - tile */
 
 	CPU_ScoreSet base_scores; /* basic multipliers for evaluated criteria */
 
 	/* internal stuff for analysis */
 	int bowl[BOWL_WIDTH][BOWL_HEIGHT]; /* this bowl is used to actually compute stuff */
-	Block_Mask *piece; /* actual piece tested (pointer to original_*) */
+	Block_Mask *piece; /* actual piece tested (pointer to block_masks) */
 
 	/* result */
+	int use_hold; /* 1 if result belongs to hold (or preview if empty) piece */
 	CPU_Eval result;
 } CPU_Data;
 

@@ -206,6 +206,11 @@ Toggle pause of bowl.
 */
 void bowl_toggle_pause( Bowl *bowl );
 
+/** Switch current and hold piece (or store piece and get next piece if
+ * hold is empty). If switching pieces ends the game bowl->game_over is
+ * set and can be checked afterwards to finish the game. */
+void bowl_use_hold(Bowl *bowl);
+
 /*
 ====================================================================
 Play an optimized mute game. (used for stats)
