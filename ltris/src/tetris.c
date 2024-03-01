@@ -320,7 +320,7 @@ int  tetris_init()
     /* create bowls according to the gametype */
     switch ( config.gametype ) {
         case GAME_DEMO:
-            bowls[0] = bowl_create( 220, 0, 490, 160, -1,-1, blocks, qmark, "Demo", 0 );
+            bowls[0] = bowl_create( 220, 0, 490, config.modern?100:160, 490,290, blocks, qmark, "Demo", 0 );
             break;
         case GAME_CLASSIC:
         case GAME_TRAINING:
@@ -766,7 +766,7 @@ void tetris_test_cpu_algorithm(int type)
 
 	if (config.cpu_style == CS_AGGRESSIVE) {
 		/* slightly more aggressive play
-		 * results 1000 games, 5000 lines:
+		 * results 1000 games, 5000 lines, modern=0:
 		 * 4250 avg lines, 53,5m avg score [66,7m max game avg score] */
 		bscores.lines = 15;
 		bscores.holes = -28;
@@ -774,7 +774,7 @@ void tetris_test_cpu_algorithm(int type)
 		bscores.abyss = -7;
 		bscores.block = -5;
 	} else {
-		/* normal settings, results 1000 games, 5000 lines:
+		/* normal settings, results 1000 games, 5000 lines, modern=0:
 		 * 4350 avg lines, 54,9m avg score [62,7m max game avg score] */
 		bscores.lines = 13;
 		bscores.holes = -28;
