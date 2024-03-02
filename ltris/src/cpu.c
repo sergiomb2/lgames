@@ -20,6 +20,7 @@
 #include "cpu.h"
 
 extern Block_Mask block_masks[BLOCK_COUNT];
+extern Config config;
 
 /** Reset bowl to original content (0 = empty, 1 = tile). */
 static void cpu_reset_bowl(CPU_Data *cpu_data)
@@ -213,10 +214,18 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	int bheight = 0;
 	int line_score;
 	int abyss_depth;
+	int newtiles = 0;
 	CPU_ScoreSet *bscores = &cpu_data->base_scores;
 
 	/* get bowl height */
 	bheight = cpu_get_bowl_height(cpu_data);
+
+	/* count tiles of newly placed piece in last column for "clear" eval */
+	if (bheight <= cpu_data->bowl_h/3) {
+		for (i = 0; i < cpu_data->bowl_h; i++)
+			if (cpu_data->bowl[cpu_data->bowl_w-1][i] == 2)
+				newtiles++;
+	}
 
 	/* count completed lines -- lines that will be removed are marked as 3 */
 	line_count = cpu_count_completed_lines(cpu_data);
@@ -234,6 +243,30 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 			eval->score_set.lines = -(line_score/2);
 	} else
 		eval->score_set.lines = line_score * get_wval(line_count);
+
+	/* clear: special evaluation to encourage clearing more that two lines
+	 * by having a gap for an i-piece at the right hand side. does not work
+	 * for classic since bowl content gets too unbalanced too quickly due
+	 * to random pieces. */
+	if (config.modern && cpu_data->style == CS_AGGRESSIVE) {
+		eval->score_set.clear = 0;
+
+		/* punish piece placement in last column if it does not result
+		 * in three or more cleared lines to encourage tetrises. */
+		if (newtiles > 0 && line_count < 3)
+			eval->score_set.clear -= bscores->clear * newtiles;
+
+		/* give bonus for abyss up to depth 6 in last column if bowl
+		 * content is not too high, this also automatically punishes
+		 * building higher than the left neighbor column because for
+		 * d<0 we decrease the eval score. */
+		if (bheight <= cpu_data->bowl_h/3) {
+			int d = cpu_get_height_diff_l(cpu_data, cpu_data->bowl_w-1);
+			if (d > 6)
+				d = 6; /* limit wanted depth */
+			eval->score_set.clear += d * bscores->clear/2;
+		}
+	}
 
 	/* holes: each gives some (negative) score, new holes appear by placed piece,
 	 * old holes might disappear on clearing lines, so we need the total balance */
@@ -291,7 +324,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 			if (gy == cpu_data->bowl_h)
 				continue; /* no gap */
 			int y = cpu_get_column_starty(cpu_data, i);
-			int newtiles = 0;
+			newtiles = 0;
 			for (j = y; j < cpu_data->bowl_h; j++) {
 				if (cpu_data->bowl[i][j] == 2)
 					newtiles++;
@@ -318,7 +351,7 @@ static void cpu_analyze_bowl(CPU_Data *cpu_data, CPU_Eval *eval)
 	/* total score */
 	eval->score = eval->score_set.holes + eval->score_set.lines +
 			eval->score_set.abyss + eval->score_set.slope +
-			eval->score_set.block;
+			eval->score_set.block + eval->score_set.clear;
 }
 
 /** Analyze cpu_data's original bowl and piece by testing all possible

@@ -131,10 +131,7 @@ void bowl_compute_cpu_dest( Bowl *bowl )
     CPU_Data cpu_data;
 
     /* pass bowl contents to the cpu bowl */
-    if ( config.gametype == 0 ) /* demo is supposed to get the highest scores */
-        cpu_data.style = 0; /* so play defensive */
-    else
-        cpu_data.style = config.cpu_style; /* else use the wanted setting */
+    cpu_data.style = config.cpu_style;
     cpu_data.bowl_w = bowl->w;
     cpu_data.bowl_h = bowl->h;
     cpu_data.piece_id = bowl->block.id;
@@ -153,12 +150,14 @@ void bowl_compute_cpu_dest( Bowl *bowl )
 	    cpu_data.base_scores.slope = -2;
 	    cpu_data.base_scores.abyss = -7;
 	    cpu_data.base_scores.block = -5;
+	    cpu_data.base_scores.clear = 16;
     } else {
 	    cpu_data.base_scores.lines = 13;
 	    cpu_data.base_scores.holes = -28;
 	    cpu_data.base_scores.slope = -2;
 	    cpu_data.base_scores.abyss = -7;
 	    cpu_data.base_scores.block = -4;
+	    cpu_data.base_scores.clear = 16;
     }
 
     /* get best destination */

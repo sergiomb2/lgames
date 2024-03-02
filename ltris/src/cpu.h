@@ -24,7 +24,8 @@ typedef struct {
 	int slope; /* score for profile of bowl content */
 	int holes; /* score for new holes */
 	int block; /* score for new piece tiles blocking existing holes */
-	int abyss; /* obsolete */
+	int abyss; /* score for deep gaps */
+	int clear; /* used to built gap for triple/tetris clears */
 } CPU_ScoreSet;
 
 /* evaluation result for a piece */

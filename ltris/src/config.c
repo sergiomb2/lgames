@@ -75,7 +75,7 @@ void config_reset()
     config.send_tetris = 1;
     /* cpu */
     config.cpu_style = CS_NORMAL;
-    config.cpu_delay = 700;
+    config.cpu_delay = 500;
     config.cpu_rot_delay = 100;
     config.cpu_sfactor = 100;
     /* controls */
