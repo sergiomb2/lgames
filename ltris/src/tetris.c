@@ -706,6 +706,7 @@ static double get_max_avg(double *lines, double *scores, int len, int llimit) {
 /** Run a single game. */
 double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 {
+	int llimit = 2500;
 	int numgames = 1000;
 	double scores[numgames];
 	double lines[numgames];
@@ -728,11 +729,17 @@ double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 			return 0;
 
 		/* run silent game and store results */
-		bowl_quick_game(bowl, bscores, 5000);
+		bowl_quick_game(bowl, bscores, llimit);
 		lines[i] = bowl->lines;
 		scores[i] = bowl->score.value;
-		if (verbose)
-			printf( "  %3d: lines=%5.0f, score=%14.0f\n", i, lines[i], scores[i] );
+		if (verbose) {
+			printf( "  %3d: lines=%.0f, score=%.0f clears=[%d,%d,%d,%d]\n",
+						i, lines[i], scores[i],
+						bowl->stats.cleared[0],
+						bowl->stats.cleared[1],
+						bowl->stats.cleared[2],
+						bowl->stats.cleared[3]);
+		}
 		else if ((i % 5) == 0) {
 			printf(".");
 			fflush(stdout);
@@ -740,7 +747,8 @@ double tetris_test_cpu_single(Bowl *bowl, CPU_ScoreSet *bscores, int verbose)
 	}
 	printf("  -> avg: lines=%.0f, score=%.0f\n",
 		get_avg(lines,numgames), get_avg(scores, numgames));
-	printf("  avg score of maxed out games: %.0f\n",get_max_avg(lines, scores, numgames, 5000));
+	printf("  avg score of maxed out games: %.0f\n",
+			get_max_avg(lines, scores, numgames, llimit));
 
 	return get_avg(scores, numgames);
 }

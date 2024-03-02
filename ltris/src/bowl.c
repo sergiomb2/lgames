@@ -1774,6 +1774,7 @@ void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int llimit )
         for ( j = 0; j < bowl->h; j++ )
             bowl->contents[i][j] = -1;
     }
+    memset(&bowl->stats,0,sizeof(BowlStats));
     bowl->score.value = 0;
     bowl->preview = 1; /* avoid no preview bonus */
     bowl->lines = bowl->level = bowl->use_figures = 0;
@@ -1837,6 +1838,9 @@ void bowl_quick_game( Bowl *bowl, CPU_ScoreSet *bscores, int llimit )
             bowl->level++;
             bowl_set_vert_block_vel( bowl );
         }
+        /* stats */
+        if (line_count > 0)
+        	bowl->stats.cleared[line_count-1]++;
         /* stop at max lines */
         if (llimit != -1 && bowl->lines >= llimit) {
         	bowl->game_over = 1;
