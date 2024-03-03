@@ -92,16 +92,17 @@ Hint strings for the menu.
 #define HINT_SENDALL _("You'll have to complete more than one line to send any lines to your opponent. If this option is enabled all lines will be send else one will be substracted.##If disabled:#3 Line send -> 2 lines received##If enabled:#3 lines send -> 3 lines received")
 #define HINT_SENDTETRIS _("If this option is enabled your opponent will receive all four lines of your tetris ignoring the 'Send All' setting.")
 #define HINT_CPUDROP _("This is the delay in milliseconds the CPU waits before dropping a block.")
-#define HINT_CPUSTYLE _("The more aggressive the style is the more priority is put on completing multiple lines at the expense of a balanced bowl contents.")
+#define HINT_CPUSTYLE _("Defensive: Clears any lines.#Normal: Mostly goes for two lines.#Aggressive: Tries to complete three or four lines (on modern only).##In general: The more aggressive the style, the more priority is put on completing multiple lines at the expense of a balanced bowl contents.")
 #define HINT_CPUSFACTOR _("Multiplier in percent for dropping speed of pieces, e.g.,#50% = half the regular speed#100% = regular speed#200% = doubled speed#Can range between 50% and 400%.")
 #define HINT_ADV _("Some advanced options.")
 #define HINT_CPUALG _("Test the CPU analyze algorithm in cpu.c and give an average score for a number of games.")
 #define HINT_VIS _("If you turn visualization off the results will be computed faster. If you turn them on you can see a general game behaviour and judge the algorithm by this behaviour.")
-#define HINT_GAMEMODE _("There are basically three different game types:##NORMAL:#Starts with an empty bowl and goes "\
-                  "as long as you can make it.#FIGURES:#Each level a nice figure will be added to the ground of you bowl. From level "\
-                  "7-12 there will be randomly appearing single tiles and from level 13-... there will be whole lines appearing at the "\
-                  "bottom of your bowl. Fun!#TWO/THREE-PLAYER:#Either play against other humans or CPU. If you complete multiple lines they'll "\
-                  "be send to your opponents according to the multiplayer settings you made.##"\
+#define HINT_GAMEMODE _("There are basically three different game types:##"\
+		"NORMAL: Starts with an empty bowl. Try to survive as long as possible."\
+		"#FIGURES: Clear a different figure each level. Later on single tiles (level 7+) or lines (level 13+) will appear.#"\
+		"#TWO/THREE-PLAYER: Play against up to 2 other humans or CPU opponents. "\
+		"Completed lines are partially sent to your opponents (see options). "\
+		  "Note, that two CPU opponents will die pretty quickly on aggressive, so it's better to use 'Normal' then.##"\
                   "In DEMO you can see your CPU do the work. So relax! ;-)##"\
 		  "In TRAINING you can disable gravity (key for hard drop) to think about piece placement.")
 #define HINT_BKGND _("If you turn this on the background will change every level else it's always the same.")
