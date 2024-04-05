@@ -1288,8 +1288,7 @@ void ball_get_target( Ball *ball )
 	float  mono; /* monotony */
 	Coord  tang_pts[2]; /* tangential points */
 	Line   tang; /* current tangent */
-	Coord  center = {
-			ball->cur.x + ball_rad,
+	Coord  center = { ball->cur.x + ball_rad,
 			ball->cur.y + ball_rad }; /* ball center */
 	int    start, end, dir, line_pos, change; /* used to intersect the brick grid */
 	Line   cur_line; /* dito */
@@ -1358,8 +1357,8 @@ void ball_get_target( Ball *ball )
 		/* intersect */
 		line_pos = start;
 		/*  end specifies the last line to be checked to we have to add
-            another line to state the break condition.
-            this last line is not checked */
+            	    another line to state the break condition.
+            	    this last line is not checked */
 		end += change;
 		while ( line_pos != end ) {
 			line_set_hori( &cur_line, line_pos );
@@ -1403,8 +1402,8 @@ void ball_get_target( Ball *ball )
 		/* intersect */
 		line_pos = start;
 		/*  end specifies the last line to be checked too we have to add
-            another line to state the break condition.
-            this last line is not checked */
+            	    another line to state the break condition.
+            	    this last line is not checked */
 		end += change;
 		while ( line_pos != end ) {
 			line_set_vert( &cur_line, line_pos );
@@ -1601,7 +1600,7 @@ void ball_get_target( Ball *ball )
 		ball->target = *prim;
 		ball_reflect( ball );
 		/* target's reset position is center position right now but
-           we need the upper left corner of the ball */
+		   we need the upper left corner of the ball */
 		ball->target.x -= ball_rad; ball->target.y -= ball_rad;
 		/* some error information */
 #ifdef WITH_BUG_REPORT
