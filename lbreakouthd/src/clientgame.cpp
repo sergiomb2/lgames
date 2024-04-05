@@ -391,9 +391,10 @@ const string &ClientGame::getBonusLevelInfo()
 				game->blNumCompletedRuns, game->blMaxScore);
 		break;
 	case LT_DEFENDER:
-		strprintf(info, _("Wave: %d, Invaders: %d/%d"),
+		strprintf(info, _("Wave: %d, Invaders: %d/%d (Active: %d)"),
 				game->blNumCompletedRuns+1,
-				game->blNumInvaders, game->blInvaderLimit);
+				game->blNumKilledInvaders, game->blInvaderLimit,
+				game->blNumInvaders);
 		break;
 	case LT_OUTBREAK:
 		strprintf(info, _("Wave: %d, Infections: %d/%d, Active: %d/%d"),

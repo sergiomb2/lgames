@@ -158,7 +158,6 @@ void game_delete( Game **_game )
 
     /* delete bonus level stuff */
     if (game->blDuckPositions) free(game->blDuckPositions);
-	if (game->blInvaders) free(game->blInvaders);
     
     free( game );
 	*_game = 0;

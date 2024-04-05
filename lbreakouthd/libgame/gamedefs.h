@@ -193,12 +193,17 @@ enum {
 
 	/* bonus level types (start at 2) */
 	LT_JUMPING_JACK = 2,
-    LT_OUTBREAK,
-    LT_BARRIER,
-    LT_SITTING_DUCKS,
-    LT_HUNTER,
+	LT_OUTBREAK,
+	LT_BARRIER,
+	LT_SITTING_DUCKS,
+	LT_HUNTER,
 	LT_DEFENDER,
-    LT_LAST
+	LT_LAST,
+
+	/* maximum invaders in a wave */
+	INVADERS_STARTLIMIT = 20,
+	INVADERS_LIMITCHANGE = 2,
+	INVADERS_MAXLIMIT = 50
 };
 
 /* small helper to identify grown bricks by char */
@@ -537,10 +542,9 @@ typedef struct {
   int blNumInvaders;        /* current number of invaders */
   int blNumKilledInvaders;  /* already destroyed in this wave */
   int blTotalNumKilledInvaders;  /* already destroyed total */
-  int blInvadersWaveOver;
   int blInvaderTime;        /* within a wave invaders will speed up too */
   int blInvaderScore;       /* score per invader kill */
-  Invader *blInvaders;      /* current positions */
+  Invader blInvaders[INVADERS_MAXLIMIT]; /* current positions, if x != -1 */
 } Game;
 
 #define SETBIT( data, bit ) data |= (1L << bit )

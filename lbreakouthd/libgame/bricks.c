@@ -452,74 +452,95 @@ static void bricks_move_hunter( Game *game, int x, int y, int *result )
     }
 }
 
-/* add a new brick in the first row */
-static void bricks_add_invader( Game *game, int *wave_over )
+/** Add a new brick in the first row and set game over if limit reached.
+ * Use first free slot in invaders list. */
+static void bricks_add_invader(Game *game)
 {
-	Invader *inv;
-	int mx, my;
-	*wave_over = 0;
-	if (game->blInvadersWaveOver) return;
-	if (game->blNumInvaders==game->blInvaderLimit) 
-	{
-		if (game->blNumKilledInvaders==game->blInvaderLimit)
-			*wave_over = 1;
+	Invader *inv = 0;
+	int mx, my, i;
+
+	if (game->blNumInvaders >= INVADERS_MAXLIMIT)
+		return;
+
+	/* XXX this fails if we do not have enough empty slots within
+	 * this area so MAXLIMIT must not exceed the number of possible
+	 * slots otherwise we loop infinitely */
+	do {
+		mx = RANDOM(1,MAP_WIDTH-2);
+		my = RANDOM(1,4);
+	} while (game->bricks[mx][my].type != MAP_EMPTY);
+
+	for (i = 0; i < INVADERS_MAXLIMIT; i++)
+		if (game->blInvaders[i].x == -1) {
+			inv = &game->blInvaders[i];
+			break;
+		}
+	if (inv == 0) {
+		printf("Oops... no free slot for new invader?\n");
 		return;
 	}
-	my = 1;
-	do { mx = RANDOM(1,MAP_WIDTH-2); }
-	while (game->bricks[mx][my].type!=MAP_EMPTY);
-	inv = &game->blInvaders[game->blNumInvaders++];
+
+	game->blNumInvaders++;
 	inv->id = RANDOM(BRICK_GROW_FIRST,BRICK_GROW_LAST);
-	inv->x = mx; inv->y = my;
-	//game->blInvaderTime = 98*game->blInvaderTime/100; /* get faster and faster */
-	/* DEBUG: printf("%d\n",game->blInvaderTime); */
+	inv->x = mx;
+	inv->y = my;
 	delay_set(&inv->delay,RANDOM(95,105)*game->blInvaderTime/100);
+#ifdef WITH_BUG_REPORT
+	printf("added invader[%d]: id=%d,mx=%d,my=%d,delay=%d\n", i,
+				inv->id, inv->x, inv->y, inv->delay.limit);
+#endif
+
 	brick_set_by_id(game,mx,my,inv->id);
 	game->bricks_left++;
 	game->brick_count++;
 	bricks_add_grow_mod(mx,my,inv->id);
+
 	/* get new targets */
 	balls_check_targets( -1, 0 );
 }
 
-static void bricks_init_next_wave( Game *game )
+/** Initialize next wave's invader bricks. Action time, score
+ * and invader limit have already been set before calling this
+ * function. */
+static void bricks_init_next_invader_wave( Game *game )
 {
-	if (game->blNumCompletedRuns==0)
-	{
-		game->blInvaderLimit= 20;  /* total number of invaders in this wave */
-		if (game->blInvaders) free(game->blInvaders);
-		game->blInvaders = (Invader*)calloc(game->blInvaderLimit,sizeof(Invader));
-	}
 	game->blInvaderTime = game->blActionTime;
 	game->blNumInvaders = 0;
 	game->blNumKilledInvaders = 0;
-	game->blInvadersWaveOver = 0;
+	for (int i = 0; i < INVADERS_MAXLIMIT; i++)
+		if (game->blInvaders[i].x != -1) {
+			game->bricks[game->blInvaders[i].x][game->blInvaders[i].y].type = MAP_EMPTY;
+			game->blInvaders[i].x = -1;
+		}
+	game->bricks_left = 0;
+	game->brick_count = 0;
 	delay_set(&game->blDelay,game->blInvaderTime);
-	bricks_add_invader(game,&game->blInvadersWaveOver);
-	bricks_add_invader(game,&game->blInvadersWaveOver);
-	bricks_add_invader(game,&game->blInvadersWaveOver);
+	for (int i = 0; i < 3 + game->blNumCompletedRuns; i++)
+		bricks_add_invader(game);
 }
 			
 static void bricks_move_invaders( Game *game, int ms, int *paddleHit )
 {
 	Invader *inv;
 	int i;
+
 	*paddleHit = 0;
-	for (i=0;i<game->blNumInvaders;i++)
-		if (game->blInvaders[i].x!=-1)
-		{
+
+	for (i=0; i < INVADERS_MAXLIMIT; i++)
+		if (game->blInvaders[i].x != -1) {
 			inv = &game->blInvaders[i];
-			if (delay_timed_out(&inv->delay,ms))
-			if (game->bricks[inv->x][inv->y+1].type==MAP_EMPTY)
-			{
+			if (delay_timed_out(&inv->delay,ms) &&
+					game->bricks[inv->x][inv->y+1].type == MAP_EMPTY) {
+				bricks_add_mod(inv->x,inv->y, HT_REMOVE_NO_SOUND, SHR_BY_ENERGY_BALL, vector_get(0,0), game->paddles[0] );
 				brick_set_by_id(game,inv->x,inv->y,-1);
-			    bricks_add_mod(inv->x,inv->y, HT_REMOVE_NO_SOUND, SHR_BY_ENERGY_BALL, vector_get(0,0), game->paddles[0] );
 				inv->y++;
-				if (inv->y==MAP_HEIGHT-2) *paddleHit = 1;
+				if (inv->y >= MAP_HEIGHT - 2)
+					*paddleHit = 1;
 				brick_set_by_id(game,inv->x,inv->y,inv->id);
 				bricks_add_grow_mod(inv->x,inv->y,inv->id);
 			}
 		}
+
 	/* get new targets */
 	balls_check_targets( -1, 0 );
 }
@@ -634,12 +655,13 @@ static void bricks_init_bonus_level( Game *game, int game_type, int level_type )
             game->blMaxScore = 6000;
             bricks_create_hunter_area( game ); /* includes setting hunter and first prey */
             break;
-		case LT_DEFENDER:
-			game->blActionTime = 1600; /* time until new invader */
-			game->blMaxScore = 5000; /* score for wave clearance */
-			game->blInvaderScore = 400;
-			bricks_init_next_wave( game );
-			break;
+	case LT_DEFENDER:
+		game->blActionTime = 1800; /* time until new invader */
+		game->blMaxScore = 5000; /* score for wave clearance */
+		game->blInvaderScore = 400;
+		game->blInvaderLimit = INVADERS_STARTLIMIT;
+		bricks_init_next_invader_wave(game);
+		break;
         default:
             fprintf(stderr,"Unknown Bonus Level Type: %d\n", level_type);
             break;
@@ -933,29 +955,30 @@ int brick_hit( int mx, int my, int metal, int type, Vector imp, Paddle *paddle )
     if (cur_game->localServerGame)
         switch (cur_game->level_type)
         {
-			case LT_DEFENDER:
-				for (i=0;i<cur_game->blNumInvaders;i++)
-					if (cur_game->blInvaders[i].x==mx&&cur_game->blInvaders[i].y==my)
-					{
-						cur_game->blInvaders[i].x = -1;
-						paddle->score += cur_game->blInvaderScore;
-						cur_game->totalBonusLevelScore += cur_game->blInvaderScore;
-						break;
-					}
-				cur_game->blNumKilledInvaders++;
-				cur_game->blTotalNumKilledInvaders++;
-				if (cur_game->bricks_left==0) /* cleared this wave, next one please! */
-				{
-                    	    	    	    paddle->score += cur_game->blMaxScore;
-					cur_game->totalBonusLevelScore += cur_game->blMaxScore;
-					cur_game->blActionTime *= 0.95;
-					cur_game->blMaxScore += 1000;
-					cur_game->blInvaderScore += 100;
-                    cur_game->blNumCompletedRuns++;
-                    cur_game->blRatioSum += ratio;
-					bricks_init_next_wave( cur_game );
+		case LT_DEFENDER:
+			for (i = 0; i < INVADERS_MAXLIMIT; i++)
+				if (cur_game->blInvaders[i].x == mx && cur_game->blInvaders[i].y == my)	{
+					cur_game->blNumInvaders--;
+					cur_game->blInvaders[i].x = -1;
+					paddle->score += cur_game->blInvaderScore;
+					cur_game->totalBonusLevelScore += cur_game->blInvaderScore;
+					break;
 				}
-				break;
+			cur_game->blNumKilledInvaders++;
+			cur_game->blTotalNumKilledInvaders++;
+			if (cur_game->blNumKilledInvaders == cur_game->blInvaderLimit) {
+				paddle->score += cur_game->blMaxScore;
+				cur_game->totalBonusLevelScore += cur_game->blMaxScore;
+				cur_game->blNumCompletedRuns++;
+				cur_game->blRatioSum += ratio;
+				cur_game->blActionTime *= 0.95;
+				cur_game->blMaxScore += 1000;
+				cur_game->blInvaderScore += 100;
+				if (cur_game->blInvaderLimit < INVADERS_MAXLIMIT)
+					cur_game->blInvaderLimit += INVADERS_LIMITCHANGE;
+				bricks_init_next_invader_wave(cur_game);
+			}
+			break;
             case LT_OUTBREAK:
         	    paddle->score += cur_game->blCancerScore;
         	    cur_game->totalBonusLevelScore += cur_game->blCancerScore;
@@ -1120,7 +1143,7 @@ void bricks_add_grow_mod( int x, int y, int id )
 /* update regeneration and explosion of bricks */
 void bricks_update( int ms )
 {
-    int paddleHit;
+    int paddleHit = 0;
 	Brick *brick;
     Ball *ball;
 	
@@ -1214,12 +1237,12 @@ void bricks_update( int ms )
                     select_random_duck(cur_game);
                 }
 				break;
-			case LT_DEFENDER:
-				if (delay_timed_out(&cur_game->blDelay,ms))
-					bricks_add_invader(cur_game,&cur_game->blInvadersWaveOver);
-				bricks_move_invaders(cur_game,ms,&paddleHit);
-				if (paddleHit)
-					cur_game->bricks_left = 0; /* fake level cleared */
+		case LT_DEFENDER:
+			if (delay_timed_out(&cur_game->blDelay, ms))
+				bricks_add_invader(cur_game);
+			bricks_move_invaders(cur_game, ms, &paddleHit);
+			if (paddleHit) /* game over */
+				cur_game->bricks_left = 0; /* fake level cleared */
                 break;
         }
 }
