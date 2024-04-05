@@ -46,6 +46,8 @@ Locals
 ====================================================================
 */
 
+#define WITH_BUG_REPORT "yes"
+
 #ifdef WITH_BUG_REPORT
 /*
 ====================================================================
@@ -1282,149 +1284,149 @@ enum { TANG_LEFT = 0, TANG_RIGHT };
 enum { DIR_UP = 0, DIR_DOWN, DIR_LEFT, DIR_RIGHT };
 void ball_get_target( Ball *ball )
 {
-    int    cur_tang;
-    float  mono; /* monotony */
-    Coord  tang_pts[2]; /* tangential points */
-    Line   tang; /* current tangent */
-    Coord  center = { 
-        ball->cur.x + ball_rad, 
-        ball->cur.y + ball_rad }; /* ball center */
-    int    start, end, dir, line_pos, change; /* used to intersect the brick grid */
-    Line   cur_line; /* dito */
-    Coord  pt; /* auxiliary point. used for this 'n' that */
-    Target targets[2]; /* targets hit by the tangents: nearest is the actual target */
-    Target hori_target[2], vert_target[2]; /* used to get target of tangent */
-    float  dist; /* distance between two points */
-    Vector norm_vel; /* normed ball velocity */
+	int    cur_tang;
+	float  mono; /* monotony */
+	Coord  tang_pts[2]; /* tangential points */
+	Line   tang; /* current tangent */
+	Coord  center = {
+			ball->cur.x + ball_rad,
+			ball->cur.y + ball_rad }; /* ball center */
+	int    start, end, dir, line_pos, change; /* used to intersect the brick grid */
+	Line   cur_line; /* dito */
+	Coord  pt; /* auxiliary point. used for this 'n' that */
+	Target targets[2]; /* targets hit by the tangents: nearest is the actual target */
+	Target hori_target[2], vert_target[2]; /* used to get target of tangent */
+	float  dist; /* distance between two points */
+	Vector norm_vel; /* normed ball velocity */
 #ifdef WITH_BUG_REPORT
 	char	tang_target_chosen_str[2][128]; /* either hori or vert target chosen */
 	char	side_str[128];
-    Coord   test_pts[2];
+	Coord   test_pts[2];
 #endif
 	Target	*prim, *sec; /* primary, secondary target */
 	int     maybe_corner;
-        
+
 #ifdef WITH_BUG_REPORT
 	side_str[0] = 0;
 #endif
-	
-    /* balls moving back to paddle must not be reflected */
-    if ( ball->moving_back ) return;
+
+	/* balls moving back to paddle must not be reflected */
+	if ( ball->moving_back ) return;
 	/* attached balls MUST NOT be reflected!!!! */
 	if ( ball->attached ) return;
 	/* balls already out of the screen though still visible don't need new reflection, too */
 	if ( ball->cur.y + ball_dia >= 480 - 1 ) return;
-	
-    /* clear ball targets */
-    ball_clear_target( &ball->target );
-    ball_clear_target( &targets[TANG_LEFT] );
-    ball_clear_target( &targets[TANG_RIGHT] );
-    /* monotony */
-    mono = ball->vel.y / ball->vel.x;
-    /* normed velocity */
-    norm_vel = ball->vel; vector_norm( &norm_vel );
-    /* tangential points */
-    ball_get_tangents( ball, &tang_pts[TANG_LEFT], &tang_pts[TANG_RIGHT] );
-    /* get all map bricks the tangents intersect and check target */
-    for ( cur_tang = 0; cur_tang < 2; cur_tang++ ) {
-        /* clear targets */
-        ball_clear_target( &hori_target[cur_tang] );
-        ball_clear_target( &vert_target[cur_tang] );
-        /* current tangent */
-        line_set( &tang, tang_pts[cur_tang].x, tang_pts[cur_tang].y, mono );
-        /* intersect horizontal lines */
-        /* get direction */
-        dir = DIR_DOWN;
-        if ( ball->vel.y < 0 ) dir = DIR_UP;
-        /* get starting line */
-        start = ((int)( tang_pts[cur_tang].y / BRICK_HEIGHT )) * BRICK_HEIGHT;
-        /* get end line */
-        if ( dir == DIR_UP )
-            end = 0;
-        else
-            end = ( MAP_HEIGHT - 1 ) * BRICK_HEIGHT;
-        /* adjust lines if ball moves up */
-        if ( dir == DIR_UP ) {
-            start += BRICK_HEIGHT - 1;
-            end += BRICK_HEIGHT - 1;
-        }
-        /* get position change */
-        change = BRICK_HEIGHT;
-        if ( dir == DIR_UP ) change = -change;
-        /* we're at this brick so we can't reflect here */
-        start += change;
-        /* intersect */
-        line_pos = start;
-        /*  end specifies the last line to be checked to we have to add
+
+	/* clear ball targets */
+	ball_clear_target( &ball->target );
+	ball_clear_target( &targets[TANG_LEFT] );
+	ball_clear_target( &targets[TANG_RIGHT] );
+	/* monotony */
+	mono = ball->vel.y / ball->vel.x;
+	/* normed velocity */
+	norm_vel = ball->vel; vector_norm( &norm_vel );
+	/* tangential points */
+	ball_get_tangents( ball, &tang_pts[TANG_LEFT], &tang_pts[TANG_RIGHT] );
+	/* get all map bricks the tangents intersect and check target */
+	for ( cur_tang = 0; cur_tang < 2; cur_tang++ ) {
+		/* clear targets */
+		ball_clear_target( &hori_target[cur_tang] );
+		ball_clear_target( &vert_target[cur_tang] );
+		/* current tangent */
+		line_set( &tang, tang_pts[cur_tang].x, tang_pts[cur_tang].y, mono );
+		/* intersect horizontal lines */
+		/* get direction */
+		dir = DIR_DOWN;
+		if ( ball->vel.y < 0 ) dir = DIR_UP;
+		/* get starting line */
+		start = ((int)( tang_pts[cur_tang].y / BRICK_HEIGHT )) * BRICK_HEIGHT;
+		/* get end line */
+		if ( dir == DIR_UP )
+			end = 0;
+		else
+			end = ( MAP_HEIGHT - 1 ) * BRICK_HEIGHT;
+		/* adjust lines if ball moves up */
+		if ( dir == DIR_UP ) {
+			start += BRICK_HEIGHT - 1;
+			end += BRICK_HEIGHT - 1;
+		}
+		/* get position change */
+		change = BRICK_HEIGHT;
+		if ( dir == DIR_UP ) change = -change;
+		/* we're at this brick so we can't reflect here */
+		start += change;
+		/* intersect */
+		line_pos = start;
+		/*  end specifies the last line to be checked to we have to add
             another line to state the break condition.
             this last line is not checked */
-        end += change;
-        while ( line_pos != end ) {
-            line_set_hori( &cur_line, line_pos );
-            if ( line_intersect( &cur_line, &tang, &pt ) && ( pt.x >= 0 && pt.x < 640 ) )
-                if ( cur_game->bricks[(int)pt.x / BRICK_WIDTH][(int)pt.y / BRICK_HEIGHT].type != MAP_EMPTY ) {
-                    /* we got our horizontal target */
-                    hori_target[cur_tang].exists = 1;
-                    hori_target[cur_tang].x = pt.x;
-                    hori_target[cur_tang].y = pt.y;
-                    hori_target[cur_tang].mx = (int)pt.x / BRICK_WIDTH;
-                    hori_target[cur_tang].my = (int)pt.y / BRICK_HEIGHT;
-                    if ( ball->vel.y < 0 )
-                        hori_target[cur_tang].side = SIDE_BOTTOM;
-                    else
-                        hori_target[cur_tang].side = SIDE_TOP;
-                    break; /* we got our target for this tangent */
-                }
-            line_pos += change;
-        }
-        /* intersect vertical lines */
-        /* get direction */
-        dir = DIR_RIGHT;
-        if ( ball->vel.x < 0 ) dir = DIR_LEFT;
-        /* get starting line */
-        start = ((int)( tang_pts[cur_tang].x / BRICK_WIDTH )) * BRICK_WIDTH;
-        /* get end line */
-        if ( dir == DIR_LEFT )
-            end = 0;
-        else
-            end = ( MAP_WIDTH - 1 ) * BRICK_WIDTH;
-        /* adjust lines if ball moves up */
-        if ( dir == DIR_LEFT ) {
-            start += BRICK_WIDTH - 1;
-            end += BRICK_WIDTH - 1;
-        }
-        /* get position change */
-        change = BRICK_WIDTH;
-        if ( dir == DIR_LEFT ) change = -change;
-        /* we're at this brick so we can't reflect here */
-        start += change;
-        /* intersect */
-        line_pos = start;
-        /*  end specifies the last line to be checked too we have to add
+		end += change;
+		while ( line_pos != end ) {
+			line_set_hori( &cur_line, line_pos );
+			if ( line_intersect( &cur_line, &tang, &pt ) && ( pt.x >= 0 && pt.x < 640 ) )
+				if ( cur_game->bricks[(int)pt.x / BRICK_WIDTH][(int)pt.y / BRICK_HEIGHT].type != MAP_EMPTY ) {
+					/* we got our horizontal target */
+					hori_target[cur_tang].exists = 1;
+					hori_target[cur_tang].x = pt.x;
+					hori_target[cur_tang].y = pt.y;
+					hori_target[cur_tang].mx = (int)pt.x / BRICK_WIDTH;
+					hori_target[cur_tang].my = (int)pt.y / BRICK_HEIGHT;
+					if ( ball->vel.y < 0 )
+						hori_target[cur_tang].side = SIDE_BOTTOM;
+					else
+						hori_target[cur_tang].side = SIDE_TOP;
+					break; /* we got our target for this tangent */
+				}
+			line_pos += change;
+		}
+		/* intersect vertical lines */
+		/* get direction */
+		dir = DIR_RIGHT;
+		if ( ball->vel.x < 0 ) dir = DIR_LEFT;
+		/* get starting line */
+		start = ((int)( tang_pts[cur_tang].x / BRICK_WIDTH )) * BRICK_WIDTH;
+		/* get end line */
+		if ( dir == DIR_LEFT )
+			end = 0;
+		else
+			end = ( MAP_WIDTH - 1 ) * BRICK_WIDTH;
+		/* adjust lines if ball moves up */
+		if ( dir == DIR_LEFT ) {
+			start += BRICK_WIDTH - 1;
+			end += BRICK_WIDTH - 1;
+		}
+		/* get position change */
+		change = BRICK_WIDTH;
+		if ( dir == DIR_LEFT ) change = -change;
+		/* we're at this brick so we can't reflect here */
+		start += change;
+		/* intersect */
+		line_pos = start;
+		/*  end specifies the last line to be checked too we have to add
             another line to state the break condition.
             this last line is not checked */
-        end += change;
-        while ( line_pos != end ) {
-            line_set_vert( &cur_line, line_pos );
-            if ( line_intersect( &cur_line, &tang, &pt ) && ( pt.y >= 0 && pt.y < 480 ) )
-                if ( cur_game->bricks[(int)pt.x / BRICK_WIDTH][(int)pt.y / BRICK_HEIGHT].type != MAP_EMPTY ) {
-                    /* we got our vertical target */
-                    vert_target[cur_tang].exists = 1;
-                    vert_target[cur_tang].x = pt.x;
-                    vert_target[cur_tang].y = pt.y;
-                    vert_target[cur_tang].mx = (int)pt.x / BRICK_WIDTH;
-                    vert_target[cur_tang].my = (int)pt.y / BRICK_HEIGHT;
-                    if ( ball->vel.x < 0 )
-                        vert_target[cur_tang].side = SIDE_RIGHT;
-                    else
-                        vert_target[cur_tang].side = SIDE_LEFT;
-                    break; /* we got our target for this tangent */
-                }
-            line_pos += change;
-        }
-        /* get closest target */
-        if ( !hori_target[cur_tang].exists ) {
-            targets[cur_tang] = vert_target[cur_tang];
+		end += change;
+		while ( line_pos != end ) {
+			line_set_vert( &cur_line, line_pos );
+			if ( line_intersect( &cur_line, &tang, &pt ) && ( pt.y >= 0 && pt.y < 480 ) )
+				if ( cur_game->bricks[(int)pt.x / BRICK_WIDTH][(int)pt.y / BRICK_HEIGHT].type != MAP_EMPTY ) {
+					/* we got our vertical target */
+					vert_target[cur_tang].exists = 1;
+					vert_target[cur_tang].x = pt.x;
+					vert_target[cur_tang].y = pt.y;
+					vert_target[cur_tang].mx = (int)pt.x / BRICK_WIDTH;
+					vert_target[cur_tang].my = (int)pt.y / BRICK_HEIGHT;
+					if ( ball->vel.x < 0 )
+						vert_target[cur_tang].side = SIDE_RIGHT;
+					else
+						vert_target[cur_tang].side = SIDE_LEFT;
+					break; /* we got our target for this tangent */
+				}
+			line_pos += change;
+		}
+		/* get closest target */
+		if ( !hori_target[cur_tang].exists ) {
+			targets[cur_tang] = vert_target[cur_tang];
 #ifdef WITH_BUG_REPORT
 			if ( !vert_target[cur_tang].exists )
 				sprintf( tang_target_chosen_str[cur_tang], "No target chosen." );
@@ -1432,14 +1434,14 @@ void ball_get_target( Ball *ball )
 				sprintf( tang_target_chosen_str[cur_tang], "Vertical target chosen." );
 #endif
 		}	
-        else
-            if ( !vert_target[cur_tang].exists ) {
-                targets[cur_tang] = hori_target[cur_tang];
+		else
+			if ( !vert_target[cur_tang].exists ) {
+				targets[cur_tang] = hori_target[cur_tang];
 #ifdef WITH_BUG_REPORT
 				sprintf( tang_target_chosen_str[cur_tang], "Horizontal target chosen." );
 #endif
 			}
-            else {
+			else {
 				/* check the relation and choose the correct target */
 				/* if vertical and hori hit the same brick we have hit the corner */
 				if ( hori_target[cur_tang].mx == vert_target[cur_tang].mx && hori_target[cur_tang].my == vert_target[cur_tang].my ) {
@@ -1484,24 +1486,24 @@ void ball_get_target( Ball *ball )
 				}
 				else {
 					if ( VEC_DIST( tang_pts[cur_tang], vector_get( hori_target[cur_tang].x, hori_target[cur_tang].y ) ) < VEC_DIST( tang_pts[cur_tang], vector_get( vert_target[cur_tang].x, vert_target[cur_tang].y ) ) ) {
-                    	targets[cur_tang] = hori_target[cur_tang];
+						targets[cur_tang] = hori_target[cur_tang];
 #ifdef WITH_BUG_REPORT					
 						sprintf( tang_target_chosen_str[cur_tang], "Horizontal target chosen." );
 #endif					
 					}
-                	else {
-                    	targets[cur_tang] = vert_target[cur_tang];
+					else {
+						targets[cur_tang] = vert_target[cur_tang];
 #ifdef WITH_BUG_REPORT					
 						sprintf( tang_target_chosen_str[cur_tang], "Vertical target chosen." );
 #endif					
 					}	
 				}	
-            }
-    } /* now we have the two targets hit by the tangents */
+			}
+	} /* now we have the two targets hit by the tangents */
 	/* whatever's up the nearest brick is hit */
-    if ( targets[TANG_LEFT].exists || targets[TANG_RIGHT].exists ) {
+	if ( targets[TANG_LEFT].exists || targets[TANG_RIGHT].exists ) {
 		prim = sec = 0;
-        if ( !targets[TANG_LEFT].exists || !targets[TANG_RIGHT].exists ) {
+		if ( !targets[TANG_LEFT].exists || !targets[TANG_RIGHT].exists ) {
 			if ( targets[TANG_LEFT].exists )
 				prim = &targets[TANG_LEFT];
 			else 
@@ -1520,143 +1522,143 @@ void ball_get_target( Ball *ball )
 		/* however, the primary target maybe be blocked by another brick or may be a corner */
 		/* check if side of prim  target isn't blocked by a brick */
 		switch ( prim->side ) {
-			case SIDE_TOP: 
-				if ( cur_game->bricks[prim->mx][prim->my - 1].type != MAP_EMPTY ) {
-					if ( ball->vel.x > 0 )
-						prim->side = SIDE_LEFT;
-					else
-						prim->side = SIDE_RIGHT;
+		case SIDE_TOP:
+			if ( cur_game->bricks[prim->mx][prim->my - 1].type != MAP_EMPTY ) {
+				if ( ball->vel.x > 0 )
+					prim->side = SIDE_LEFT;
+				else
+					prim->side = SIDE_RIGHT;
 #ifdef WITH_BUG_REPORT
-					sprintf( side_str, "Had to change side as TOP wasn't appropriate!" );
+				sprintf( side_str, "Had to change side as TOP wasn't appropriate!" );
 #endif							
-				}
-				break;
-			case SIDE_BOTTOM: 
-				if ( cur_game->bricks[prim->mx][prim->my + 1].type != MAP_EMPTY ) {
-					if ( ball->vel.x > 0 )
-						prim->side = SIDE_LEFT;
-					else
-						prim->side = SIDE_RIGHT;
+			}
+			break;
+		case SIDE_BOTTOM:
+			if ( cur_game->bricks[prim->mx][prim->my + 1].type != MAP_EMPTY ) {
+				if ( ball->vel.x > 0 )
+					prim->side = SIDE_LEFT;
+				else
+					prim->side = SIDE_RIGHT;
 #ifdef WITH_BUG_REPORT
-					sprintf( side_str, "Had to change side as BOTTOM wasn't appropriate!" );
+				sprintf( side_str, "Had to change side as BOTTOM wasn't appropriate!" );
 #endif							
-				}
-				break;
-			case SIDE_LEFT: 
-				if ( cur_game->bricks[prim->mx - 1][prim->my].type != MAP_EMPTY ) {
-					if ( ball->vel.y > 0 )
-						prim->side = SIDE_TOP;
-					else
-						prim->side = SIDE_BOTTOM;
+			}
+			break;
+		case SIDE_LEFT:
+			if ( cur_game->bricks[prim->mx - 1][prim->my].type != MAP_EMPTY ) {
+				if ( ball->vel.y > 0 )
+					prim->side = SIDE_TOP;
+				else
+					prim->side = SIDE_BOTTOM;
 #ifdef WITH_BUG_REPORT
-					sprintf( side_str, "Had to change side as LEFT wasn't appropriate!" );
+				sprintf( side_str, "Had to change side as LEFT wasn't appropriate!" );
 #endif							
-				}
-				break;
-			case SIDE_RIGHT: 
-				if ( cur_game->bricks[prim->mx + 1][prim->my].type != MAP_EMPTY ) {
-					if ( ball->vel.y > 0 )
-						prim->side = SIDE_TOP;
-					else
-						prim->side = SIDE_BOTTOM;
+			}
+			break;
+		case SIDE_RIGHT:
+			if ( cur_game->bricks[prim->mx + 1][prim->my].type != MAP_EMPTY ) {
+				if ( ball->vel.y > 0 )
+					prim->side = SIDE_TOP;
+				else
+					prim->side = SIDE_BOTTOM;
 #ifdef WITH_BUG_REPORT
-					sprintf( side_str, "Had to change side as RIGHT wasn't appropriate!" );
+				sprintf( side_str, "Had to change side as RIGHT wasn't appropriate!" );
 #endif							
-				}
-				break;
+			}
+			break;
 		}
 		/* now it still may be a corner */
-        if ( sec == 0 || prim->mx != sec->mx || prim->my != sec->my || prim->side != sec->side ) {
-            maybe_corner = 1;
-            if ( ball->vel.y > 0 ) {
-                if ( ball->vel.x > 0 ) {
-                    /* upper left corner */
-                    if ( cur_game->bricks[prim->mx][prim->my - 1].type != MAP_EMPTY ) maybe_corner = 0;
-                    if ( cur_game->bricks[prim->mx - 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
-                }
-                else {
-                    /* upper right corner */
-                    if ( cur_game->bricks[prim->mx][prim->my - 1].type != MAP_EMPTY ) maybe_corner = 0;
-                    if ( cur_game->bricks[prim->mx + 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
-                }
-            }
-            else {
-                if ( ball->vel.x > 0 ) {
-                    /* lower left corner */
-                    if ( cur_game->bricks[prim->mx][prim->my + 1].type != MAP_EMPTY ) maybe_corner = 0;
-                    if ( cur_game->bricks[prim->mx - 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
-                }
-                else {
-                    /* lower right corner */
-                    if ( cur_game->bricks[prim->mx][prim->my + 1].type != MAP_EMPTY ) maybe_corner = 0;
-                    if ( cur_game->bricks[prim->mx + 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
-                }
-            }
-            if ( maybe_corner )
-                ball_corner_check( ball, &targets[TANG_LEFT], &targets[TANG_RIGHT], prim );
-        }
+		if ( sec == 0 || prim->mx != sec->mx || prim->my != sec->my || prim->side != sec->side ) {
+			maybe_corner = 1;
+			if ( ball->vel.y > 0 ) {
+				if ( ball->vel.x > 0 ) {
+					/* upper left corner */
+					if ( cur_game->bricks[prim->mx][prim->my - 1].type != MAP_EMPTY ) maybe_corner = 0;
+					if ( cur_game->bricks[prim->mx - 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
+				}
+				else {
+					/* upper right corner */
+					if ( cur_game->bricks[prim->mx][prim->my - 1].type != MAP_EMPTY ) maybe_corner = 0;
+					if ( cur_game->bricks[prim->mx + 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
+				}
+			}
+			else {
+				if ( ball->vel.x > 0 ) {
+					/* lower left corner */
+					if ( cur_game->bricks[prim->mx][prim->my + 1].type != MAP_EMPTY ) maybe_corner = 0;
+					if ( cur_game->bricks[prim->mx - 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
+				}
+				else {
+					/* lower right corner */
+					if ( cur_game->bricks[prim->mx][prim->my + 1].type != MAP_EMPTY ) maybe_corner = 0;
+					if ( cur_game->bricks[prim->mx + 1][prim->my].type != MAP_EMPTY ) maybe_corner = 0;
+				}
+			}
+			if ( maybe_corner )
+				ball_corner_check( ball, &targets[TANG_LEFT], &targets[TANG_RIGHT], prim );
+		}
 		/* we updated primary's side info correctly and may reflect now */
 		ball->target = *prim;
 		ball_reflect( ball );
-        /* target's reset position is center position right now but
+		/* target's reset position is center position right now but
            we need the upper left corner of the ball */
-        ball->target.x -= ball_rad; ball->target.y -= ball_rad;
-        /* some error information */
+		ball->target.x -= ball_rad; ball->target.y -= ball_rad;
+		/* some error information */
 #ifdef WITH_BUG_REPORT
-        pt.x = ball->cur.x; pt.y = ball->cur.y;
-        ball->cur.x = ball->target.x; ball->cur.y = ball->target.y;
-        ball_get_tangents( ball, &test_pts[TANG_LEFT], &test_pts[TANG_RIGHT] );
-        ball->cur.x = pt.x; ball->cur.y = pt.y;
+		pt.x = ball->cur.x; pt.y = ball->cur.y;
+		ball->cur.x = ball->target.x; ball->cur.y = ball->target.y;
+		ball_get_tangents( ball, &test_pts[TANG_LEFT], &test_pts[TANG_RIGHT] );
+		ball->cur.x = pt.x; ball->cur.y = pt.y;
 		if ( cur_game->bricks[(int)test_pts[0].x/BRICK_WIDTH][(int)test_pts[0].y/BRICK_HEIGHT].type != MAP_EMPTY ||
-             cur_game->bricks[(int)test_pts[1].x/BRICK_WIDTH][(int)test_pts[1].y/BRICK_HEIGHT].type != MAP_EMPTY ) { 
+				cur_game->bricks[(int)test_pts[1].x/BRICK_WIDTH][(int)test_pts[1].y/BRICK_HEIGHT].type != MAP_EMPTY ) {
 			printf( "*****\n" );
-            printf( "Test Failed: %4.2f,%4.2f (%i,%i):\n",
-                ball->target.x+ball_rad, ball->target.y+ball_rad,
-                (int)(ball->target.x+ball_rad)/BRICK_WIDTH, 
-                (int)(ball->target.y+ball_rad)/BRICK_HEIGHT );
-            printf( "Left Tangent %4.2f,%4.2f (%i,%i) or Right Tangent %4.2f,%4.2f (%i,%i)\n",
-                test_pts[0].x,test_pts[0].y,
-                (int)test_pts[0].x/BRICK_WIDTH,(int)test_pts[0].y/BRICK_HEIGHT,
-                test_pts[1].x,test_pts[1].y,
-                (int)test_pts[1].x/BRICK_WIDTH,(int)test_pts[1].y/BRICK_HEIGHT);
+			printf( "Test Failed: %4.2f,%4.2f (%i,%i):\n",
+					ball->target.x+ball_rad, ball->target.y+ball_rad,
+					(int)(ball->target.x+ball_rad)/BRICK_WIDTH,
+					(int)(ball->target.y+ball_rad)/BRICK_HEIGHT );
+			printf( "Left Tangent %4.2f,%4.2f (%i,%i) or Right Tangent %4.2f,%4.2f (%i,%i)\n",
+					test_pts[0].x,test_pts[0].y,
+					(int)test_pts[0].x/BRICK_WIDTH,(int)test_pts[0].y/BRICK_HEIGHT,
+					test_pts[1].x,test_pts[1].y,
+					(int)test_pts[1].x/BRICK_WIDTH,(int)test_pts[1].y/BRICK_HEIGHT);
 			printf( "*****\n" );
-            printf( "2.4: Balls: %i\n", cur_game->balls->count );
-        	if ( targets[TANG_LEFT].exists ) {
-                printf( "Left Tangential Point: %4.2f,%4.2f\n",
-                    tang_pts[TANG_LEFT].x, tang_pts[TANG_LEFT].y );
-                printf( "Left Tangent: Horizontal: %i,%i, %i (%4.2f,%4.2f)\n", 
+			printf( "2.4: Balls: %i\n", cur_game->balls->count );
+			if ( targets[TANG_LEFT].exists ) {
+				printf( "Left Tangential Point: %4.2f,%4.2f\n",
+						tang_pts[TANG_LEFT].x, tang_pts[TANG_LEFT].y );
+				printf( "Left Tangent: Horizontal: %i,%i, %i (%4.2f,%4.2f)\n",
 						hori_target[TANG_LEFT].mx, hori_target[TANG_LEFT].my, hori_target[TANG_LEFT].side, 
 						hori_target[TANG_LEFT].x, hori_target[TANG_LEFT].y );
-                printf( "Left Tangent:   Vertical: %i,%i, %i (%4.2f,%4.2f)\n", 
+				printf( "Left Tangent:   Vertical: %i,%i, %i (%4.2f,%4.2f)\n",
 						vert_target[TANG_LEFT].mx, vert_target[TANG_LEFT].my, vert_target[TANG_LEFT].side, 
 						vert_target[TANG_LEFT].x, vert_target[TANG_LEFT].y );
 				printf( "%s\n", tang_target_chosen_str[TANG_LEFT] );
 			}
-        	if ( targets[TANG_RIGHT].exists ) {
-                printf( "Right Tangential Point: %4.2f,%4.2f\n",
-                    tang_pts[TANG_RIGHT].x, tang_pts[TANG_RIGHT].y );
-                printf( "Right Tangent: Horizontal: %i,%i, %i (%4.2f,%4.2f)\n",
+			if ( targets[TANG_RIGHT].exists ) {
+				printf( "Right Tangential Point: %4.2f,%4.2f\n",
+						tang_pts[TANG_RIGHT].x, tang_pts[TANG_RIGHT].y );
+				printf( "Right Tangent: Horizontal: %i,%i, %i (%4.2f,%4.2f)\n",
 						hori_target[TANG_RIGHT].mx, hori_target[TANG_RIGHT].my, hori_target[TANG_RIGHT].side, 
 						hori_target[TANG_RIGHT].x, hori_target[TANG_RIGHT].y );
-                printf( "Right Tangent:   Vertical: %i,%i, %i (%4.2f,%4.2f)\n",
+				printf( "Right Tangent:   Vertical: %i,%i, %i (%4.2f,%4.2f)\n",
 						vert_target[TANG_RIGHT].mx, vert_target[TANG_RIGHT].my, vert_target[TANG_RIGHT].side, 
 						vert_target[TANG_RIGHT].x, vert_target[TANG_RIGHT].y );
 				printf( "%s\n", tang_target_chosen_str[TANG_RIGHT] );
 			}
 			if ( side_str[0] != 0 ) printf( "BTW: %s\n", side_str );
 			printf( "-----\n" );
-            ball_print_target_info( ball );
-        	printf("*****\n");
-		printf( "\nYou encountered a bug! Please send this output to kulkanie@gmx.net. Thanks!\n" );
-		//exit(1);
-		/* move ball back to paddle as the current target is nonsense */
-		ball->target.exists = 0;
-		ball->idle_time = 0;
-		ball->moving_back = 1;
-		ball->return_allowed = 0;
-	}	
+			ball_print_target_info( ball );
+			printf("*****\n");
+			printf( "\nYou encountered a bug! Please send this output to kulkanie@gmx.net. Thanks!\n" );
+			//exit(1);
+			/* move ball back to paddle as the current target is nonsense */
+			ball->target.exists = 0;
+			ball->idle_time = 0;
+			ball->moving_back = 1;
+			ball->return_allowed = 0;
+		}
 #endif
-    }
+	}
 }
 /*
 ====================================================================
