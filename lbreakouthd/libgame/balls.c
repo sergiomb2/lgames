@@ -1598,7 +1598,8 @@ void ball_get_target( Ball *ball )
 		}
 		/* we updated primary's side info correctly and may reflect now */
 		ball->target = *prim;
-		ball_reflect( ball );
+		ball_reflect( ball ); /* computes target center position and reflection
+					vector of ball but doesn't change it otherwise */
 		/* target's reset position is center position right now but
 		   we need the upper left corner of the ball */
 		ball->target.x -= ball_rad; ball->target.y -= ball_rad;
