@@ -1284,6 +1284,33 @@ void ball_mask_vel(Ball *b, float old_vx, int entropy )
 	/* adjust speed */
 	vector_set_length( &b->vel, cur_game->ball_v );
 }
+
+/** Check if a ball is inside a bricks by checking 8 pixels of its
+ * outer circle. Return 1 if true, 0 otherwise. */
+int ball_is_in_brick(Ball *b) {
+	/* we need to substract 1 for right and lower points, otherwise
+	 * we get false positives if ball is exactly close to left or top
+	 * side of a brick. */
+	Coord points[8] = {
+		{0,-ball_rad}, {0.707*ball_rad-1,-0.707*ball_rad},
+		{ball_rad-1,0}, {0.707*ball_rad-1,0.707*ball_rad-1},
+		{0,ball_rad-1}, {-0.707*ball_rad,0.707*ball_rad-1},
+		{-ball_rad,0}, {-0.707*ball_rad,-0.707*ball_rad}
+	};
+
+	for (int i = 0; i < 8; i++) {
+		double x = b->cur.x + ball_rad + points[i].x;
+		double y = b->cur.y + ball_rad + points[i].y;
+		int mx = x / BRICK_WIDTH, my = y / BRICK_HEIGHT;
+		if (mx < 0 || my < 0 || mx >= MAP_WIDTH || my >= MAP_HEIGHT)
+			continue;
+		if (cur_game->bricks[mx][my].type != MAP_EMPTY)
+			return 1;
+	}
+
+	return 0;
+}
+
 /*
 ====================================================================
 Get target for a ball.
@@ -1317,6 +1344,27 @@ void ball_get_target( Ball *ball )
 #ifdef WITH_BUG_REPORT
 	side_str[0] = 0;
 #endif
+
+	/* check if we somehow ended up in a brick and reset position along trajectory.
+	 * should actually not happen except for moving bricks, e.g., in minigame invaders,
+	 * but it seems to happen sometimes on other occasions as well ... */
+	if (ball_is_in_brick(ball)) {
+		Coord oldpos = ball->cur;
+		Vector bmod = ball->vel;
+		vector_set_length(&bmod, ball_rad/2);
+		do {
+			ball->cur.x -= bmod.x;
+			ball->cur.y -= bmod.y;
+		} while (ball_is_in_brick(ball));
+		ball->x = ball->cur.x;
+		ball->y = ball->cur.y;
+#ifdef WITH_BUG_REPORT
+		printf("Oops... ball is inside a brick, resetting position\n");
+		printf("  from %.2f;%.2f to %.2f;%.2f\n",
+				oldpos.x, oldpos.y, ball->cur.x, ball->cur.y);
+		printf("  velocity vector: %.2f;%.2f\n", ball->vel.x, ball->vel.y);
+#endif
+	}
 
 	/* balls moving back to paddle must not be reflected */
 	if ( ball->moving_back ) return;

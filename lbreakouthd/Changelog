@@ -1,3 +1,5 @@
+- workaround: reset ball if in brick before getting target (2024/04/05 MS)
+- show trajectory of balls with debugging enabled (2024/04/05 MS)
 - reenabled bug report as configureable option (2024/04/05 MS)
 - properly handle \r for levelsets made in windows (2024/04/04 MS)
 - added xgettext comment to prevent wrong c-format (2024/02/14 Jorge)
