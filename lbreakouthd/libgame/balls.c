@@ -1805,3 +1805,9 @@ int balls_detach_from_paddle( Paddle *paddle, int dir )
 	
 	return fired;
 }
+
+/** Get radius, same for all balls. */
+int balls_get_radius()
+{
+	return ball_rad;
+}

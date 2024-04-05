@@ -188,10 +188,15 @@ public:
 	Vec(double _x, double _y) : x(_x), y(_y) {}
 	double getX() { return x; }
 	double getY() { return y; }
+	double getLength() {
+		if (x == 0 && y == 0)
+			return 0;
+		return sqrt(x*x+y*y);
+	}
 	void normalize() {
-		if ( x == 0 && y == 0 )
+		if (x == 0 && y == 0)
 			return;
-		double l = sqrt(x*x+y*y);
+		double l = getLength();
 		x /= l;
 		y /= l;
 	}

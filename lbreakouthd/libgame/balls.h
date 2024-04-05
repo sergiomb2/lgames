@@ -18,6 +18,10 @@
 #ifndef __BALLS_H
 #define __BALLS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
 ====================================================================
 Load/delete ball graphics
@@ -150,6 +154,13 @@ Clear contents of target.
 ====================================================================
 */
 void ball_clear_target( Target *t );
+
+/** Get radius, same for all balls. */
+int balls_get_radius();
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
 

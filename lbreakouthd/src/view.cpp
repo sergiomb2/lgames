@@ -1710,6 +1710,32 @@ void View::renderBalls(bool shadow)
 		} else {
 			theme.balls.setAlpha(alpha);
 			theme.balls.copy(type,0,px,py);
+#ifdef WITH_BUG_REPORT
+			if (ball->target.exists) {
+				/* draw trajectory as dotted line, start at target
+				 * and go backwards until ball position is reached;
+				 * also draw ghost ball at target position */
+				int bradius = balls_get_radius();
+				Vec dpos(ball->target.x + bradius,
+						ball->target.y + bradius);
+				Vec dmod(-ball->vel.x,-ball->vel.y);
+				dmod.normalize();
+
+				double pathlen = Vec(ball->target.x - ball->cur.x,
+						ball->target.y - ball->cur.y).getLength();
+
+				for (int i = 0; i < pathlen; i += bradius)  {
+					dpos.add(bradius, dmod);
+					SDL_Rect dotrect = {(int)v2s(dpos.getX())-1,
+							(int)v2s(dpos.getY())-1,2,2};
+					SDL_SetRenderDrawColor(mrc,255,255,255,0.5);
+					SDL_RenderFillRect(mrc, &dotrect);
+				}
+
+				theme.balls.setAlpha(64);
+				theme.balls.copy(type,0,v2s(ball->target.x),v2s(ball->target.y));
+			}
+#endif
 		}
 	}
 }
