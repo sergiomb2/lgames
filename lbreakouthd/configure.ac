@@ -51,7 +51,7 @@ AC_ARG_ENABLE( install,
 datdir="." hiscoredir="." configdir=".")
 AC_ARG_ENABLE( debug,
 [  --enable-debug       Add debug symbols, no optimization.], 
-debugflags="-O0 -g")
+debugflags="-O0 -g -DWITH_BUG_REPORT")
 AC_SUBST(datdir)
 AC_SUBST(hiscoredir)
 

@@ -61,7 +61,6 @@ public:
 	int convex;
 	int invert;
 	double key_speed; /* move with key_speed pix per sec when keys are used */
-	int linear_corner; /* assume a 45 deg line for corner? */
 	int random_angle;
 	int maxballspeed_int1000; /* max ball speed in pixels/second */
 	float maxballspeed_float; /* per millisecond */

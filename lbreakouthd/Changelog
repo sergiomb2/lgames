@@ -1,3 +1,4 @@
+- reenabled bug report as configureable option (2024/04/05 MS)
 - properly handle \r for levelsets made in windows (2024/04/04 MS)
 - added xgettext comment to prevent wrong c-format (2024/02/14 Jorge)
 

@@ -18,8 +18,6 @@
 #include "gamedefs.h"
 #include "mathfuncs.h"
 
-char circle_msg[256];
-
 /*
 ====================================================================
 Return vector struct with the specified coordinates.
@@ -199,21 +197,15 @@ int circle_intersect( Vector m, int r, Vector pos, Vector v, Vector *t1, Vector 
     float dis = delta_v * delta_v + r * r - ( delta.x * delta.x + delta.y * delta.y );
     float t;
 
-    if ( dis < 0 ) {
-#ifdef WITH_BUG_REPORT
-		sprintf( circle_msg, "Diskriminante < 0" );
-#endif		
-		return 0; 
-	}
-	dis = sqrt( dis );
+    if (dis < 0)
+        return 0;
+
+    dis = sqrt(dis);
 
     t = -delta_v + dis;
     t1->x = pos.x + t * v.x; t1->y = pos.y + t * v.y;
     t = -delta_v - dis;
     t2->x = pos.x + t * v.x; t2->y = pos.y + t * v.y;
-#ifdef WITH_BUG_REPORT
-	sprintf( circle_msg, "Intersection points: (%4.2f,%4.2f), (%4.2f,%4.2f)", t1->x, t1->y, t2->x, t2->y );
-#endif
     return 1;
 }
 

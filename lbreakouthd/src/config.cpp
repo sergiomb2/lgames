@@ -45,7 +45,6 @@ Config::Config()
 	rel_motion = 0;
 	motion_mod = 100;
 	convex = 1;
-	linear_corner = 0;
 	invert = 0;
 	i_key_speed = 600;
 	key_speed = 0.6;
@@ -132,7 +131,6 @@ Config::Config()
 	fp.get( "grab", grab );
 	fp.get( "motion_mod", motion_mod );
 	fp.get( "convex", convex );
-	fp.get( "linear_corner", linear_corner );
 	fp.get( "random_angle", random_angle );
 	fp.get( "maxballspeed", maxballspeed_int1000 );
 	maxballspeed_float = (float)maxballspeed_int1000 / 1000;
@@ -198,7 +196,6 @@ void Config::save()
 	ofs << "grab=" << grab << "\n";
 	ofs << "motion_mod=" << motion_mod << "\n";
 	ofs << "convex=" << convex << "\n";
-	ofs << "linear_corner=" << linear_corner << "\n";
 	ofs << "random_angle=" << random_angle << "\n";
 	ofs << "maxballspeed=" << maxballspeed_int1000 << "\n";
 	ofs << "invert=" << invert << "\n";

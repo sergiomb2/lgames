@@ -46,8 +46,6 @@ Locals
 ====================================================================
 */
 
-#define WITH_BUG_REPORT "yes"
-
 #ifdef WITH_BUG_REPORT
 /*
 ====================================================================
@@ -712,85 +710,96 @@ void ball_reflect_at_corner( Ball *ball, Target *target, int corner )
 			break;
 		case CORNER_UPPER_RIGHT:
 			corner_center = vector_get( 
-				target->mx * BRICK_WIDTH + BRICK_WIDTH - 1, 
+				target->mx * BRICK_WIDTH + BRICK_WIDTH,
 				target->my * BRICK_HEIGHT );
 			break;
 		case CORNER_LOWER_LEFT:
 			corner_center = vector_get( 
 				target->mx * BRICK_WIDTH, 
-				target->my * BRICK_HEIGHT + BRICK_HEIGHT - 1);
+				target->my * BRICK_HEIGHT + BRICK_HEIGHT);
 			break;
 		case CORNER_LOWER_RIGHT:
 			corner_center = vector_get( 
-				target->mx * BRICK_WIDTH + BRICK_WIDTH - 1, 
-				target->my * BRICK_HEIGHT + BRICK_HEIGHT - 1);
+				target->mx * BRICK_WIDTH + BRICK_WIDTH,
+				target->my * BRICK_HEIGHT + BRICK_HEIGHT);
 			break;
 	}
-	/* intersect */
-	circle_intersect( corner_center, ball_rad + 2, ball_center, norm_vel, &pt, &pt2 );
-	/* use nearest point for reset and perp vector */
-	if ( VEC_DIST( ball_center, pt ) < VEC_DIST( ball_center, pt2 ) ) {
-		target->x = pt.x;
-		target->y = pt.y;
+	/* intersect, use ball radius + 1 to safely get an intersection for rounding errors. */
+	if (!circle_intersect( corner_center, ball_rad + 1, ball_center, norm_vel, &pt, &pt2)) {
+#ifdef WITH_BUG_REPORT
+		//printf("Corner reflection isect points: (%4.2f,%4.2f), (%4.2f,%4.2f)\n",
+		//						pt.x, pt.y, pt2.x, pt2.y);
+		printf("Oops: corner reflection but ball does not intersect with it?\n");
+#endif
+		/* fallback: use normed ball velocity vector as perp vector */
+		target->perp_vector = norm_vel;
+		/* and corner center - radius as target center, bad approximation
+		 * but what can we do... (this shouldn't happen anyway) */
+		target->x = corner_center.x - norm_vel.x*ball_rad;
+		target->y = corner_center.y - norm_vel.y*ball_rad;
+	} else {
+		/* use nearest point for reset and perp vector */
+		if ( VEC_DIST( ball_center, pt ) < VEC_DIST( ball_center, pt2 ) ) {
+			target->x = pt.x;
+			target->y = pt.y;
+		}
+		else {
+			target->x = pt2.x;
+			target->y = pt2.y;
+		}
+		/* compute the spherical perp vector
+		   (corner center - intersection point) */
+		target->perp_vector =
+			vector_get( corner_center.x - target->x,
+					corner_center.y - target->y );
+		vector_norm( &target->perp_vector );
 	}
-	else {
-		target->x = pt2.x;
-		target->y = pt2.y;
-	}
-	/* compute the spherical perp vector 
-	   (corner center - intersection point) */
-	target->perp_vector = 
-		vector_get( corner_center.x - target->x, 
-				corner_center.y - target->y );
-	vector_norm( &target->perp_vector );
-	/* this vector must operate within a 90� region depending on the corner.
+
+	/* this vector must operate within a 90° region depending on the corner.
 	   if it doesn't we have a side reflection unnoticed by the previous
 	   checks as we enclosed a corner. this is the only position to check
 	   this as the reset position is different when a corner is enclosed.
 	   doing this anywhere else would lead to errors. */
 	switch ( corner ) {
 		case CORNER_UPPER_LEFT:
-			if ( target->perp_vector.x * target->perp_vector.y >= 0 ) {
-				/* we needed the spherical perp to determine if it is 
-				   really a corner however we might have set the
-				   config option linear_corner */
-				/*if ( config.linear_corner )
-					target->perp_vector = vector_get( REC_SQRT_2, REC_SQRT_2 );*/
+			if ( target->perp_vector.x * target->perp_vector.y >= 0 )
 				break;
-			}
+#ifdef WITH_BUG_REPORT
+			printf("Oops: Not corner but side reflection.\n");
+#endif
 			if ( target->y < corner_center.y || target->x >= corner_center.x )
 				target->perp_vector = vector_get( 0, 1 ); /* top */
 			else
 				target->perp_vector = vector_get( 1, 0 ); /* left */
 			break;
 		case CORNER_LOWER_RIGHT:
-			if ( target->perp_vector.x * target->perp_vector.y >= 0 ) {
-				/*if ( config.linear_corner )
-					target->perp_vector = vector_get( REC_SQRT_2, REC_SQRT_2 );*/
+			if ( target->perp_vector.x * target->perp_vector.y >= 0 )
 				break;
-			}
+#ifdef WITH_BUG_REPORT
+			printf("Oops: Not corner but side reflection.\n");
+#endif
 			if ( target->y > corner_center.y || target->x <= corner_center.x )
 				target->perp_vector = vector_get( 0, 1 ); /* bottom */
 			else
 				target->perp_vector = vector_get( 1, 0 ); /* right */
 			break;
 		case CORNER_UPPER_RIGHT:
-			if ( target->perp_vector.x * target->perp_vector.y <= 0 ) {
-				/*if ( config.linear_corner )
-					target->perp_vector = vector_get( REC_SQRT_2, -REC_SQRT_2 );*/
+			if ( target->perp_vector.x * target->perp_vector.y <= 0 )
 				break;
-			}
+#ifdef WITH_BUG_REPORT
+			printf("Oops: Not corner but side reflection.\n");
+#endif
 			if ( target->y < corner_center.y || target->x <= corner_center.x )
 				target->perp_vector = vector_get( 0, 1 ); /* top */
 			else
 				target->perp_vector = vector_get( 1, 0 ); /* right */
 			break;
 		case CORNER_LOWER_LEFT:
-			if ( target->perp_vector.x * target->perp_vector.y <= 0 ) {
-				/*if ( config.linear_corner )
-					target->perp_vector = vector_get( REC_SQRT_2, -REC_SQRT_2 );*/
+			if ( target->perp_vector.x * target->perp_vector.y <= 0 )
 				break;
-			}
+#ifdef WITH_BUG_REPORT
+			printf("Oops: Not corner but side reflection.\n");
+#endif
 			if ( target->y > corner_center.y || target->x >= corner_center.x )
 				target->perp_vector = vector_get( 0, 1 ); /* bottom */
 			else
@@ -1657,6 +1666,15 @@ void ball_get_target( Ball *ball )
 			ball->moving_back = 1;
 			ball->return_allowed = 0;
 		}
+#endif
+	} else if (ball->vel.y < 0) {
+		/* ball is moving up, but no targets? impossible! */
+#ifdef WITH_BUG_REPORT
+		printf("FATAL: No target for ball moving up!\n");
+		printf("  ball center: %.2f,%.2f\n",center.x,center.y);
+		printf("  ball speed vector: %.2f,%.2f\n",ball->vel.x,ball->vel.y);
+		printf("  tangential point 1: %.2f,%.2f\n",tang_pts[0].x,tang_pts[0].y);
+		printf("  tangential point 2: %.2f,%.2f\n",tang_pts[1].x,tang_pts[1].y);
 #endif
 	}
 }
