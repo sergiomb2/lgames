@@ -964,6 +964,12 @@ int brick_hit( int mx, int my, int metal, int type, Vector imp, Paddle *paddle )
 					cur_game->totalBonusLevelScore += cur_game->blInvaderScore;
 					break;
 				}
+
+			/* if no bricks are left, immediately grow a new one to prevent
+			 * false game over */
+			if (cur_game->bricks_left == 0)
+				bricks_add_invader(cur_game);
+
 			cur_game->blNumKilledInvaders++;
 			cur_game->blTotalNumKilledInvaders++;
 			if (cur_game->blNumKilledInvaders == cur_game->blInvaderLimit) {
