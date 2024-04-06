@@ -1,3 +1,4 @@
+- added new levelset JustGoForIt by unknown (2024/04/06 MS)
 - workaround: return ball to paddle for illegal targets (2024/04/06 MS)
 - fixed mini game Invaders (2024/04/05 MS)
 - workaround: reset ball if in brick before getting target (2024/04/05 MS)
