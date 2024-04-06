@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.1.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 11:15+0100\n"
+"POT-Creation-Date: 2024-04-06 15:15+0200\n"
 "PO-Revision-Date: 2024-01-12 14:04+0300\n"
 "Last-Translator: Olesya Gerasimenko <translation-team@basealt.ru>\n"
 "Language-Team: Basealt Translation Team\n"
@@ -18,7 +18,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 23.04.3\n"
 
-#: libgame/game.c:63 libgame/levels.c:121
+#: libgame/game.c:63 libgame/levels.c:123
 #, c-format
 msgid "Jumping Jack"
 msgstr "Прыгун"
@@ -29,22 +29,22 @@ msgstr "Прыгун"
 msgid "Bonus Level"
 msgstr "Бонусный уровень"
 
-#: libgame/game.c:67 libgame/levels.c:124
+#: libgame/game.c:67 libgame/levels.c:126
 #, c-format
 msgid "Outbreak"
 msgstr "Вспышка"
 
-#: libgame/game.c:71 libgame/levels.c:127
+#: libgame/game.c:71 libgame/levels.c:129
 #, c-format
 msgid "Barrier"
 msgstr "Барьер"
 
-#: libgame/game.c:75 libgame/levels.c:130
+#: libgame/game.c:75 libgame/levels.c:132
 #, c-format
 msgid "Sitting Ducks"
 msgstr "Утки"
 
-#: libgame/game.c:79 libgame/levels.c:133
+#: libgame/game.c:79 libgame/levels.c:135
 #, c-format
 msgid "Hunter"
 msgstr "Охотник"
@@ -67,35 +67,35 @@ msgstr "<СОЗДАТЬ НАБОР>"
 msgid "!FREAKOUT!"
 msgstr "!ПАНИКА!"
 
-#: libgame/levels.c:136
+#: libgame/levels.c:138
 msgid "Invaders"
 msgstr "Захватчики"
 
-#: libgame/levels.c:139
+#: libgame/levels.c:141
 msgid "unknown"
 msgstr "неизвестный"
 
-#: libgame/levels.c:155 src/selectdlg.cpp:128
+#: libgame/levels.c:157 src/selectdlg.cpp:128
 msgid "!JUMPING_JACK!"
 msgstr "!ПРЫГУН!"
 
-#: libgame/levels.c:157 src/selectdlg.cpp:129
+#: libgame/levels.c:159 src/selectdlg.cpp:129
 msgid "!OUTBREAK!"
 msgstr "!ВСПЫШКА!"
 
-#: libgame/levels.c:159 src/selectdlg.cpp:130
+#: libgame/levels.c:161 src/selectdlg.cpp:130
 msgid "!BARRIER!"
 msgstr "!БАРЬЕР!"
 
-#: libgame/levels.c:161 src/selectdlg.cpp:131
+#: libgame/levels.c:163 src/selectdlg.cpp:131
 msgid "!SITTING_DUCKS!"
 msgstr "!УТКИ!"
 
-#: libgame/levels.c:163 src/selectdlg.cpp:132
+#: libgame/levels.c:165 src/selectdlg.cpp:132
 msgid "!HUNTER!"
 msgstr "!ОХОТНИК!"
 
-#: libgame/levels.c:165 src/selectdlg.cpp:133
+#: libgame/levels.c:167 src/selectdlg.cpp:133
 msgid "!INVADERS!"
 msgstr "!ЗАХВАТЧИКИ!"
 
@@ -139,23 +139,23 @@ msgstr "Активные дополнения"
 msgid "Hiscores"
 msgstr "Рекорды"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Kids"
 msgstr "Для детей"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Very Easy"
 msgstr "Очень низкая"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Easy"
 msgstr "Низкая"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Medium"
 msgstr "Средняя"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Hard"
 msgstr "Высокая"
 
@@ -526,7 +526,7 @@ msgstr ""
 "Либо 50 градусов влево или вправо, либо случайный (независимо от того, какая "
 "клавиша запуска была нажата)."
 
-#: src/view.cpp:1271 src/view.cpp:1835
+#: src/view.cpp:1271 src/view.cpp:1861
 msgid "Random"
 msgstr "Случайный"
 
@@ -624,7 +624,7 @@ msgstr "Продолжить игру"
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/view.cpp:1302 src/view.cpp:1794
+#: src/view.cpp:1302 src/view.cpp:1820
 msgid "Help"
 msgstr "Справка"
 
@@ -636,19 +636,19 @@ msgstr "Редактор"
 msgid "Quit"
 msgstr "Выход"
 
-#: src/view.cpp:1722
+#: src/view.cpp:1748
 msgid "No saved game."
 msgstr "Нет сохранённой игры."
 
-#: src/view.cpp:1739
+#: src/view.cpp:1765
 msgid " player(s)\n"
 msgstr " игр.\n"
 
-#: src/view.cpp:1750
+#: src/view.cpp:1776
 msgid "  (Lvl: "
 msgstr "  (ур.: "
 
-#: src/view.cpp:1769
+#: src/view.cpp:1795
 msgid ""
 "You can control your paddle either with the mouse or keyboard. Destroying "
 "bricks will release extras sometimes. Some are good, some are bad and some "
@@ -699,142 +699,142 @@ msgstr ""
 "Играйте с удовольствием!\n"
 "          Michael Speck"
 
-#: src/view.cpp:1802
+#: src/view.cpp:1828
 msgid "Extra Score"
 msgstr "Дополнительные очки"
 
-#: src/view.cpp:1803
+#: src/view.cpp:1829
 msgid "Gold Shower"
 msgstr "Золотой дождь"
 
-#: src/view.cpp:1805
+#: src/view.cpp:1831
 msgid "Extra Life"
 msgstr "Дополнительная жизнь"
 
-#: src/view.cpp:1806
+#: src/view.cpp:1832
 msgid "Extra Ball"
 msgstr "Дополнительный мяч"
 
-#: src/view.cpp:1808
+#: src/view.cpp:1834
 msgid "Expand Paddle"
 msgstr "Увеличение ракетки"
 
-#: src/view.cpp:1809
+#: src/view.cpp:1835
 msgid "Shrink Paddle"
 msgstr "Уменьшение ракетки"
 
-#: src/view.cpp:1811
+#: src/view.cpp:1837
 msgid "Sticky Paddle"
 msgstr "Липкая ракетка"
 
-#: src/view.cpp:1812
+#: src/view.cpp:1838
 msgid "Plasma Weapon"
 msgstr "Плазменное оружие"
 
-#: src/view.cpp:1814
+#: src/view.cpp:1840
 msgid "Slow Balls"
 msgstr "Медленные мячи"
 
-#: src/view.cpp:1815
+#: src/view.cpp:1841
 msgid "Fast Balls"
 msgstr "Быстрые мячи"
 
-#: src/view.cpp:1817
+#: src/view.cpp:1843
 msgid "Energy Balls"
 msgstr "Энергетические мячи"
 
-#: src/view.cpp:1818
+#: src/view.cpp:1844
 msgid "Explosive Balls"
 msgstr "Взрывные мячи"
 
-#: src/view.cpp:1820
+#: src/view.cpp:1846
 msgid "Extra Floor"
 msgstr "Дополнительный этаж"
 
-#: src/view.cpp:1821
+#: src/view.cpp:1847
 msgid "Joker (collect goodies)"
 msgstr "Джокер (собрать призы)"
 
-#: src/view.cpp:1823
+#: src/view.cpp:1849
 msgid "Bonus Magnet"
 msgstr "Магнит бонусов"
 
-#: src/view.cpp:1824
+#: src/view.cpp:1850
 msgid "Malus Magnet"
 msgstr "Магнит штрафов"
 
-#: src/view.cpp:1826
+#: src/view.cpp:1852
 msgid "Chaotic Balls"
 msgstr "Хаотичные мячи"
 
-#: src/view.cpp:1827
+#: src/view.cpp:1853
 msgid "Weak Balls"
 msgstr "Слабые мячи"
 
-#: src/view.cpp:1829
+#: src/view.cpp:1855
 msgid "Frozen Paddle"
 msgstr "Замороженная ракетка"
 
-#: src/view.cpp:1830
+#: src/view.cpp:1856
 msgid "Ghost Paddle"
 msgstr "Призрачная ракетка"
 
-#: src/view.cpp:1832
+#: src/view.cpp:1858
 msgid "Extra Time"
 msgstr "Дополнительное время"
 
-#: src/view.cpp:1833
+#: src/view.cpp:1859
 msgid "Reset"
 msgstr "Сброс"
 
-#: src/view.cpp:1836
+#: src/view.cpp:1862
 msgid "Darkness"
 msgstr "Темнота"
 
-#: src/view.cpp:1838
+#: src/view.cpp:1864
 msgid "Indestructible"
 msgstr "Неразрушимость"
 
-#: src/view.cpp:1839
+#: src/view.cpp:1865
 msgid "Regular Wall"
 msgstr "Обычная стена"
 
-#: src/view.cpp:1841
+#: src/view.cpp:1867
 msgid "Chaotic Wall"
 msgstr "Хаотичная стена"
 
-#: src/view.cpp:1842
+#: src/view.cpp:1868
 msgid "Regular Brick"
 msgstr "Обычный кирпич"
 
-#: src/view.cpp:1844
+#: src/view.cpp:1870
 msgid "Multi-hit Brick"
 msgstr "Многоударный кирпич"
 
-#: src/view.cpp:1845
+#: src/view.cpp:1871
 msgid "Regenerative Brick"
 msgstr "Регенеративный кирпич"
 
-#: src/view.cpp:1847
+#: src/view.cpp:1873
 msgid "Explosive Brick"
 msgstr "Взрывной кирпич"
 
-#: src/view.cpp:1848
+#: src/view.cpp:1874
 msgid "Growing Brick"
 msgstr "Растущий кирпич"
 
-#: src/view.cpp:1868
+#: src/view.cpp:1894
 msgid "Plane of Inner Stability"
 msgstr "Плоскость внутренней стабильности"
 
-#: src/view.cpp:1873
+#: src/view.cpp:1899
 #, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr ""
 "Чтобы разрушить кирпич, щёлкните по нему левой кнопкой мыши (расход очков: "
 "10% score)."
 
-#: src/view.cpp:1876
+#: src/view.cpp:1902
 msgid "Press any key to cancel selection."
 msgstr "Нажмите любую клавишу, чтобы отменить выбор."
 
@@ -864,16 +864,17 @@ msgid "Total Hits: %d, Current Prize: %d"
 msgstr "Всего попаданий: %d, текущая стоимость: %d"
 
 #: src/clientgame.cpp:394
-#, c-format
-msgid "Wave: %d, Invaders: %d/%d"
-msgstr "Волна: %d, захватчики: %d/%d"
+#, fuzzy, c-format
+#| msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
+msgid "Wave: %d, Invaders: %d/%d (Active: %d)"
+msgstr "Волна: %d, инфекции: %d/%d, активные: %d/%d"
 
-#: src/clientgame.cpp:399
+#: src/clientgame.cpp:400
 #, c-format
 msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgstr "Волна: %d, инфекции: %d/%d, активные: %d/%d"
 
-#: src/clientgame.cpp:405 src/clientgame.cpp:409
+#: src/clientgame.cpp:406 src/clientgame.cpp:410
 #, fuzzy, c-format
 #| msgid "Hits: %d, Current Price: %d, Time: %d secs"
 msgid "Hits: %d, Current Prize: %d, Time: %d secs"
@@ -950,3 +951,7 @@ msgstr "Вкл."
 #: src/menu.h:336
 msgid "Enter Name"
 msgstr "Введите имя"
+
+#, c-format
+#~ msgid "Wave: %d, Invaders: %d/%d"
+#~ msgstr "Волна: %d, захватчики: %d/%d"

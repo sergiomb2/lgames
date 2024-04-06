@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 11:15+0100\n"
+"POT-Creation-Date: 2024-04-06 15:15+0200\n"
 "PO-Revision-Date: 2019-06-26 10:11+0200\n"
 "Last-Translator: Wuzzy <almikes@aol.com>\n"
 "Language-Team: \n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: libgame/game.c:63 libgame/levels.c:121
+#: libgame/game.c:63 libgame/levels.c:123
 #, c-format
 msgid "Jumping Jack"
 msgstr "Pantin"
@@ -28,22 +28,22 @@ msgstr "Pantin"
 msgid "Bonus Level"
 msgstr "Niveau bonus"
 
-#: libgame/game.c:67 libgame/levels.c:124
+#: libgame/game.c:67 libgame/levels.c:126
 #, c-format
 msgid "Outbreak"
 msgstr "Manifestation"
 
-#: libgame/game.c:71 libgame/levels.c:127
+#: libgame/game.c:71 libgame/levels.c:129
 #, c-format
 msgid "Barrier"
 msgstr "Barrière"
 
-#: libgame/game.c:75 libgame/levels.c:130
+#: libgame/game.c:75 libgame/levels.c:132
 #, c-format
 msgid "Sitting Ducks"
 msgstr "Canards"
 
-#: libgame/game.c:79 libgame/levels.c:133
+#: libgame/game.c:79 libgame/levels.c:135
 #, c-format
 msgid "Hunter"
 msgstr "Chasseur"
@@ -66,35 +66,35 @@ msgstr "<CRÉER NIVEAUX>"
 msgid "!FREAKOUT!"
 msgstr "!BALLE_PERDUE!"
 
-#: libgame/levels.c:136
+#: libgame/levels.c:138
 msgid "Invaders"
 msgstr "Envahisseurs"
 
-#: libgame/levels.c:139
+#: libgame/levels.c:141
 msgid "unknown"
 msgstr "inconnu"
 
-#: libgame/levels.c:155 src/selectdlg.cpp:128
+#: libgame/levels.c:157 src/selectdlg.cpp:128
 msgid "!JUMPING_JACK!"
 msgstr "!PANTIN!"
 
-#: libgame/levels.c:157 src/selectdlg.cpp:129
+#: libgame/levels.c:159 src/selectdlg.cpp:129
 msgid "!OUTBREAK!"
 msgstr "!MANIFESTATION!"
 
-#: libgame/levels.c:159 src/selectdlg.cpp:130
+#: libgame/levels.c:161 src/selectdlg.cpp:130
 msgid "!BARRIER!"
 msgstr "!BARRIÈRE!"
 
-#: libgame/levels.c:161 src/selectdlg.cpp:131
+#: libgame/levels.c:163 src/selectdlg.cpp:131
 msgid "!SITTING_DUCKS!"
 msgstr "!CANARDS!"
 
-#: libgame/levels.c:163 src/selectdlg.cpp:132
+#: libgame/levels.c:165 src/selectdlg.cpp:132
 msgid "!HUNTER!"
 msgstr "!CHASSEUR!"
 
-#: libgame/levels.c:165 src/selectdlg.cpp:133
+#: libgame/levels.c:167 src/selectdlg.cpp:133
 msgid "!INVADERS!"
 msgstr "!ENVAHISSEURS!"
 
@@ -138,23 +138,23 @@ msgstr "Active Extras"
 msgid "Hiscores"
 msgstr "Tableau des points"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Kids"
 msgstr "Enfants"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Very Easy"
 msgstr "Très Facile"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Easy"
 msgstr "Facile"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Medium"
 msgstr "Moyenne"
 
-#: src/view.cpp:1145 src/view.cpp:1727
+#: src/view.cpp:1145 src/view.cpp:1753
 msgid "Hard"
 msgstr "Difficile"
 
@@ -519,7 +519,7 @@ msgstr ""
 "Soit 50° de gauche à droite, soit aléatoire, quelque soit la touche de tir "
 "actionnée."
 
-#: src/view.cpp:1271 src/view.cpp:1835
+#: src/view.cpp:1271 src/view.cpp:1861
 msgid "Random"
 msgstr "Aléatoire"
 
@@ -615,7 +615,7 @@ msgstr "Reprendre la partie"
 msgid "Settings"
 msgstr "Préférences"
 
-#: src/view.cpp:1302 src/view.cpp:1794
+#: src/view.cpp:1302 src/view.cpp:1820
 msgid "Help"
 msgstr "Aide"
 
@@ -627,19 +627,19 @@ msgstr ""
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/view.cpp:1722
+#: src/view.cpp:1748
 msgid "No saved game."
 msgstr "La partie n'est pas sauvegardée."
 
-#: src/view.cpp:1739
+#: src/view.cpp:1765
 msgid " player(s)\n"
 msgstr " joueur(s)\n"
 
-#: src/view.cpp:1750
+#: src/view.cpp:1776
 msgid "  (Lvl: "
 msgstr "  (Niv : "
 
-#: src/view.cpp:1769
+#: src/view.cpp:1795
 #, fuzzy
 #| msgid ""
 #| "You can control your paddle either with the mouse or keyboard. Destroying "
@@ -712,140 +712,140 @@ msgstr ""
 "Bon jeu !\n"
 "          Michael Speck"
 
-#: src/view.cpp:1802
+#: src/view.cpp:1828
 msgid "Extra Score"
 msgstr "Points en plus"
 
-#: src/view.cpp:1803
+#: src/view.cpp:1829
 msgid "Gold Shower"
 msgstr "Pluie d'or"
 
-#: src/view.cpp:1805
+#: src/view.cpp:1831
 msgid "Extra Life"
 msgstr "Vie en plus"
 
-#: src/view.cpp:1806
+#: src/view.cpp:1832
 msgid "Extra Ball"
 msgstr "Balle en plus"
 
-#: src/view.cpp:1808
+#: src/view.cpp:1834
 msgid "Expand Paddle"
 msgstr "Palet élargi"
 
-#: src/view.cpp:1809
+#: src/view.cpp:1835
 msgid "Shrink Paddle"
 msgstr "Palet rétréci"
 
-#: src/view.cpp:1811
+#: src/view.cpp:1837
 msgid "Sticky Paddle"
 msgstr "Palet collant"
 
-#: src/view.cpp:1812
+#: src/view.cpp:1838
 msgid "Plasma Weapon"
 msgstr "Arme au plasma"
 
-#: src/view.cpp:1814
+#: src/view.cpp:1840
 msgid "Slow Balls"
 msgstr "Balles lentes"
 
-#: src/view.cpp:1815
+#: src/view.cpp:1841
 msgid "Fast Balls"
 msgstr "Balles rapides"
 
-#: src/view.cpp:1817
+#: src/view.cpp:1843
 msgid "Energy Balls"
 msgstr "Balles d'énergie"
 
-#: src/view.cpp:1818
+#: src/view.cpp:1844
 msgid "Explosive Balls"
 msgstr "Balles explosives"
 
-#: src/view.cpp:1820
+#: src/view.cpp:1846
 msgid "Extra Floor"
 msgstr "Étage en plus"
 
-#: src/view.cpp:1821
+#: src/view.cpp:1847
 msgid "Joker (collect goodies)"
 msgstr "Joker (collecte tous les bonus)"
 
-#: src/view.cpp:1823
+#: src/view.cpp:1849
 msgid "Bonus Magnet"
 msgstr "Attire les bonus"
 
-#: src/view.cpp:1824
+#: src/view.cpp:1850
 msgid "Malus Magnet"
 msgstr "Attire les malus"
 
-#: src/view.cpp:1826
+#: src/view.cpp:1852
 msgid "Chaotic Balls"
 msgstr "Balles chaotiques"
 
-#: src/view.cpp:1827
+#: src/view.cpp:1853
 msgid "Weak Balls"
 msgstr "Balles faibles"
 
-#: src/view.cpp:1829
+#: src/view.cpp:1855
 msgid "Frozen Paddle"
 msgstr "Palet gelée"
 
-#: src/view.cpp:1830
+#: src/view.cpp:1856
 msgid "Ghost Paddle"
 msgstr "Palet fantôme"
 
-#: src/view.cpp:1832
+#: src/view.cpp:1858
 msgid "Extra Time"
 msgstr "Temps en plus"
 
-#: src/view.cpp:1833
+#: src/view.cpp:1859
 msgid "Reset"
 msgstr "ré-initialisation"
 
-#: src/view.cpp:1836
+#: src/view.cpp:1862
 msgid "Darkness"
 msgstr "Nuit"
 
-#: src/view.cpp:1838
+#: src/view.cpp:1864
 msgid "Indestructible"
 msgstr "Indestructible"
 
-#: src/view.cpp:1839
+#: src/view.cpp:1865
 msgid "Regular Wall"
 msgstr "Mur standard"
 
-#: src/view.cpp:1841
+#: src/view.cpp:1867
 msgid "Chaotic Wall"
 msgstr "Mur chaotique"
 
-#: src/view.cpp:1842
+#: src/view.cpp:1868
 msgid "Regular Brick"
 msgstr "Brique basique"
 
-#: src/view.cpp:1844
+#: src/view.cpp:1870
 msgid "Multi-hit Brick"
 msgstr "Brique multi coup"
 
-#: src/view.cpp:1845
+#: src/view.cpp:1871
 msgid "Regenerative Brick"
 msgstr "Brique régénératrice"
 
-#: src/view.cpp:1847
+#: src/view.cpp:1873
 msgid "Explosive Brick"
 msgstr "Brique explosive"
 
-#: src/view.cpp:1848
+#: src/view.cpp:1874
 msgid "Growing Brick"
 msgstr "Brique grandissante"
 
-#: src/view.cpp:1868
+#: src/view.cpp:1894
 msgid "Plane of Inner Stability"
 msgstr "Zone de stabilité"
 
-#: src/view.cpp:1873
+#: src/view.cpp:1899
 #, fuzzy, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr "Clique gauche sur une brique pour l'effacer (coute 10% des points)."
 
-#: src/view.cpp:1876
+#: src/view.cpp:1902
 msgid "Press any key to cancel selection."
 msgstr "Appuyer sur une touche pour annuler la sélection."
 
@@ -875,16 +875,17 @@ msgid "Total Hits: %d, Current Prize: %d"
 msgstr "Gesamttreffer: %d, Cout: %d"
 
 #: src/clientgame.cpp:394
-#, c-format
-msgid "Wave: %d, Invaders: %d/%d"
-msgstr "Vague : %d, Envahisseurs : %d/%d"
+#, fuzzy, c-format
+#| msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
+msgid "Wave: %d, Invaders: %d/%d (Active: %d)"
+msgstr "Vague : %d, Infections : %d/%d, Actif : %d/%d"
 
-#: src/clientgame.cpp:399
+#: src/clientgame.cpp:400
 #, c-format
 msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgstr "Vague : %d, Infections : %d/%d, Actif : %d/%d"
 
-#: src/clientgame.cpp:405 src/clientgame.cpp:409
+#: src/clientgame.cpp:406 src/clientgame.cpp:410
 #, fuzzy, c-format
 #| msgid "Hits: %d, Current Price: %d, Time: %d secs"
 msgid "Hits: %d, Current Prize: %d, Time: %d secs"
@@ -961,6 +962,10 @@ msgstr "Activé"
 #: src/menu.h:336
 msgid "Enter Name"
 msgstr "Entrez un Nom"
+
+#, c-format
+#~ msgid "Wave: %d, Invaders: %d/%d"
+#~ msgstr "Vague : %d, Envahisseurs : %d/%d"
 
 #~ msgid "On Click"
 #~ msgstr "sur clique"
