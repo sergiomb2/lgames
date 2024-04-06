@@ -1340,6 +1340,7 @@ void ball_get_target( Ball *ball )
 #endif
 	Target	*prim, *sec; /* primary, secondary target */
 	int     maybe_corner;
+	int bad_target = 0; /* if get_target fails return ball to paddle */
 
 #ifdef WITH_BUG_REPORT
 	side_str[0] = 0;
@@ -1707,23 +1708,61 @@ void ball_get_target( Ball *ball )
 			ball_print_target_info( ball );
 			printf("*****\n");
 			printf( "\nYou encountered a bug! Please send this output to kulkanie@gmx.net. Thanks!\n" );
-			//exit(1);
-			/* move ball back to paddle as the current target is nonsense */
-			ball->target.exists = 0;
-			ball->idle_time = 0;
-			ball->moving_back = 1;
-			ball->return_allowed = 0;
+			bad_target = 1;
 		}
 #endif
-	} else if (ball->vel.y < 0) {
-		/* ball is moving up, but no targets? impossible! */
-#ifdef WITH_BUG_REPORT
-		printf("FATAL: No target for ball moving up!\n");
-		printf("  ball center: %.2f,%.2f\n",center.x,center.y);
-		printf("  ball speed vector: %.2f,%.2f\n",ball->vel.x,ball->vel.y);
-		printf("  tangential point 1: %.2f,%.2f\n",tang_pts[0].x,tang_pts[0].y);
-		printf("  tangential point 2: %.2f,%.2f\n",tang_pts[1].x,tang_pts[1].y);
-#endif
+	}
+
+	/* workaround: if we have no target but the ball would exit the screen illegally
+	 * return it to paddle. */
+	if (ball->target.exists == 0) {
+		if (ball->vel.y < 0) {
+			/* ball is moving up, but no targets? impossible! */
+			printf("FATAL: No target for ball moving up!\n");
+			bad_target = 1;
+		} else {
+			/* if ball is moving down: the intersection of the open
+			 * bottom line with the ball's tangents must be within
+			 * BRICK_WIDTH + ball_radius and
+			 * map width - BRICK_WIDTH - ball_radius. If not the ball
+			 * somehow tunnels through the outer walls... nope, sir! */
+			Coord pos;
+			Line bottom;
+			line_set(&bottom, 0, MAP_HEIGHT*BRICK_HEIGHT, 0);
+
+			for (int i = 0; i < 2; i++) {
+				line_set(&tang, tang_pts[i].x, tang_pts[i].y, mono);
+				line_intersect(&tang, &bottom, &pos);
+				/* enlarge interval a little to prevent rounding
+				 * errors, should have no effect as ball will be
+				 * still well in reach of the paddle. */
+				if (pos.x < BRICK_WIDTH-1 ||
+						pos.x > (MAP_WIDTH-1)*BRICK_WIDTH) {
+					bad_target = 1;
+					break;
+				}
+			}
+			if (bad_target) {
+				printf("FATAL: No target but ball will not exit through bottom!\n");
+				printf("  bottom intersection: %.2f;%.2f", pos.x, pos.y);
+			}
+		}
+
+		if (bad_target) {
+			printf("  ball center: %.2f;%.2f\n",center.x,center.y);
+			printf("  ball speed vector: %.2f;%.2f\n",ball->vel.x,ball->vel.y);
+			printf("  tangential point 1: %.2f;%.2f\n",tang_pts[0].x,tang_pts[0].y);
+			printf("  tangential point 2: %.2f;%.2f\n",tang_pts[1].x,tang_pts[1].y);
+		}
+	}
+
+	/* if get_target failed, return ball to paddle */
+	if (bad_target) {
+		/* move ball back to paddle as the current target is nonsense */
+		ball->target.exists = 0;
+		ball->idle_time = 0;
+		ball->moving_back = 1;
+		ball->return_allowed = 0;
 	}
 }
 /*
