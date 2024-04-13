@@ -55,7 +55,7 @@ FileParser::FileParser(const string&  fname)
 	_logdebug(1,"Parsing file %s\n",fname.c_str());
 
 	prefix="";
-	while (getline(ifs,line)) {
+	while (readLine(ifs,line)) {
 		if ((pos = line.find('=')) != string::npos) {
 			/* plain entry, add to list */
 			string key = prefix + trimString(line.substr(0, pos));
@@ -237,4 +237,14 @@ const string &getFullLevelsetPath(const string &n)
 		path += n.substr(1);
 	}
 	return path;
+}
+
+/** Read line from input stream and remove any return carriage char (13)
+ * at the end (windows files). */
+istream& readLine(ifstream &ifs, string &str)
+{
+	istream &ret = getline(ifs, str);
+	if (str[str.length()-1] == 13)
+		str = str.substr(0,str.length()-1);
+	return ret;
 }

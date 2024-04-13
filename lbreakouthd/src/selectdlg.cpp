@@ -72,11 +72,8 @@ SetInfo::SetInfo(const string &n, Theme &theme)
 		SDL_SetRenderTarget(mrc, NULL);
 		return;
 	}
-	for (uint i = 0; i < 5+EDIT_HEIGHT; i++) {
-		getline(ifs,lines[i]);
-		if (lines[i][lines[i].length()-1] == 13)
-			lines[i][lines[i].length()-1] = 0;
-	}
+	for (uint i = 0; i < 5+EDIT_HEIGHT; i++)
+		readLine(ifs,lines[i]);
 	if (lines[0].find("Version") != string::npos) {
 		version = trimString(lines[0].substr(lines[0].find(':')+1));
 		offset = 1;
@@ -85,7 +82,7 @@ SetInfo::SetInfo(const string &n, Theme &theme)
 
 	/* count levels */
 	levels = 1;
-	while (getline(ifs, lines[0]))
+	while (readLine(ifs, lines[0]))
 		if (lines[0].find("Level:") != string::npos)
 			levels++;
 	ifs.close();

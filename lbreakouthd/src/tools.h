@@ -223,4 +223,6 @@ const string &getFullLevelsetPath(const string &n);
 
 string trimString(const string& str);
 
+istream& readLine(ifstream &ifs, string &str);
+
 #endif /* SRC_TOOLS_H_ */

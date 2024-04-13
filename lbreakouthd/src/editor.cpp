@@ -270,24 +270,24 @@ void Editor::load()
 	numLevels = 0;
 	hasChanges = false;
 
-	getline(ifs,line);
+	readLine(ifs,line);
 	if (line.find("Version:") == string::npos)
 		goto failure;
 	version = line.substr(9);
 
-	while (getline(ifs,line)) {
+	while (readLine(ifs,line)) {
 		/* new level */
 		if (line != "Level:")
 			goto failure;
 		addNewLevel(numLevels);
 		l = &levels[numLevels-1];
-		getline(ifs,l->author);
-		getline(ifs,l->title);
-		getline(ifs,line);
+		readLine(ifs,l->author);
+		readLine(ifs,l->title);
+		readLine(ifs,line);
 		if (line != "Bricks:")
 			goto failure;
 		for (uint j = 0; j < EDIT_HEIGHT; j++) {
-			if (!getline(ifs,line))
+			if (!readLine(ifs,line))
 				goto failure;
 			for (uint i = 0; i < EDIT_WIDTH; i++) {
 				if (i >= line.length())
@@ -295,11 +295,11 @@ void Editor::load()
 				l->bricks[i][j] = brickChar2Id(line[i]);
 			}
 		}
-		getline(ifs,line);
+		readLine(ifs,line);
 		if (line != "Bonus:")
 			goto failure;
 		for (uint j = 0; j < EDIT_HEIGHT; j++) {
-			if (!getline(ifs,line))
+			if (!readLine(ifs,line))
 				goto failure;
 			for (uint i = 0; i < EDIT_WIDTH; i++) {
 				if (i >= line.length())
