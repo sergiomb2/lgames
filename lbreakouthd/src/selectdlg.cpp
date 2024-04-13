@@ -72,8 +72,11 @@ SetInfo::SetInfo(const string &n, Theme &theme)
 		SDL_SetRenderTarget(mrc, NULL);
 		return;
 	}
-	for (uint i = 0; i < 5+EDIT_HEIGHT; i++)
+	for (uint i = 0; i < 5+EDIT_HEIGHT; i++) {
 		getline(ifs,lines[i]);
+		if (lines[i][lines[i].length()-1] == 13)
+			lines[i][lines[i].length()-1] = 0;
+	}
 	if (lines[0].find("Version") != string::npos) {
 		version = trimString(lines[0].substr(lines[0].find(':')+1));
 		offset = 1;

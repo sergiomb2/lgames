@@ -1,3 +1,5 @@
+- properly read level preview from windows levelsets (2024/04/14 MS)
+
 1.1.7:
 - added new levelset JustGoForIt by unknown (2024/04/06 MS)
 - workaround: return ball to paddle for illegal targets (2024/04/06 MS)
