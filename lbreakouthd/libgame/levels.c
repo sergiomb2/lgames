@@ -32,9 +32,9 @@ static int next_line( FILE *file, char *buffer )
 {
     /* lines with an # are comments: ignore them */
     if ( !fgets( buffer, 1023, file ) ) return 0;
-    if ( buffer[strlen(buffer) - 1] == 10 )
+    if ( strlen(buffer) > 0 && buffer[strlen(buffer) - 1] == 10 )
         buffer[strlen(buffer) - 1] = 0;
-    if ( buffer[strlen(buffer) - 1] == 13 ) /* additional windows \r? */
+    if ( strlen(buffer) > 0 && buffer[strlen(buffer) - 1] == 13 ) /* additional windows \r? */
         buffer[strlen(buffer) - 1] = 0; /* remove it */
     return 1;
 }

@@ -244,7 +244,7 @@ const string &getFullLevelsetPath(const string &n)
 istream& readLine(ifstream &ifs, string &str)
 {
 	istream &ret = getline(ifs, str);
-	if (str[str.length()-1] == 13)
+	if (str.length() > 0 && str[str.length()-1] == 13)
 		str = str.substr(0,str.length()-1);
 	return ret;
 }
