@@ -56,13 +56,13 @@ static void ball_print_target_info( Ball *ball )
 {
 	Coord  center = { ball->cur.x + ball_rad, ball->cur.y + ball_rad }; /* ball center */
 	printf( "Target exists: %i\n", ball->target.exists );
-	printf("Ball: %4.2f,%4.2f (%i,%i) -> %4.2f,%4.2f (%4.2f)\n", 
+	printf("Ball: %f,%f (%i,%i) -> %f,%f (%f)\n",
 			center.x, center.y, (int)center.x/BRICK_WIDTH, (int)center.y/BRICK_HEIGHT,
 			ball->vel.x, ball->vel.y, ball->vel.y/ball->vel.x );
-	printf("Brick %i,%i: Side %i (%4.2f,%4.2f)\n", 
+	printf("Brick %i,%i: Side %i (%f,%f)\n",
 			ball->target.mx, ball->target.my, ball->target.side, 
 			ball->target.x, ball->target.y );
-	printf("Perp Vector: %4.2f,%4.2f\n", ball->target.perp_vector.x, ball->target.perp_vector.y);
+	printf("Perp Vector: %f,%f\n", ball->target.perp_vector.x, ball->target.perp_vector.y);
 	printf("Takes %i ms\n", ball->target.time);
 }
 #endif
@@ -1361,9 +1361,9 @@ void ball_get_target( Ball *ball )
 		ball->y = ball->cur.y;
 #ifdef WITH_BUG_REPORT
 		printf("Oops... ball is inside a brick, resetting position\n");
-		printf("  from %.2f;%.2f to %.2f;%.2f\n",
+		printf("  from %f,%f to %f,%f\n",
 				oldpos.x, oldpos.y, ball->cur.x, ball->cur.y);
-		printf("  velocity vector: %.2f;%.2f\n", ball->vel.x, ball->vel.y);
+		printf("  velocity vector: %f,%f\n", ball->vel.x, ball->vel.y);
 #endif
 	}
 
@@ -1670,11 +1670,11 @@ void ball_get_target( Ball *ball )
 		if ( cur_game->bricks[(int)test_pts[0].x/BRICK_WIDTH][(int)test_pts[0].y/BRICK_HEIGHT].type != MAP_EMPTY ||
 				cur_game->bricks[(int)test_pts[1].x/BRICK_WIDTH][(int)test_pts[1].y/BRICK_HEIGHT].type != MAP_EMPTY ) {
 			printf( "*****\n" );
-			printf( "Test Failed: %4.2f,%4.2f (%i,%i):\n",
+			printf( "Test Failed: %f,%f (%i,%i):\n",
 					ball->target.x+ball_rad, ball->target.y+ball_rad,
 					(int)(ball->target.x+ball_rad)/BRICK_WIDTH,
 					(int)(ball->target.y+ball_rad)/BRICK_HEIGHT );
-			printf( "Left Tangent %4.2f,%4.2f (%i,%i) or Right Tangent %4.2f,%4.2f (%i,%i)\n",
+			printf( "Left Tangent %f,%f (%i,%i) or Right Tangent %f,%f (%i,%i)\n",
 					test_pts[0].x,test_pts[0].y,
 					(int)test_pts[0].x/BRICK_WIDTH,(int)test_pts[0].y/BRICK_HEIGHT,
 					test_pts[1].x,test_pts[1].y,
@@ -1682,23 +1682,23 @@ void ball_get_target( Ball *ball )
 			printf( "*****\n" );
 			printf( "2.4: Balls: %i\n", cur_game->balls->count );
 			if ( targets[TANG_LEFT].exists ) {
-				printf( "Left Tangential Point: %4.2f,%4.2f\n",
+				printf( "Left Tangential Point: %f,%f\n",
 						tang_pts[TANG_LEFT].x, tang_pts[TANG_LEFT].y );
-				printf( "Left Tangent: Horizontal: %i,%i, %i (%4.2f,%4.2f)\n",
+				printf( "Left Tangent: Horizontal: %i,%i, %i (%f,%f)\n",
 						hori_target[TANG_LEFT].mx, hori_target[TANG_LEFT].my, hori_target[TANG_LEFT].side, 
 						hori_target[TANG_LEFT].x, hori_target[TANG_LEFT].y );
-				printf( "Left Tangent:   Vertical: %i,%i, %i (%4.2f,%4.2f)\n",
+				printf( "Left Tangent:   Vertical: %i,%i, %i (%f,%f)\n",
 						vert_target[TANG_LEFT].mx, vert_target[TANG_LEFT].my, vert_target[TANG_LEFT].side, 
 						vert_target[TANG_LEFT].x, vert_target[TANG_LEFT].y );
 				printf( "%s\n", tang_target_chosen_str[TANG_LEFT] );
 			}
 			if ( targets[TANG_RIGHT].exists ) {
-				printf( "Right Tangential Point: %4.2f,%4.2f\n",
+				printf( "Right Tangential Point: %f,%f\n",
 						tang_pts[TANG_RIGHT].x, tang_pts[TANG_RIGHT].y );
-				printf( "Right Tangent: Horizontal: %i,%i, %i (%4.2f,%4.2f)\n",
+				printf( "Right Tangent: Horizontal: %i,%i, %i (%f,%f)\n",
 						hori_target[TANG_RIGHT].mx, hori_target[TANG_RIGHT].my, hori_target[TANG_RIGHT].side, 
 						hori_target[TANG_RIGHT].x, hori_target[TANG_RIGHT].y );
-				printf( "Right Tangent:   Vertical: %i,%i, %i (%4.2f,%4.2f)\n",
+				printf( "Right Tangent:   Vertical: %i,%i, %i (%f,%f)\n",
 						vert_target[TANG_RIGHT].mx, vert_target[TANG_RIGHT].my, vert_target[TANG_RIGHT].side, 
 						vert_target[TANG_RIGHT].x, vert_target[TANG_RIGHT].y );
 				printf( "%s\n", tang_target_chosen_str[TANG_RIGHT] );
@@ -1744,15 +1744,15 @@ void ball_get_target( Ball *ball )
 			}
 			if (bad_target) {
 				printf("FATAL: No target but ball will not exit through bottom!\n");
-				printf("  bottom intersection: %.2f;%.2f", pos.x, pos.y);
+				printf("  bottom intersection: %f,%f", pos.x, pos.y);
 			}
 		}
 
 		if (bad_target) {
-			printf("  ball center: %.2f;%.2f\n",center.x,center.y);
-			printf("  ball speed vector: %.2f;%.2f\n",ball->vel.x,ball->vel.y);
-			printf("  tangential point 1: %.2f;%.2f\n",tang_pts[0].x,tang_pts[0].y);
-			printf("  tangential point 2: %.2f;%.2f\n",tang_pts[1].x,tang_pts[1].y);
+			printf("  ball center: %f,%f\n",center.x,center.y);
+			printf("  ball speed vector: %f,%f\n",ball->vel.x,ball->vel.y);
+			printf("  tangential point 1: %f,%f\n",tang_pts[0].x,tang_pts[0].y);
+			printf("  tangential point 2: %f,%f\n",tang_pts[1].x,tang_pts[1].y);
 		}
 	}
 
