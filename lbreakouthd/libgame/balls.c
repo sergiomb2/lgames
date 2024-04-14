@@ -1287,25 +1287,75 @@ void ball_mask_vel(Ball *b, float old_vx, int entropy )
 
 /** Check if a ball is inside a bricks by checking 8 pixels of its
  * outer circle. Return 1 if true, 0 otherwise. */
+enum {
+	BCP_TOP = 0,
+	BCP_TOPRIGHT,
+	BCP_RIGHT,
+	BCP_BOTTOMRIGHT,
+	BCP_BOTTOM,
+	BCP_BOTTOMLEFT,
+	BCP_LEFT,
+	BCP_TOPLEFT,
+	BCP_NUM
+};
 int ball_is_in_brick(Ball *b) {
 	/* we need to substract 1 for right and lower points, otherwise
 	 * we get false positives if ball is exactly close to left or top
 	 * side of a brick. */
-	Coord points[8] = {
-		{0,-ball_rad}, {0.707*ball_rad-1,-0.707*ball_rad},
-		{ball_rad-1,0}, {0.707*ball_rad-1,0.707*ball_rad-1},
-		{0,ball_rad-1}, {-0.707*ball_rad,0.707*ball_rad-1},
-		{-ball_rad,0}, {-0.707*ball_rad,-0.707*ball_rad}
+	double radius = ball_rad;
+	int ignore_point;
+	Coord points[BCP_NUM] = { /* clockwise, beginning at top */
+		{0,-radius}, {0.707*radius-1,-0.707*radius},
+		{radius-1,0}, {0.707*radius-1,0.707*radius-1},
+		{0,radius-1}, {-0.707*radius,0.707*radius-1},
+		{-radius,0}, {-0.707*radius,-0.707*radius}
 	};
 
 	for (int i = 0; i < 8; i++) {
 		double x = b->cur.x + ball_rad + points[i].x;
 		double y = b->cur.y + ball_rad + points[i].y;
+
+		/* ignore "backside points" of ball to prevent
+		 * wrong reset if inside brick AFTER reflection */
+		ignore_point = 0;
+		if (b->vel.y < 0 ) {
+			if (b->vel.x > 0) {
+				/* moving towards top right */
+				if (i == BCP_LEFT || i == BCP_BOTTOMLEFT || i == BCP_BOTTOM)
+					ignore_point = 1;
+			} else {
+				/* moving towards top left  */
+				if (i == BCP_RIGHT || i == BCP_BOTTOMRIGHT || i == BCP_BOTTOM)
+					ignore_point = 1;
+			}
+		} else {
+			if (b->vel.x > 0) {
+				/* moving towards bottom right */
+				if (i == BCP_LEFT || i == BCP_TOPLEFT || i == BCP_TOP)
+					ignore_point = 1;
+			} else {
+				/* moving towards bottom left */
+				if (i == BCP_RIGHT || i == BCP_TOPRIGHT || i == BCP_TOP)
+					ignore_point = 1;
+			}
+		}
+
 		int mx = x / BRICK_WIDTH, my = y / BRICK_HEIGHT;
+
 		if (mx < 0 || my < 0 || mx >= MAP_WIDTH || my >= MAP_HEIGHT)
 			continue;
-		if (cur_game->bricks[mx][my].type != MAP_EMPTY)
+
+		if (cur_game->bricks[mx][my].type != MAP_EMPTY) {
+			if (ignore_point) {
+#ifdef WITH_BUG_REPORT
+				printf("Oops... check point %d opposite moving direction in a brick, ignoring!\n",i);
+				printf("  position %f,%f\n", b->cur.x, b->cur.y);
+				printf("  velocity vector: %f,%f\n", b->vel.x, b->vel.y);
+#endif
+				continue;
+			}
 			return 1;
+		}
 	}
 
 	return 0;
@@ -1352,7 +1402,7 @@ void ball_get_target( Ball *ball )
 	if (ball_is_in_brick(ball)) {
 		Coord oldpos = ball->cur;
 		Vector bmod = ball->vel;
-		vector_set_length(&bmod, ball_rad/2);
+		vector_set_length(&bmod, 2);
 		do {
 			ball->cur.x -= bmod.x;
 			ball->cur.y -= bmod.y;
