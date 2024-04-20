@@ -1,3 +1,4 @@
+- removed AC_CANONICAL_TARGET from configure.ac (2024/04/20 MS)
 - updated icon location (2024/04/20 MS)
 - updated LTris appstream metadata (2024/04/20 Matthias Mailänder)
 
