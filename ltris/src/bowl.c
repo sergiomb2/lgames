@@ -270,7 +270,7 @@ void bowl_select_next_block( Bowl *bowl )
 	if (bowl_check_piece_position(bowl,
 			bowl->block.x, bowl->block.y,
 			bowl->block.rot_id) != POSVALID)
-		bowl_finish_game(bowl);
+		bowl_finish_game(bowl,0);
 }
 
 /*
@@ -527,20 +527,32 @@ void bowl_final_animation( Bowl *bowl )
 
 /*
 ====================================================================
-Finish game and set game over.
+Finish game and set game over. If winner is 1 show win message.
 ====================================================================
 */
-void bowl_finish_game( Bowl *bowl )
+void bowl_finish_game( Bowl *bowl, int winner )
 {
+    char *msg = (winner)?_("You won!"):_("Game Over");
+    int mx = bowl->sx + bowl->sw / 2, my = bowl->sy + bowl->sh / 2;
+
     bowl->game_over = 1;
     bowl->hide_block = 1;
     bowl_final_animation( bowl );
     bowl->use_figures = 0;
+
+    /* add stats for multiplayer game and move message down */
+    if (config.gametype >= GAME_VS_HUMAN && config.gametype <= GAME_VS_CPU_CPU) {
+	    bowl->stats_x = bowl->sx + BOWL_BLOCK_SIZE;
+	    bowl->stats_y = bowl->sy + BOWL_BLOCK_SIZE;
+	    bowl_draw_stats(bowl);
+	    my = bowl->sy + bowl->sh - 3*BOWL_BLOCK_SIZE;
+    }
+
+    /* clear bowl and write message */
     bowl->font->align = ALIGN_X_CENTER | ALIGN_Y_CENTER;
-    write_text( bowl->font,  bkgnd, bowl->sx + bowl->sw / 2, bowl->sy + bowl->sh / 2, _("Game Over"), OPAQUE );
-    write_text( bowl->font, sdl.screen, bowl->sx + bowl->sw / 2, bowl->sy + bowl->sh / 2, _("Game Over"), OPAQUE );
-    bowl_reset_contents( bowl );
-    bowl_draw_contents( bowl );
+    write_text(bowl->font, bkgnd, mx, my, msg, OPAQUE);
+    bowl_reset_contents(bowl);
+    bowl_draw_contents(bowl);
 #ifdef SOUND
     if ( !bowl->mute ) sound_play( bowl->wav_explosion );
 #endif    
@@ -749,7 +761,7 @@ void bowl_insert_block( Bowl *bowl )
 	      for (j = 0; j < send_count; j++)
 		      if (!bowl_add_line( bowls[i],
 				      	      (config.rand_holes)?config.holes:-1, newline)) {
-			      bowl_finish_game( bowls[i] );
+			      bowl_finish_game( bowls[i], 0 );
 			      break;
 		      }
 	      bowls[i]->draw_contents = 1;
@@ -1477,7 +1489,7 @@ void bowl_update( Bowl *bowl, int ms, BowlControls *bc, int game_over )
 		    bowl->ldelay_cur = 0; /* reset lock delay if any */
 		    bowl_use_hold(bowl);
 		    if (bowl->game_over)
-			bowl_finish_game(bowl);
+			bowl_finish_game(bowl,0);
 	    }
 
         /* update horizontal bowl position */
@@ -1863,6 +1875,8 @@ void write_stat_line(Bowl *bowl, const char *name, int val, int x, int *y)
 		snprintf(str, 32, "%s -", name );
 	else
 		snprintf(str, 32, "%s %d", name, val );
+	if (bowl->game_over)
+		write_text(bowl->font, bkgnd, x, *y, str, OPAQUE );
 	write_text(bowl->font, sdl.screen, x, *y, str, OPAQUE );
 	*y += bowl->font->height + 2;
 }

@@ -167,7 +167,7 @@ void bowl_delete( Bowl *bowl );
 Finish game and set game over.
 ====================================================================
 */
-void bowl_finish_game( Bowl *bowl );
+void bowl_finish_game( Bowl *bowl, int winner );
 
 /*
 ====================================================================

@@ -1,3 +1,4 @@
+- show stats for all players after game finished (2024/04/20 MS)
 - properly increase level in game mode Figures (2024/04/20 MS)
 - fixed bug in creating new figures in game mode Figures (2024/04/20 MS)
 - leave game over screen only with ESC, SPACE or RETURN (2024/04/20 MS)

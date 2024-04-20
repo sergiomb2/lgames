@@ -553,7 +553,7 @@ void tetris_run()
                             if ( confirm( large_font, _("End Game? y/n"), CONFIRM_YES_NO ) ) 
                                 for ( i = 0; i < BOWL_COUNT; i++ )
                                     if ( bowls[i] && !bowls[i]->game_over )
-                                        bowl_finish_game( bowls[i] );
+                                        bowl_finish_game( bowls[i],0 );
                             break;
                          case SDLK_f:
 #ifndef WIN32
@@ -627,6 +627,13 @@ void tetris_run()
                 game_over = 1;
             else
                 game_over = 0;
+            if (game_over && config.gametype >= GAME_VS_HUMAN &&
+        		    	    	    config.gametype <= GAME_VS_CPU_CPU) {
+        	    /* end game of last bowl to show stats as well as winner */
+        	    for (i = 0; i < BOWL_COUNT; i++)
+        	    	    if (bowls[i] && !bowls[i]->game_over)
+        	    		bowl_finish_game(bowls[i], 1);
+            }
         }
 
 	/* stats */
