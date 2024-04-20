@@ -583,8 +583,7 @@ void bowl_add_lines( Bowl *bowl, int cleared)
 	bowl->lines += cleared; /* increase lines count */
 
 	if (bowl->levelup) {
-		bowl->level = config.starting_level + 1 +
-				(bowl->lines - bowl->firstlevelup_lines) / 10;
+		bowl->level++;
 		bowl_set_vert_block_vel( bowl );
 #ifdef SOUND
 		if (!bowl->mute)
