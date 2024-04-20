@@ -536,9 +536,13 @@ void tetris_run()
 			term_game = 1;
 		    break;
                 case SDL_KEYUP:
-                    if (game_over)
-                        leave = 1;
-                    else if (event.key.keysym.sym == config.pause_key)
+                    if (game_over) {
+                	    /* only exit if ESC, SPACE or ENTER is pressed */
+                	    if (event.key.keysym.sym == SDLK_ESCAPE ||
+                			    event.key.keysym.sym == SDLK_RETURN ||
+					    event.key.keysym.sym == SDLK_SPACE)
+                		    leave = 1;
+                    }else if (event.key.keysym.sym == config.pause_key)
                         request_pause = 1;
                     else switch ( event.key.keysym.sym ) {
                         case SDLK_F5:
