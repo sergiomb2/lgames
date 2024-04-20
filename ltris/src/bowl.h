@@ -76,6 +76,7 @@ typedef struct {
     char name[32]; /* player's name for this bowl */
     Counter score; /* score gained by this player */
     int level; /* level to which player has played (starts at 0) */
+    int levelup; /* 1 if last clear caused level up */
     int firstlevelup_lines; /* number of lines needed for first level up */
     int lines; /* number of cleared lines in total */
     int cleared_line_y[4]; /* line indices of cleared lines for last insertion */

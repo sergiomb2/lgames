@@ -1,3 +1,4 @@
+- fixed bug in creating new figures in game mode Figures (2024/04/20 MS)
 - leave game over screen only with ESC, SPACE or RETURN (2024/04/20 MS)
 - removed AC_CANONICAL_TARGET from configure.ac (2024/04/20 MS)
 - updated icon location (2024/04/20 MS)

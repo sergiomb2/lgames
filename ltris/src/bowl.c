@@ -567,28 +567,25 @@ void bowl_add_score(Bowl *bowl, int lc)
 /** Add lines to counter and check if new level has been entered. */
 void bowl_add_lines( Bowl *bowl, int cleared)
 {
-	int levelup = 0;
+	bowl->levelup = 0;
 
 	/* check level up date, first level might need more than 10
 	 * if higher starting level was chosen */
 	if (bowl->lines < bowl->firstlevelup_lines) {
 		if (bowl->lines + cleared >= bowl->firstlevelup_lines)
-			levelup = 1;
+			bowl->levelup = 1;
 	} else {
 		int l = bowl->lines - bowl->firstlevelup_lines;
 		if (l / 10 != (l + cleared) / 10)
-			levelup = 1;
+			bowl->levelup = 1;
 	}
 
 	bowl->lines += cleared; /* increase lines count */
 
-	if (levelup) {
+	if (bowl->levelup) {
 		bowl->level = config.starting_level + 1 +
 				(bowl->lines - bowl->firstlevelup_lines) / 10;
 		bowl_set_vert_block_vel( bowl );
-		/* in game figures reset bowl contents */
-		if ( config.gametype == 2 )
-			bowl_reset_contents( bowl );
 #ifdef SOUND
 		if (!bowl->mute)
 			sound_play( bowl->wav_nextlevel );
@@ -608,6 +605,15 @@ void bowl_collapse(Bowl *bowl)
 			bowl_set_tile(bowl, i, 0, -1);
 		}
 	bowl->cleared_line_count = 0;
+
+	/* in game figures reset bowl contents */
+	if (bowl->levelup && config.gametype == 2)
+		bowl_reset_contents(bowl);
+
+	/* collapse gets called after lines were removed with ARE.
+	 * add_lines in insert_block checked if this caused a level up.
+	 * so we always have to reset the flag here. */
+	bowl->levelup = 0;
 }
 
 /*
@@ -714,7 +720,8 @@ void bowl_insert_block( Bowl *bowl )
   bowl->are = 1000 * bowl->are / 60;
 
   /* add lines and check level update */
-  bowl_add_lines(bowl, bowl->cleared_line_count);
+  if (bowl->cleared_line_count > 0)
+    bowl_add_lines(bowl, bowl->cleared_line_count);
 
   /* add score */
   bowl_add_score(bowl, bowl->cleared_line_count);
