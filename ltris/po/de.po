@@ -206,7 +206,10 @@ msgid ""
 "Multiplier in percent for dropping speed of pieces, e.g.,#50% = half the "
 "regular speed#100% = regular speed#200% = doubled speed#Can range between "
 "50% and 400%."
-msgstr "Faktor fuer Fallgeschwindigkeit. Z.B.#50% = halbe Geschwindigkeit#100% = normale Geschwindigkeit#200% = doppelte Geschwindigkeit#Kann zwischen 50 und 400 Prozent liegen."
+msgstr ""
+"Faktor fuer Fallgeschwindigkeit. Z.B.#50% = halbe Geschwindigkeit#100% = "
+"normale Geschwindigkeit#200% = doppelte Geschwindigkeit#Kann zwischen 50 und "
+"400 Prozent liegen."
 
 #: src/manager.c:97
 msgid "Some advanced options."
@@ -614,9 +617,8 @@ msgid "Game Over"
 msgstr "Spiel vorbei"
 
 #: src/bowl.c:1278
-#, fuzzy
 msgid "Hold"
-msgstr "Halten:"
+msgstr "Halten"
 
 #: src/bowl.c:1299
 msgid "Next"
@@ -645,23 +647,23 @@ msgstr "Platziert:"
 
 #: src/bowl.c:1892
 msgid "I-Pieces:     "
-msgstr "I-Stuecke:    "
+msgstr "I-Stuecke:"
 
 #: src/bowl.c:1895
 msgid "Singles: "
-msgstr "Einzel: "
+msgstr "Einzel:"
 
 #: src/bowl.c:1896
 msgid "Doubles: "
-msgstr "Doppel: "
+msgstr "Doppel:"
 
 #: src/bowl.c:1897
 msgid "Triples: "
-msgstr "Tripel:  "
+msgstr "Tripel:"
 
 #: src/bowl.c:1898
 msgid "Tetrises:"
-msgstr "Tetrise: "
+msgstr "Tetris:"
 
 #: src/bowl.c:1910
 msgid "Droughts:   "
@@ -669,11 +671,11 @@ msgstr "Duerren:    "
 
 #: src/bowl.c:1911
 msgid "Drought Max:"
-msgstr "Max. Duerre:"
+msgstr "Laengste D.:"
 
 #: src/bowl.c:1916
 msgid "Drought Avg:"
-msgstr "D-Mittel:   "
+msgstr "DL-Mittel:  "
 
 #: src/bowl.c:1923
 msgid "Transition:"
