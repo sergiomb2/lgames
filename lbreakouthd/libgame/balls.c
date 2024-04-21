@@ -1285,8 +1285,13 @@ void ball_mask_vel(Ball *b, float old_vx, int entropy )
 	vector_set_length( &b->vel, cur_game->ball_v );
 }
 
-/** Check if a ball is inside a bricks by checking 8 pixels of its
- * outer circle. Return 1 if true, 0 otherwise. */
+/** Check if a ball is inside bricks by checking 8 pixels of its
+ * outer circle. Return number of hits and brick positions of hits
+ * if @brick_hits is not 0. */
+typedef struct {
+	int hit; /* brick is hit */
+	int mx, my; /* map position of brick */
+} BC_Hit;
 enum {
 	BCP_TOP = 0,
 	BCP_TOPRIGHT,
@@ -1298,7 +1303,7 @@ enum {
 	BCP_TOPLEFT,
 	BCP_NUM
 };
-int ball_is_in_brick(Ball *b) {
+int ball_is_in_brick(Ball *b, BC_Hit *brick_hits) {
 	/* we need to substract 1 for right and lower points, otherwise
 	 * we get false positives if ball is exactly close to left or top
 	 * side of a brick. */
@@ -1310,8 +1315,14 @@ int ball_is_in_brick(Ball *b) {
 		{0,radius-1}, {-0.707*radius,0.707*radius-1},
 		{-radius,0}, {-0.707*radius,-0.707*radius}
 	};
+	int num_hits = 0;
+	int mx, my;
 
-	for (int i = 0; i < 8; i++) {
+	if (brick_hits)
+		for (int i = 0; i < BCP_NUM; i++)
+			brick_hits[i].hit = 0;
+
+	for (int i = 0; i < BCP_NUM; i++) {
 		double x = b->cur.x + ball_rad + points[i].x;
 		double y = b->cur.y + ball_rad + points[i].y;
 
@@ -1340,7 +1351,8 @@ int ball_is_in_brick(Ball *b) {
 			}
 		}
 
-		int mx = x / BRICK_WIDTH, my = y / BRICK_HEIGHT;
+		mx = x / BRICK_WIDTH;
+		my = y / BRICK_HEIGHT;
 
 		if (mx < 0 || my < 0 || mx >= MAP_WIDTH || my >= MAP_HEIGHT)
 			continue;
@@ -1354,11 +1366,148 @@ int ball_is_in_brick(Ball *b) {
 #endif
 				continue;
 			}
-			return 1;
+			num_hits++;
+			if (brick_hits) {
+				brick_hits[i].hit = 1;
+				brick_hits[i].mx = mx;
+				brick_hits[i].my = my;
+			}
 		}
 	}
 
-	return 0;
+	return num_hits;
+}
+
+/** Get target by moving along trajectory and checking for clipping. */
+void ball_get_target_clipping(Ball *ball)
+{
+	Coord oldpos = ball->cur; /* store old position */
+	Vector pmod = ball->vel; /* position modifier */
+	double step = ball_rad/2; /* position change length */
+	BC_Hit bhits[BCP_NUM], last_bhits[BCP_NUM];
+	int target_idx = -1;
+
+	/* balls moving back to paddle must not be reflected */
+	if (ball->moving_back)
+		return;
+	/* attached balls MUST NOT be reflected!!!! */
+	if (ball->attached)
+		return;
+	/* balls already out of the screen though still visible don't need new reflection, too */
+	if (ball->cur.y + ball_dia >= 480 - 1)
+		return;
+
+	/* clear ball target */
+	ball_clear_target(&ball->target);
+
+	/* move ball forward until we have a hit */
+	vector_set_length(&pmod, step);
+	while (ball_is_in_brick(ball, bhits) == 0) {
+		ball->cur.x += pmod.x;
+		ball->cur.y += pmod.y;
+
+		/* is ball leaving screen legally? */
+		if (ball->cur.y + ball_dia >= 480)
+			goto restore;
+		/* is ball leaving screen illegally? */
+		if (ball->cur.x < 0 || ball->cur.y < 0 ||
+					ball->cur.x + ball_dia >= 640) {
+			printf("Oops... ball leaving screen illegally at %f,%f\n",
+							ball->cur.x,ball->cur.y);
+			goto restore;
+		}
+
+	}
+
+	/* move back in single steps until there is no more collision */
+	vector_norm(&pmod);
+	do {
+		memcpy(last_bhits,bhits,sizeof(bhits)); /* remember last collisions */
+		ball->cur.x -= pmod.x;
+		ball->cur.y -= pmod.y;
+	} while (ball_is_in_brick(ball, bhits) > 0);
+
+	/* restore hits before position got clear again and check result */
+	memcpy(bhits,last_bhits,sizeof(bhits));
+	/* ideally there is only one target, if there are multiple targets
+	 * just select the first clockwise one */
+	target_idx = -1;
+	for (int i = 0; i < BCP_NUM; i++) {
+		if (bhits[i].hit) {
+			if (target_idx != -1) {
+#ifdef WITH_BUG_REPORT
+				printf("Oops... multiple targets %d: [%d,%d]\n",
+							i, bhits[i].mx, bhits[i].my);
+#endif
+			} else {
+#ifdef WITH_BUG_REPORT
+				printf("Selected %d: [%d,%d]\n",
+							i, bhits[i].mx, bhits[i].my);
+#endif
+				target_idx = i;
+			}
+		}
+	}
+	if (target_idx == -1) {
+		printf("Oops... no target... impossible?\n");
+		goto restore;
+	}
+
+	ball->target.exists = 1;
+
+	/* set target position */
+	ball->target.mx = bhits[target_idx].mx;
+	ball->target.my = bhits[target_idx].my;
+
+	/* store reset position */
+	ball->target.x = ball->cur.x;
+	ball->target.y = ball->cur.y;
+
+	/* determine side and perp vector */
+	switch (target_idx) {
+	case BCP_TOP:
+		ball->target.perp_vector = vector_get(0, 1);
+		ball->target.side = SIDE_BOTTOM;
+		break;
+	case BCP_RIGHT:
+		ball->target.perp_vector = vector_get(1, 0);
+		ball->target.side = SIDE_LEFT;
+		break;
+	case BCP_BOTTOM:
+		ball->target.perp_vector = vector_get(0, 1);
+		ball->target.side = SIDE_TOP;
+		break;
+	case BCP_LEFT:
+		ball->target.perp_vector = vector_get(1, 0);
+		ball->target.side = SIDE_RIGHT;
+		break;
+	case BCP_TOPRIGHT:
+		ball->target.perp_vector = vector_get(-1, 1);
+		ball->target.side = CORNER_LOWER_LEFT;
+		break;
+	case BCP_BOTTOMRIGHT:
+		ball->target.perp_vector = vector_get(1, 1);
+		ball->target.side = CORNER_UPPER_LEFT;
+		break;
+	case BCP_BOTTOMLEFT:
+		ball->target.perp_vector = vector_get(-1, 1);
+		ball->target.side = CORNER_UPPER_RIGHT;
+		break;
+	case BCP_TOPLEFT:
+		ball->target.perp_vector = vector_get(1, 1);
+		ball->target.side = CORNER_LOWER_RIGHT;
+		break;
+	}
+
+restore:
+	ball->cur = oldpos; /* restore old position */
+#ifdef WITH_BUG_REPORT
+	printf("Target: exists=%d brick=[%d,%d] reset=[%f,%f] pvec=[%f,%f] side=%d\n",
+			ball->target.exists, ball->target.mx, ball->target.my,
+			ball->target.x, ball->target.y,
+			ball->target.perp_vector.x,ball->target.perp_vector.y,
+			ball->target.side);
+#endif
 }
 
 /*
@@ -1399,14 +1548,14 @@ void ball_get_target( Ball *ball )
 	/* check if we somehow ended up in a brick and reset position along trajectory.
 	 * should actually not happen except for moving bricks, e.g., in minigame invaders,
 	 * but it seems to happen sometimes on other occasions as well ... */
-	if (ball_is_in_brick(ball)) {
+	if (ball_is_in_brick(ball,0)) {
 		Coord oldpos = ball->cur;
 		Vector bmod = ball->vel;
 		vector_set_length(&bmod, 2);
 		do {
 			ball->cur.x -= bmod.x;
 			ball->cur.y -= bmod.y;
-		} while (ball_is_in_brick(ball));
+		} while (ball_is_in_brick(ball,0));
 		ball->x = ball->cur.x;
 		ball->y = ball->cur.y;
 #ifdef WITH_BUG_REPORT
@@ -1416,6 +1565,10 @@ void ball_get_target( Ball *ball )
 		printf("  velocity vector: %f,%f\n", ball->vel.x, ball->vel.y);
 #endif
 	}
+
+	/* TEST
+	ball_get_target_clipping(ball);
+	return; */
 
 	/* balls moving back to paddle must not be reflected */
 	if ( ball->moving_back ) return;
