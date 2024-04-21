@@ -203,7 +203,12 @@ enum {
 	/* maximum invaders in a wave */
 	INVADERS_STARTLIMIT = 20,
 	INVADERS_LIMITCHANGE = 2,
-	INVADERS_MAXLIMIT = 50
+	INVADERS_MAXLIMIT = 50,
+
+	/* ball collision check types */
+	BCC_TRAJECTORY = 0,
+	BCC_CLIPPING
+
 };
 
 /* small helper to identify grown bricks by char */
@@ -478,6 +483,7 @@ typedef struct {
 	int		paddle_is_convex;
 	int		balls_return_by_click;
 	int		balls_use_random_angle;
+	int		bcc_type; /* ball collision check type */
         float           accelerated_ball_speed;
 	int		frag_limit; /* number of points a player must gain to win a 
 				       pingpong level */

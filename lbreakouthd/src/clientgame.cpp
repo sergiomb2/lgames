@@ -79,6 +79,7 @@ int ClientGame::init(const string& setname, int levelid)
 	game_set_ball_auto_return( !config.return_on_click );
 	game_set_ball_random_angle( config.random_angle );
 	game_set_ball_accelerated_speed( config.maxballspeed_float );
+	game_set_bcc_type(config.bcc_type);
 	game->ball_auto_speedup = config.ball_auto_turbo;
 	extrasActive = false;
 	pvel = pvelmin;

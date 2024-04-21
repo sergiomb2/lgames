@@ -1282,6 +1282,9 @@ void View::createMenus()
 			_("Maximum speed of accelerated balls."),
 			AID_MAXBALLSPEEDCHANGED,config.maxballspeed_int1000,700,1200,50));
 	mAdv->add(new MenuItemSwitch(_("Bonus Levels"),_("Add bonus levels with a mini game every 4 regular levels. Game over will end the mini game without loosing a life."),AID_NONE,config.add_bonus_levels));
+	mAdv->add(new MenuItemList(_("BCC Type"),
+			_("Ball Collision Check: Get ball targets either by trajectory or clipping."),
+			AID_NONE,config.bcc_type,_("Trajectory"),_("Clipping")));
 	mAdv->add(new MenuItemSep());
 	mAdv->add(new MenuItemBack(mOptions));
 

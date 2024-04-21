@@ -1387,15 +1387,9 @@ void ball_get_target_clipping(Ball *ball)
 	BC_Hit bhits[BCP_NUM], last_bhits[BCP_NUM];
 	int target_idx = -1;
 
-	/* balls moving back to paddle must not be reflected */
-	if (ball->moving_back)
-		return;
-	/* attached balls MUST NOT be reflected!!!! */
-	if (ball->attached)
-		return;
-	/* balls already out of the screen though still visible don't need new reflection, too */
-	if (ball->cur.y + ball_dia >= 480 - 1)
-		return;
+	/* we do not check for resetting if inside brick, returning balls,
+	 * attached balls or balls outside of screen since this is done
+	 * in ball_get_target() before we get called. */
 
 	/* clear ball target */
 	ball_clear_target(&ball->target);
@@ -1566,16 +1560,17 @@ void ball_get_target( Ball *ball )
 #endif
 	}
 
-	/* TEST
-	ball_get_target_clipping(ball);
-	return; */
-
 	/* balls moving back to paddle must not be reflected */
 	if ( ball->moving_back ) return;
 	/* attached balls MUST NOT be reflected!!!! */
 	if ( ball->attached ) return;
 	/* balls already out of the screen though still visible don't need new reflection, too */
 	if ( ball->cur.y + ball_dia >= 480 - 1 ) return;
+
+	if (cur_game->bcc_type == BCC_CLIPPING) {
+		ball_get_target_clipping(ball);
+		return;
+	}
 
 	/* clear ball targets */
 	ball_clear_target( &ball->target );

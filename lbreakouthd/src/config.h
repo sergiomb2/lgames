@@ -98,6 +98,7 @@ public:
 	int theme_id; /* 0 == default theme */
 	int theme_count; /* to check and properly reset id if number of themes changed */
 	string edit_setname;
+	int bcc_type; /* how to get targets: by clipping or trajectory */
 
 	Config();
 	~Config() { save(); }

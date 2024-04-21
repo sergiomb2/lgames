@@ -501,3 +501,9 @@ void game_update_stats( int id, GameStats *stats )
 		stats->losses++;
 	stats->played_rounds++;
 }
+
+/* set algorithm for getting ball targets (ball collision check) */
+void game_set_bcc_type(int type)
+{
+	cur_game->bcc_type = type;
+}

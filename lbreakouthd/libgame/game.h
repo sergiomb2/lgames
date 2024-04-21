@@ -121,6 +121,9 @@ void game_reset_mods( void );
  * is simply increased everytime this function is called */
 void game_update_stats( int id, GameStats *stats );
 
+/* set algorithm for getting ball targets (ball collision check) */
+void game_set_bcc_type(int type);
+
 #ifdef __cplusplus
 }
 #endif
