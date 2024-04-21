@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ltris_pt_prod\n"
 "Report-Msgid-Bugs-To: lgames.sf.net/contact.php\n"
-"POT-Creation-Date: 2024-03-03 18:15+0100\n"
+"POT-Creation-Date: 2024-04-21 11:17+0200\n"
 "PO-Revision-Date: 2008-03-30 22:19+0200\n"
 "Last-Translator: Jose Jorge <jjorge@free.fr>\n"
 "Language-Team: portugues <pt@li.org>\n"
@@ -596,86 +596,90 @@ msgstr ""
 msgid "n"
 msgstr "Sim"
 
-#: src/tetris.c:549
+#: src/tetris.c:553
 msgid "End Game? y/n"
 msgstr "Terminar o Jogo? y/n"
 
-#: src/bowl.c:540 src/bowl.c:541
+#: src/bowl.c:535
+msgid "Winner!"
+msgstr ""
+
+#: src/bowl.c:535
 msgid "Game Over"
 msgstr "Fim do Jogo"
 
-#: src/bowl.c:1260
+#: src/bowl.c:1278
 msgid "Hold"
 msgstr ""
 
-#: src/bowl.c:1281
+#: src/bowl.c:1299
 msgid "Next"
 msgstr ""
 
-#: src/bowl.c:1310
+#: src/bowl.c:1328
 #, c-format
 msgid "%i Lvl: %i"
 msgstr "%i Nvl: %i"
 
-#: src/bowl.c:1672
+#: src/bowl.c:1690
 msgid "Player:"
 msgstr "Jogador:"
 
-#: src/bowl.c:1676
+#: src/bowl.c:1694
 msgid "Score:"
 msgstr "Pontuacao:"
 
-#: src/bowl.c:1678
+#: src/bowl.c:1696
 msgid "Lines:"
 msgstr "Linhas:"
 
-#: src/bowl.c:1871
+#: src/bowl.c:1891
 msgid "Pieces Placed:"
 msgstr ""
 
-#: src/bowl.c:1872
+#: src/bowl.c:1892
 msgid "I-Pieces:     "
 msgstr ""
 
-#: src/bowl.c:1875
+#: src/bowl.c:1895
 msgid "Singles: "
 msgstr ""
 
-#: src/bowl.c:1876
+#: src/bowl.c:1896
 #, fuzzy
 msgid "Doubles: "
 msgstr "Buracos:"
 
-#: src/bowl.c:1877
+#: src/bowl.c:1897
 msgid "Triples: "
 msgstr ""
 
-#: src/bowl.c:1878
+#: src/bowl.c:1898
 msgid "Tetrises:"
 msgstr ""
 
-#: src/bowl.c:1890
+#: src/bowl.c:1910
 msgid "Droughts:   "
 msgstr ""
 
-#: src/bowl.c:1891
+#: src/bowl.c:1911
 msgid "Drought Max:"
 msgstr ""
 
-#: src/bowl.c:1896
+#: src/bowl.c:1916
 msgid "Drought Avg:"
 msgstr ""
 
-#: src/bowl.c:1903
+#: src/bowl.c:1923
 #, fuzzy
 msgid "Transition:"
 msgstr "Animacoes:"
 
-#: src/bowl.c:1905
+#: src/bowl.c:1925
 msgid "DAS Charge:"
 msgstr ""
 
-#: src/bowl.c:1910
+#: src/bowl.c:1930
 msgid "Drought:   "
 msgstr ""
 

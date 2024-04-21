@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LTris 1.0.12 (problem med å,ä och ö)\n"
 "Report-Msgid-Bugs-To: lgames.sf.net/contact.php\n"
-"POT-Creation-Date: 2024-03-03 18:15+0100\n"
+"POT-Creation-Date: 2024-04-21 11:17+0200\n"
 "PO-Revision-Date: 2008-08-26 18:20+0100\n"
 "Last-Translator: Niklas Grahn <raewolusjoon@yahoo.com>\n"
 "Language-Team: \n"
@@ -601,86 +601,90 @@ msgstr "y"
 msgid "n"
 msgstr "n"
 
-#: src/tetris.c:549
+#: src/tetris.c:553
 msgid "End Game? y/n"
 msgstr "Avsluta spel? y/n"
 
-#: src/bowl.c:540 src/bowl.c:541
+#: src/bowl.c:535
+msgid "Winner!"
+msgstr ""
+
+#: src/bowl.c:535
 msgid "Game Over"
 msgstr "Spelet aer slut"
 
-#: src/bowl.c:1260
+#: src/bowl.c:1278
 msgid "Hold"
 msgstr ""
 
-#: src/bowl.c:1281
+#: src/bowl.c:1299
 msgid "Next"
 msgstr ""
 
-#: src/bowl.c:1310
+#: src/bowl.c:1328
 #, c-format
 msgid "%i Lvl: %i"
 msgstr "%i Lvl: %i"
 
-#: src/bowl.c:1672
+#: src/bowl.c:1690
 msgid "Player:"
 msgstr "Spelare:"
 
-#: src/bowl.c:1676
+#: src/bowl.c:1694
 msgid "Score:"
 msgstr "Poaeng:"
 
-#: src/bowl.c:1678
+#: src/bowl.c:1696
 msgid "Lines:"
 msgstr "Rader:"
 
-#: src/bowl.c:1871
+#: src/bowl.c:1891
 msgid "Pieces Placed:"
 msgstr ""
 
-#: src/bowl.c:1872
+#: src/bowl.c:1892
 msgid "I-Pieces:     "
 msgstr ""
 
-#: src/bowl.c:1875
+#: src/bowl.c:1895
 msgid "Singles: "
 msgstr ""
 
-#: src/bowl.c:1876
+#: src/bowl.c:1896
 #, fuzzy
 msgid "Doubles: "
 msgstr "Haul:"
 
-#: src/bowl.c:1877
+#: src/bowl.c:1897
 msgid "Triples: "
 msgstr ""
 
-#: src/bowl.c:1878
+#: src/bowl.c:1898
 msgid "Tetrises:"
 msgstr ""
 
-#: src/bowl.c:1890
+#: src/bowl.c:1910
 msgid "Droughts:   "
 msgstr ""
 
-#: src/bowl.c:1891
+#: src/bowl.c:1911
 msgid "Drought Max:"
 msgstr ""
 
-#: src/bowl.c:1896
+#: src/bowl.c:1916
 msgid "Drought Avg:"
 msgstr ""
 
-#: src/bowl.c:1903
+#: src/bowl.c:1923
 #, fuzzy
 msgid "Transition:"
 msgstr "Animationer:"
 
-#: src/bowl.c:1905
+#: src/bowl.c:1925
 msgid "DAS Charge:"
 msgstr ""
 
-#: src/bowl.c:1910
+#: src/bowl.c:1930
 msgid "Drought:   "
 msgstr ""
 
