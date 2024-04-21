@@ -532,7 +532,7 @@ Finish game and set game over. If winner is 1 show win message.
 */
 void bowl_finish_game( Bowl *bowl, int winner )
 {
-    char *msg = (winner)?_("You won!"):_("Game Over");
+    char *msg = (winner)?_("Winner!"):_("Game Over");
     int mx = bowl->sx + bowl->sw / 2, my = bowl->sy + bowl->sh / 2;
 
     bowl->game_over = 1;
