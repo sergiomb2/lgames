@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = po libgame src 
-EXTRA_DIST = m4  gettext.h config.rpath \
+EXTRA_DIST = gettext.h config.rpath \
 	TODO COPYING README Changelog CROSSCOMPILE \
 	lbreakouthd.desktop lbreakouthd256.png lbreakouthd48.png
 
