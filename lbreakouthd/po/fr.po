@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-06 15:15+0200\n"
+"POT-Creation-Date: 2024-04-28 09:33+0200\n"
 "PO-Revision-Date: 2019-06-26 10:11+0200\n"
 "Last-Translator: Wuzzy <almikes@aol.com>\n"
 "Language-Team: \n"
@@ -138,23 +138,23 @@ msgstr "Active Extras"
 msgid "Hiscores"
 msgstr "Tableau des points"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Kids"
 msgstr "Enfants"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Very Easy"
 msgstr "Très Facile"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Easy"
 msgstr "Facile"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Medium"
 msgstr "Moyenne"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Hard"
 msgstr "Difficile"
 
@@ -519,7 +519,7 @@ msgstr ""
 "Soit 50° de gauche à droite, soit aléatoire, quelque soit la touche de tir "
 "actionnée."
 
-#: src/view.cpp:1271 src/view.cpp:1861
+#: src/view.cpp:1271 src/view.cpp:1864
 msgid "Random"
 msgstr "Aléatoire"
 
@@ -591,55 +591,72 @@ msgstr ""
 "Insère un niveau bonus tous les quatre niveaux standard. Pas de perte de vie "
 "quand la partie courte est finie."
 
-#: src/view.cpp:1288
-msgid "Create New Set"
+#: src/view.cpp:1285
+msgid "BCC Type"
 msgstr ""
 
-#: src/view.cpp:1290
-msgid "Edit Existing Set"
+#: src/view.cpp:1286
+msgid ""
+"Ball Collision Check: Get ball targets either by trajectory or clipping."
+msgstr ""
+
+#: src/view.cpp:1287
+msgid "Trajectory"
+msgstr ""
+
+#: src/view.cpp:1287
+msgid "Clipping"
 msgstr ""
 
 #: src/view.cpp:1291
+msgid "Create New Set"
+msgstr ""
+
+#: src/view.cpp:1293
+msgid "Edit Existing Set"
+msgstr ""
+
+#: src/view.cpp:1294
 msgid "Edit an existing levelset."
 msgstr ""
 
-#: src/view.cpp:1296
+#: src/view.cpp:1299
 msgid "New Game"
 msgstr "Nouvelle partie"
 
-#: src/view.cpp:1297
+#: src/view.cpp:1300
 msgid "Resume Game"
 msgstr "Reprendre la partie"
 
-#: src/view.cpp:1301
+#: src/view.cpp:1304
 msgid "Settings"
 msgstr "Préférences"
 
-#: src/view.cpp:1302 src/view.cpp:1820
+#: src/view.cpp:1305 src/view.cpp:1823
 msgid "Help"
 msgstr "Aide"
 
-#: src/view.cpp:1304
+#: src/view.cpp:1307
 msgid "Editor"
 msgstr ""
 
-#: src/view.cpp:1306
+#: src/view.cpp:1309
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/view.cpp:1748
+#: src/view.cpp:1751
 msgid "No saved game."
 msgstr "La partie n'est pas sauvegardée."
 
-#: src/view.cpp:1765
+#: src/view.cpp:1768
 msgid " player(s)\n"
 msgstr " joueur(s)\n"
 
-#: src/view.cpp:1776
+#: src/view.cpp:1779
 msgid "  (Lvl: "
 msgstr "  (Niv : "
 
-#: src/view.cpp:1795
+#: src/view.cpp:1798
 #, fuzzy
 #| msgid ""
 #| "You can control your paddle either with the mouse or keyboard. Destroying "
@@ -712,180 +729,180 @@ msgstr ""
 "Bon jeu !\n"
 "          Michael Speck"
 
-#: src/view.cpp:1828
+#: src/view.cpp:1831
 msgid "Extra Score"
 msgstr "Points en plus"
 
-#: src/view.cpp:1829
+#: src/view.cpp:1832
 msgid "Gold Shower"
 msgstr "Pluie d'or"
 
-#: src/view.cpp:1831
+#: src/view.cpp:1834
 msgid "Extra Life"
 msgstr "Vie en plus"
 
-#: src/view.cpp:1832
+#: src/view.cpp:1835
 msgid "Extra Ball"
 msgstr "Balle en plus"
 
-#: src/view.cpp:1834
+#: src/view.cpp:1837
 msgid "Expand Paddle"
 msgstr "Palet élargi"
 
-#: src/view.cpp:1835
+#: src/view.cpp:1838
 msgid "Shrink Paddle"
 msgstr "Palet rétréci"
 
-#: src/view.cpp:1837
+#: src/view.cpp:1840
 msgid "Sticky Paddle"
 msgstr "Palet collant"
 
-#: src/view.cpp:1838
+#: src/view.cpp:1841
 msgid "Plasma Weapon"
 msgstr "Arme au plasma"
 
-#: src/view.cpp:1840
+#: src/view.cpp:1843
 msgid "Slow Balls"
 msgstr "Balles lentes"
 
-#: src/view.cpp:1841
+#: src/view.cpp:1844
 msgid "Fast Balls"
 msgstr "Balles rapides"
 
-#: src/view.cpp:1843
+#: src/view.cpp:1846
 msgid "Energy Balls"
 msgstr "Balles d'énergie"
 
-#: src/view.cpp:1844
+#: src/view.cpp:1847
 msgid "Explosive Balls"
 msgstr "Balles explosives"
 
-#: src/view.cpp:1846
+#: src/view.cpp:1849
 msgid "Extra Floor"
 msgstr "Étage en plus"
 
-#: src/view.cpp:1847
+#: src/view.cpp:1850
 msgid "Joker (collect goodies)"
 msgstr "Joker (collecte tous les bonus)"
 
-#: src/view.cpp:1849
+#: src/view.cpp:1852
 msgid "Bonus Magnet"
 msgstr "Attire les bonus"
 
-#: src/view.cpp:1850
+#: src/view.cpp:1853
 msgid "Malus Magnet"
 msgstr "Attire les malus"
 
-#: src/view.cpp:1852
+#: src/view.cpp:1855
 msgid "Chaotic Balls"
 msgstr "Balles chaotiques"
 
-#: src/view.cpp:1853
+#: src/view.cpp:1856
 msgid "Weak Balls"
 msgstr "Balles faibles"
 
-#: src/view.cpp:1855
+#: src/view.cpp:1858
 msgid "Frozen Paddle"
 msgstr "Palet gelée"
 
-#: src/view.cpp:1856
+#: src/view.cpp:1859
 msgid "Ghost Paddle"
 msgstr "Palet fantôme"
 
-#: src/view.cpp:1858
+#: src/view.cpp:1861
 msgid "Extra Time"
 msgstr "Temps en plus"
 
-#: src/view.cpp:1859
+#: src/view.cpp:1862
 msgid "Reset"
 msgstr "ré-initialisation"
 
-#: src/view.cpp:1862
+#: src/view.cpp:1865
 msgid "Darkness"
 msgstr "Nuit"
 
-#: src/view.cpp:1864
+#: src/view.cpp:1867
 msgid "Indestructible"
 msgstr "Indestructible"
 
-#: src/view.cpp:1865
+#: src/view.cpp:1868
 msgid "Regular Wall"
 msgstr "Mur standard"
 
-#: src/view.cpp:1867
+#: src/view.cpp:1870
 msgid "Chaotic Wall"
 msgstr "Mur chaotique"
 
-#: src/view.cpp:1868
+#: src/view.cpp:1871
 msgid "Regular Brick"
 msgstr "Brique basique"
 
-#: src/view.cpp:1870
+#: src/view.cpp:1873
 msgid "Multi-hit Brick"
 msgstr "Brique multi coup"
 
-#: src/view.cpp:1871
+#: src/view.cpp:1874
 msgid "Regenerative Brick"
 msgstr "Brique régénératrice"
 
-#: src/view.cpp:1873
+#: src/view.cpp:1876
 msgid "Explosive Brick"
 msgstr "Brique explosive"
 
-#: src/view.cpp:1874
+#: src/view.cpp:1877
 msgid "Growing Brick"
 msgstr "Brique grandissante"
 
-#: src/view.cpp:1894
+#: src/view.cpp:1897
 msgid "Plane of Inner Stability"
 msgstr "Zone de stabilité"
 
-#: src/view.cpp:1899
+#: src/view.cpp:1902
 #, fuzzy, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr "Clique gauche sur une brique pour l'effacer (coute 10% des points)."
 
-#: src/view.cpp:1902
+#: src/view.cpp:1905
 msgid "Press any key to cancel selection."
 msgstr "Appuyer sur une touche pour annuler la sélection."
 
-#: src/clientgame.cpp:106
+#: src/clientgame.cpp:107
 msgid "Testplayer"
 msgstr ""
 
-#: src/clientgame.cpp:283 src/clientgame.cpp:292
+#: src/clientgame.cpp:284 src/clientgame.cpp:293
 #, c-format
 msgid "Game over, %s!"
 msgstr "Fin de la partie, %s!"
 
-#: src/clientgame.cpp:285
+#: src/clientgame.cpp:286
 #, c-format
 msgid "Congratulations, %s, you cleared all levels!"
 msgstr "Félicitations, %s, vous avez passez tous les niveaux!"
 
-#: src/clientgame.cpp:386
+#: src/clientgame.cpp:387
 #, c-format
 msgid "Level: %d, Size: %d/12"
 msgstr "Niveau : %d, taille : %d/12"
 
-#: src/clientgame.cpp:390
+#: src/clientgame.cpp:391
 #, fuzzy, c-format
 #| msgid "Total Hits: %d, Current Price: %d"
 msgid "Total Hits: %d, Current Prize: %d"
 msgstr "Gesamttreffer: %d, Cout: %d"
 
-#: src/clientgame.cpp:394
+#: src/clientgame.cpp:395
 #, fuzzy, c-format
 #| msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgid "Wave: %d, Invaders: %d/%d (Active: %d)"
 msgstr "Vague : %d, Infections : %d/%d, Actif : %d/%d"
 
-#: src/clientgame.cpp:400
+#: src/clientgame.cpp:401
 #, c-format
 msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgstr "Vague : %d, Infections : %d/%d, Actif : %d/%d"
 
-#: src/clientgame.cpp:406 src/clientgame.cpp:410
+#: src/clientgame.cpp:407 src/clientgame.cpp:411
 #, fuzzy, c-format
 #| msgid "Hits: %d, Current Price: %d, Time: %d secs"
 msgid "Hits: %d, Current Prize: %d, Time: %d secs"

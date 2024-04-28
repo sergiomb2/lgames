@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.1.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-06 15:15+0200\n"
+"POT-Creation-Date: 2024-04-28 09:33+0200\n"
 "PO-Revision-Date: 2024-01-12 14:04+0300\n"
 "Last-Translator: Olesya Gerasimenko <translation-team@basealt.ru>\n"
 "Language-Team: Basealt Translation Team\n"
@@ -139,23 +139,23 @@ msgstr "Активные дополнения"
 msgid "Hiscores"
 msgstr "Рекорды"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Kids"
 msgstr "Для детей"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Very Easy"
 msgstr "Очень низкая"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Easy"
 msgstr "Низкая"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Medium"
 msgstr "Средняя"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Hard"
 msgstr "Высокая"
 
@@ -526,7 +526,7 @@ msgstr ""
 "Либо 50 градусов влево или вправо, либо случайный (независимо от того, какая "
 "клавиша запуска была нажата)."
 
-#: src/view.cpp:1271 src/view.cpp:1861
+#: src/view.cpp:1271 src/view.cpp:1864
 msgid "Random"
 msgstr "Случайный"
 
@@ -600,55 +600,72 @@ msgstr ""
 "Добавлять бонусные уровни с мини-игрой после каждых 4 обычных уровней. Если "
 "проиграть в мини-игре, она завершится, но жизнь не будет потрачена."
 
-#: src/view.cpp:1288
+#: src/view.cpp:1285
+msgid "BCC Type"
+msgstr ""
+
+#: src/view.cpp:1286
+msgid ""
+"Ball Collision Check: Get ball targets either by trajectory or clipping."
+msgstr ""
+
+#: src/view.cpp:1287
+msgid "Trajectory"
+msgstr ""
+
+#: src/view.cpp:1287
+msgid "Clipping"
+msgstr ""
+
+#: src/view.cpp:1291
 msgid "Create New Set"
 msgstr "Создать новый набор"
 
-#: src/view.cpp:1290
+#: src/view.cpp:1293
 msgid "Edit Existing Set"
 msgstr "Изменить существующий набор"
 
-#: src/view.cpp:1291
+#: src/view.cpp:1294
 msgid "Edit an existing levelset."
 msgstr "Отредактировать существующий набор уровней."
 
-#: src/view.cpp:1296
+#: src/view.cpp:1299
 msgid "New Game"
 msgstr "Новая игра"
 
-#: src/view.cpp:1297
+#: src/view.cpp:1300
 msgid "Resume Game"
 msgstr "Продолжить игру"
 
-#: src/view.cpp:1301
+#: src/view.cpp:1304
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/view.cpp:1302 src/view.cpp:1820
+#: src/view.cpp:1305 src/view.cpp:1823
 msgid "Help"
 msgstr "Справка"
 
-#: src/view.cpp:1304
+#: src/view.cpp:1307
 msgid "Editor"
 msgstr "Редактор"
 
-#: src/view.cpp:1306
+#: src/view.cpp:1309
 msgid "Quit"
 msgstr "Выход"
 
-#: src/view.cpp:1748
+#: src/view.cpp:1751
 msgid "No saved game."
 msgstr "Нет сохранённой игры."
 
-#: src/view.cpp:1765
+#: src/view.cpp:1768
 msgid " player(s)\n"
 msgstr " игр.\n"
 
-#: src/view.cpp:1776
+#: src/view.cpp:1779
 msgid "  (Lvl: "
 msgstr "  (ур.: "
 
-#: src/view.cpp:1795
+#: src/view.cpp:1798
 msgid ""
 "You can control your paddle either with the mouse or keyboard. Destroying "
 "bricks will release extras sometimes. Some are good, some are bad and some "
@@ -699,182 +716,182 @@ msgstr ""
 "Играйте с удовольствием!\n"
 "          Michael Speck"
 
-#: src/view.cpp:1828
+#: src/view.cpp:1831
 msgid "Extra Score"
 msgstr "Дополнительные очки"
 
-#: src/view.cpp:1829
+#: src/view.cpp:1832
 msgid "Gold Shower"
 msgstr "Золотой дождь"
 
-#: src/view.cpp:1831
+#: src/view.cpp:1834
 msgid "Extra Life"
 msgstr "Дополнительная жизнь"
 
-#: src/view.cpp:1832
+#: src/view.cpp:1835
 msgid "Extra Ball"
 msgstr "Дополнительный мяч"
 
-#: src/view.cpp:1834
+#: src/view.cpp:1837
 msgid "Expand Paddle"
 msgstr "Увеличение ракетки"
 
-#: src/view.cpp:1835
+#: src/view.cpp:1838
 msgid "Shrink Paddle"
 msgstr "Уменьшение ракетки"
 
-#: src/view.cpp:1837
+#: src/view.cpp:1840
 msgid "Sticky Paddle"
 msgstr "Липкая ракетка"
 
-#: src/view.cpp:1838
+#: src/view.cpp:1841
 msgid "Plasma Weapon"
 msgstr "Плазменное оружие"
 
-#: src/view.cpp:1840
+#: src/view.cpp:1843
 msgid "Slow Balls"
 msgstr "Медленные мячи"
 
-#: src/view.cpp:1841
+#: src/view.cpp:1844
 msgid "Fast Balls"
 msgstr "Быстрые мячи"
 
-#: src/view.cpp:1843
+#: src/view.cpp:1846
 msgid "Energy Balls"
 msgstr "Энергетические мячи"
 
-#: src/view.cpp:1844
+#: src/view.cpp:1847
 msgid "Explosive Balls"
 msgstr "Взрывные мячи"
 
-#: src/view.cpp:1846
+#: src/view.cpp:1849
 msgid "Extra Floor"
 msgstr "Дополнительный этаж"
 
-#: src/view.cpp:1847
+#: src/view.cpp:1850
 msgid "Joker (collect goodies)"
 msgstr "Джокер (собрать призы)"
 
-#: src/view.cpp:1849
+#: src/view.cpp:1852
 msgid "Bonus Magnet"
 msgstr "Магнит бонусов"
 
-#: src/view.cpp:1850
+#: src/view.cpp:1853
 msgid "Malus Magnet"
 msgstr "Магнит штрафов"
 
-#: src/view.cpp:1852
+#: src/view.cpp:1855
 msgid "Chaotic Balls"
 msgstr "Хаотичные мячи"
 
-#: src/view.cpp:1853
+#: src/view.cpp:1856
 msgid "Weak Balls"
 msgstr "Слабые мячи"
 
-#: src/view.cpp:1855
+#: src/view.cpp:1858
 msgid "Frozen Paddle"
 msgstr "Замороженная ракетка"
 
-#: src/view.cpp:1856
+#: src/view.cpp:1859
 msgid "Ghost Paddle"
 msgstr "Призрачная ракетка"
 
-#: src/view.cpp:1858
+#: src/view.cpp:1861
 msgid "Extra Time"
 msgstr "Дополнительное время"
 
-#: src/view.cpp:1859
+#: src/view.cpp:1862
 msgid "Reset"
 msgstr "Сброс"
 
-#: src/view.cpp:1862
+#: src/view.cpp:1865
 msgid "Darkness"
 msgstr "Темнота"
 
-#: src/view.cpp:1864
+#: src/view.cpp:1867
 msgid "Indestructible"
 msgstr "Неразрушимость"
 
-#: src/view.cpp:1865
+#: src/view.cpp:1868
 msgid "Regular Wall"
 msgstr "Обычная стена"
 
-#: src/view.cpp:1867
+#: src/view.cpp:1870
 msgid "Chaotic Wall"
 msgstr "Хаотичная стена"
 
-#: src/view.cpp:1868
+#: src/view.cpp:1871
 msgid "Regular Brick"
 msgstr "Обычный кирпич"
 
-#: src/view.cpp:1870
+#: src/view.cpp:1873
 msgid "Multi-hit Brick"
 msgstr "Многоударный кирпич"
 
-#: src/view.cpp:1871
+#: src/view.cpp:1874
 msgid "Regenerative Brick"
 msgstr "Регенеративный кирпич"
 
-#: src/view.cpp:1873
+#: src/view.cpp:1876
 msgid "Explosive Brick"
 msgstr "Взрывной кирпич"
 
-#: src/view.cpp:1874
+#: src/view.cpp:1877
 msgid "Growing Brick"
 msgstr "Растущий кирпич"
 
-#: src/view.cpp:1894
+#: src/view.cpp:1897
 msgid "Plane of Inner Stability"
 msgstr "Плоскость внутренней стабильности"
 
-#: src/view.cpp:1899
+#: src/view.cpp:1902
 #, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr ""
 "Чтобы разрушить кирпич, щёлкните по нему левой кнопкой мыши (расход очков: "
 "10% score)."
 
-#: src/view.cpp:1902
+#: src/view.cpp:1905
 msgid "Press any key to cancel selection."
 msgstr "Нажмите любую клавишу, чтобы отменить выбор."
 
-#: src/clientgame.cpp:106
+#: src/clientgame.cpp:107
 msgid "Testplayer"
 msgstr "Тестовый игрок"
 
-#: src/clientgame.cpp:283 src/clientgame.cpp:292
+#: src/clientgame.cpp:284 src/clientgame.cpp:293
 #, c-format
 msgid "Game over, %s!"
 msgstr "Игра окончена, %s!"
 
-#: src/clientgame.cpp:285
+#: src/clientgame.cpp:286
 #, c-format
 msgid "Congratulations, %s, you cleared all levels!"
 msgstr "Поздравляем! %s, вам удалось расчистить все уровни!"
 
-#: src/clientgame.cpp:386
+#: src/clientgame.cpp:387
 #, c-format
 msgid "Level: %d, Size: %d/12"
 msgstr "Уровень: %d, размер: %d/12"
 
-#: src/clientgame.cpp:390
+#: src/clientgame.cpp:391
 #, fuzzy, c-format
 #| msgid "Total Hits: %d, Current Price: %d"
 msgid "Total Hits: %d, Current Prize: %d"
 msgstr "Всего попаданий: %d, текущая стоимость: %d"
 
-#: src/clientgame.cpp:394
+#: src/clientgame.cpp:395
 #, fuzzy, c-format
 #| msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgid "Wave: %d, Invaders: %d/%d (Active: %d)"
 msgstr "Волна: %d, инфекции: %d/%d, активные: %d/%d"
 
-#: src/clientgame.cpp:400
+#: src/clientgame.cpp:401
 #, c-format
 msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgstr "Волна: %d, инфекции: %d/%d, активные: %d/%d"
 
-#: src/clientgame.cpp:406 src/clientgame.cpp:410
+#: src/clientgame.cpp:407 src/clientgame.cpp:411
 #, fuzzy, c-format
 #| msgid "Hits: %d, Current Price: %d, Time: %d secs"
 msgid "Hits: %d, Current Prize: %d, Time: %d secs"

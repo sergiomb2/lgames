@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-06 15:15+0200\n"
+"POT-Creation-Date: 2024-04-28 09:33+0200\n"
 "PO-Revision-Date: 2022-07-07 17:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -139,23 +139,23 @@ msgstr "Aktiva extrasaker"
 msgid "Hiscores"
 msgstr "Poängrekord"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Kids"
 msgstr "Barn"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Very Easy"
 msgstr "Väldigt lätt"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Easy"
 msgstr "Lätt"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Medium"
 msgstr "Mellan"
 
-#: src/view.cpp:1145 src/view.cpp:1753
+#: src/view.cpp:1145 src/view.cpp:1756
 msgid "Hard"
 msgstr "Svårt"
 
@@ -520,7 +520,7 @@ msgstr ""
 "Antingen 50 grader till vänster/höger eller slumpmässigt oavsett vilken "
 "skjuttangent som tryckts."
 
-#: src/view.cpp:1271 src/view.cpp:1861
+#: src/view.cpp:1271 src/view.cpp:1864
 msgid "Random"
 msgstr "Slumpmässig"
 
@@ -594,55 +594,72 @@ msgstr ""
 "Lägg till bonusbanor med ett minispel för var fjärde vanlig bana. Tar spelet "
 "slut kommer det att avsluta minispelet utan att ett liv går förlorat."
 
-#: src/view.cpp:1288
-msgid "Create New Set"
+#: src/view.cpp:1285
+msgid "BCC Type"
 msgstr ""
 
-#: src/view.cpp:1290
-msgid "Edit Existing Set"
+#: src/view.cpp:1286
+msgid ""
+"Ball Collision Check: Get ball targets either by trajectory or clipping."
+msgstr ""
+
+#: src/view.cpp:1287
+msgid "Trajectory"
+msgstr ""
+
+#: src/view.cpp:1287
+msgid "Clipping"
 msgstr ""
 
 #: src/view.cpp:1291
+msgid "Create New Set"
+msgstr ""
+
+#: src/view.cpp:1293
+msgid "Edit Existing Set"
+msgstr ""
+
+#: src/view.cpp:1294
 msgid "Edit an existing levelset."
 msgstr ""
 
-#: src/view.cpp:1296
+#: src/view.cpp:1299
 msgid "New Game"
 msgstr "Nytt spel"
 
-#: src/view.cpp:1297
+#: src/view.cpp:1300
 msgid "Resume Game"
 msgstr "Återgå till spel"
 
-#: src/view.cpp:1301
+#: src/view.cpp:1304
 msgid "Settings"
 msgstr "Inställningar"
 
-#: src/view.cpp:1302 src/view.cpp:1820
+#: src/view.cpp:1305 src/view.cpp:1823
 msgid "Help"
 msgstr "Hjälp"
 
-#: src/view.cpp:1304
+#: src/view.cpp:1307
 msgid "Editor"
 msgstr ""
 
-#: src/view.cpp:1306
+#: src/view.cpp:1309
 msgid "Quit"
 msgstr "Avsluta"
 
-#: src/view.cpp:1748
+#: src/view.cpp:1751
 msgid "No saved game."
 msgstr "Inget sparat spel."
 
-#: src/view.cpp:1765
+#: src/view.cpp:1768
 msgid " player(s)\n"
 msgstr " spelare\n"
 
-#: src/view.cpp:1776
+#: src/view.cpp:1779
 msgid "  (Lvl: "
 msgstr "  (Bana: "
 
-#: src/view.cpp:1795
+#: src/view.cpp:1798
 #, fuzzy
 #| msgid ""
 #| "You can control your paddle either with the mouse or keyboard. Destroying "
@@ -716,182 +733,182 @@ msgstr ""
 "Ha så kul!\n"
 "          Michael Speck"
 
-#: src/view.cpp:1828
+#: src/view.cpp:1831
 msgid "Extra Score"
 msgstr "Extra poäng"
 
-#: src/view.cpp:1829
+#: src/view.cpp:1832
 msgid "Gold Shower"
 msgstr "Gulddusch"
 
-#: src/view.cpp:1831
+#: src/view.cpp:1834
 msgid "Extra Life"
 msgstr "Extra liv"
 
-#: src/view.cpp:1832
+#: src/view.cpp:1835
 msgid "Extra Ball"
 msgstr "Extra klot"
 
-#: src/view.cpp:1834
+#: src/view.cpp:1837
 msgid "Expand Paddle"
 msgstr "Expandera racket"
 
-#: src/view.cpp:1835
+#: src/view.cpp:1838
 msgid "Shrink Paddle"
 msgstr "Krymp racket"
 
-#: src/view.cpp:1837
+#: src/view.cpp:1840
 msgid "Sticky Paddle"
 msgstr "Klibbig racket"
 
-#: src/view.cpp:1838
+#: src/view.cpp:1841
 msgid "Plasma Weapon"
 msgstr "Plasmavapen"
 
-#: src/view.cpp:1840
+#: src/view.cpp:1843
 msgid "Slow Balls"
 msgstr "Långsamma klot"
 
-#: src/view.cpp:1841
+#: src/view.cpp:1844
 msgid "Fast Balls"
 msgstr "Snabba klot"
 
-#: src/view.cpp:1843
+#: src/view.cpp:1846
 msgid "Energy Balls"
 msgstr "Energiklot"
 
-#: src/view.cpp:1844
+#: src/view.cpp:1847
 msgid "Explosive Balls"
 msgstr "Explosiva klot"
 
-#: src/view.cpp:1846
+#: src/view.cpp:1849
 msgid "Extra Floor"
 msgstr "Extra golv"
 
-#: src/view.cpp:1847
+#: src/view.cpp:1850
 msgid "Joker (collect goodies)"
 msgstr "Joker (samla godsaker)"
 
-#: src/view.cpp:1849
+#: src/view.cpp:1852
 msgid "Bonus Magnet"
 msgstr "Bonusmagnet"
 
-#: src/view.cpp:1850
+#: src/view.cpp:1853
 msgid "Malus Magnet"
 msgstr "Riskfylld magnet"
 
-#: src/view.cpp:1852
+#: src/view.cpp:1855
 msgid "Chaotic Balls"
 msgstr "Kaotiska klot"
 
-#: src/view.cpp:1853
+#: src/view.cpp:1856
 msgid "Weak Balls"
 msgstr "Svaga klot"
 
-#: src/view.cpp:1855
+#: src/view.cpp:1858
 msgid "Frozen Paddle"
 msgstr "Frusen racket"
 
-#: src/view.cpp:1856
+#: src/view.cpp:1859
 msgid "Ghost Paddle"
 msgstr "Spökracket"
 
-#: src/view.cpp:1858
+#: src/view.cpp:1861
 msgid "Extra Time"
 msgstr "Extra tid"
 
-#: src/view.cpp:1859
+#: src/view.cpp:1862
 msgid "Reset"
 msgstr "Återställ"
 
-#: src/view.cpp:1862
+#: src/view.cpp:1865
 msgid "Darkness"
 msgstr "Mörker"
 
-#: src/view.cpp:1864
+#: src/view.cpp:1867
 msgid "Indestructible"
 msgstr "Oförstörbar"
 
-#: src/view.cpp:1865
+#: src/view.cpp:1868
 msgid "Regular Wall"
 msgstr "Vanlig vägg"
 
-#: src/view.cpp:1867
+#: src/view.cpp:1870
 msgid "Chaotic Wall"
 msgstr "Kaotisk vägg"
 
-#: src/view.cpp:1868
+#: src/view.cpp:1871
 msgid "Regular Brick"
 msgstr "Vanlig tegelsten"
 
-#: src/view.cpp:1870
+#: src/view.cpp:1873
 msgid "Multi-hit Brick"
 msgstr "Flerträffstegelsten"
 
-#: src/view.cpp:1871
+#: src/view.cpp:1874
 msgid "Regenerative Brick"
 msgstr "Pånyttfödande tegelsten"
 
-#: src/view.cpp:1873
+#: src/view.cpp:1876
 msgid "Explosive Brick"
 msgstr "Explosiv tegelsten"
 
-#: src/view.cpp:1874
+#: src/view.cpp:1877
 msgid "Growing Brick"
 msgstr "Växande tegelsten"
 
-#: src/view.cpp:1894
+#: src/view.cpp:1897
 msgid "Plane of Inner Stability"
 msgstr "Plane of Inner Stability"
 
-#: src/view.cpp:1899
+#: src/view.cpp:1902
 #, no-c-format
 msgid "Left-click on any brick to destroy it (costs 10% score)."
 msgstr ""
 "Vänsterklicka på vilken tegelsten som helst för att rasera den (kostar 10% "
 "score)."
 
-#: src/view.cpp:1902
+#: src/view.cpp:1905
 msgid "Press any key to cancel selection."
 msgstr "Tryck på valfri tangent för att avbryta markering."
 
-#: src/clientgame.cpp:106
+#: src/clientgame.cpp:107
 msgid "Testplayer"
 msgstr ""
 
-#: src/clientgame.cpp:283 src/clientgame.cpp:292
+#: src/clientgame.cpp:284 src/clientgame.cpp:293
 #, c-format
 msgid "Game over, %s!"
 msgstr "Spelet är slut, %s!"
 
-#: src/clientgame.cpp:285
+#: src/clientgame.cpp:286
 #, c-format
 msgid "Congratulations, %s, you cleared all levels!"
 msgstr "Gratulerar, %s, du tömde alla banor!"
 
-#: src/clientgame.cpp:386
+#: src/clientgame.cpp:387
 #, c-format
 msgid "Level: %d, Size: %d/12"
 msgstr "Bana: %d, storlek: %d/12"
 
-#: src/clientgame.cpp:390
+#: src/clientgame.cpp:391
 #, fuzzy, c-format
 #| msgid "Total Hits: %d, Current Price: %d"
 msgid "Total Hits: %d, Current Prize: %d"
 msgstr "Totalt antal träffar: %d, aktuellt pris: %d"
 
-#: src/clientgame.cpp:394
+#: src/clientgame.cpp:395
 #, fuzzy, c-format
 #| msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgid "Wave: %d, Invaders: %d/%d (Active: %d)"
 msgstr "Våg: %d, infektioner: %d/%d aktiv: %d/%d"
 
-#: src/clientgame.cpp:400
+#: src/clientgame.cpp:401
 #, c-format
 msgid "Wave: %d, Infections: %d/%d, Active: %d/%d"
 msgstr "Våg: %d, infektioner: %d/%d aktiv: %d/%d"
 
-#: src/clientgame.cpp:406 src/clientgame.cpp:410
+#: src/clientgame.cpp:407 src/clientgame.cpp:411
 #, fuzzy, c-format
 #| msgid "Hits: %d, Current Price: %d, Time: %d secs"
 msgid "Hits: %d, Current Prize: %d, Time: %d secs"
