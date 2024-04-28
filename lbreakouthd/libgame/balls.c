@@ -1539,6 +1539,13 @@ void ball_get_target( Ball *ball )
 	side_str[0] = 0;
 #endif
 
+	ball_clear_target(&ball->target);
+
+	/* if velocity vector is 0 don't get a target (e.g. for stopped ball in
+	 * sitting ducks. */
+	if (ball->vel.x == 0 && ball->vel.y == 0)
+		return;
+
 	/* check if we somehow ended up in a brick and reset position along trajectory.
 	 * should actually not happen except for moving bricks, e.g., in minigame invaders,
 	 * but it seems to happen sometimes on other occasions as well ... */
@@ -1572,7 +1579,7 @@ void ball_get_target( Ball *ball )
 		return;
 	}
 
-	/* clear ball targets */
+	/* clear tangent targets */
 	ball_clear_target( &ball->target );
 	ball_clear_target( &targets[TANG_LEFT] );
 	ball_clear_target( &targets[TANG_RIGHT] );
