@@ -12,7 +12,7 @@ AC_PROG_CC
 AC_PROG_RANLIB
 
 # Checks for libraries.
-AC_CHECK_LIB(SDL, main,, AC_MSG_ERROR(lib SDL is needed))
+AM_PATH_SDL(1.0.0,, AC_MSG_ERROR(lib SDL is needed))
 
 CFLAGS="$CFLAGS -Wall -Wno-int-conversion -Wno-format -Wno-implicit-function-declaration"
 
@@ -32,8 +32,8 @@ if test "x$host" = "xi686-w64-mingw32"; then
 
 else
 
-	CFLAGS="$CFLAGS $(sdl-config --cflags)"
-	LIBS="$LIBS $(sdl-config --libs)"
+	CFLAGS="$CFLAGS $($SDL_CONFIG --cflags)"
+	LIBS="$LIBS $($SDL_CONFIG --libs)"
 
 fi
 
