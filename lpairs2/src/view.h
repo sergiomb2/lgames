@@ -64,6 +64,7 @@ class View {
 	int shadowOffset; /* shadow offset */
 	Label lblInfoLeft, lblTime, lblInfoRight;
 	Label lblRestart, lblResult;
+	Button btnMenu;
 	int mcx, mcy; /* mouse cursor position */
 	list<unique_ptr<Sprite>> sprites;
 	int captionKeyPressed;

@@ -80,6 +80,7 @@ void View::init(string t, uint f)
 	lblCredits1.setText(theme.fSmall, "http://lgames.sf.net");
 	lblCredits2.setText(theme.fSmall, string("v")+PACKAGE_VERSION);
 	lblRestart.setText(theme.fNormal, _("Press R or right mouse button to restart (or ESC for menu)."));
+	btnMenu.set(_("Menu"), theme.fNormal, theme.fNormalHighlighted, 0, 0, ALIGN_X_LEFT | ALIGN_Y_TOP);
 
 	/* create render images and positions */
 	imgBackground.create(sw,sh);
@@ -159,6 +160,12 @@ void View::run()
 					break;
 				}
 			}
+
+			/* handle menu button to switch menu on/off */
+			if (btnMenu.handleEvent(ev))
+				if (!noGameYet)
+					menuActive = !menuActive;
+
 			if (menuActive)
 				handleMenuEvent(ev);
 			else if (ev.type == SDL_MOUSEBUTTONUP) {
@@ -348,6 +355,7 @@ void View::render()
 			lblResult.copy(renderer.rx2sx(0.5),renderer.ry2sy(0.75),
 					ALIGN_X_CENTER | ALIGN_Y_CENTER);
 	}
+	btnMenu.render();
 
 	/* sprites */
 	for (auto& s : sprites)

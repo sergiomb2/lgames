@@ -410,3 +410,53 @@ void Label::setText(Font &font, const string &str, uint maxw)
 	SDL_SetRenderTarget(mrc,old);
 	empty = false;
 }
+
+/** Initialize button with @text. @fn is normal font, @ff is focused font,
+ * @_x, @_y is position and @_align text alignment. */
+void Button::set(const string &text, Font &fn, Font &ff, int _x, int _y, int _align)
+{
+	x = _x;
+	y = _y;
+	align = _align;
+
+	SDL_Color bgc = {0,0,0,128};
+	lblNormal.setBgColor(bgc);
+	lblFocus.setBgColor(bgc);
+
+	lblNormal.setText(fn, text);
+	lblFocus.setText(ff, text);
+}
+
+/** Render label depending on whether focused or not. */
+void Button::render()
+{
+	if (x == -1)
+		return;
+
+	if (focus)
+		lblFocus.copy(x,y,align);
+	else
+		lblNormal.copy(x,y,align);
+}
+
+/** Handle SDL event. Return 1 if button is clicked, 0 otherwise. */
+int Button::handleEvent(SDL_Event &ev)
+{
+	if (x == -1)
+		return 0;
+
+	if (ev.type == SDL_MOUSEBUTTONUP) {
+		if (ev.button.x >= x && ev.button.y >= y &&
+				ev.button.x < x + (int)lblNormal.getWidth() &&
+				ev.button.y < y + (int)lblNormal.getHeight())
+			return 1;
+	} else if (ev.type == SDL_MOUSEMOTION) {
+		if (ev.motion.x >= x && ev.motion.y >= y &&
+				ev.motion.x < x + (int)lblNormal.getWidth() &&
+				ev.motion.y < y + (int)lblNormal.getHeight())
+			focus = true;
+		else
+			focus = false;
+	}
+	return 0;
+}

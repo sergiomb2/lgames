@@ -289,4 +289,15 @@ public:
 	}
 };
 
+class Button {
+	int x, y, align;
+	bool focus;
+	Label lblNormal, lblFocus;
+public:
+	Button() : x(-1), y(-1), align(0), focus(false) {};
+	void set(const string &text, Font &fn, Font &ff, int _x, int _y, int _align);
+	void render();
+	int handleEvent(SDL_Event &ev);
+};
+
 #endif /* SDL_H_ */
