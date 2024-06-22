@@ -79,7 +79,7 @@ void View::init(string t, uint f)
 	/* set label stuff */
 	lblCredits1.setText(theme.fSmall, "http://lgames.sf.net");
 	lblCredits2.setText(theme.fSmall, string("v")+PACKAGE_VERSION);
-	lblRestart.setText(theme.fNormal, _("Press R to restart (or ESC for menu)."));
+	lblRestart.setText(theme.fNormal, _("Press R or right mouse button to restart (or ESC for menu)."));
 
 	/* create render images and positions */
 	imgBackground.create(sw,sh);
@@ -161,10 +161,14 @@ void View::run()
 			}
 			if (menuActive)
 				handleMenuEvent(ev);
-			else if (ev.type == SDL_MOUSEBUTTONUP && state == VS_IDLE) {
-				button = ev.button.button;
-				buttonX = ev.button.x;
-				buttonY = ev.button.y;
+			else if (ev.type == SDL_MOUSEBUTTONUP) {
+				if (ev.button.button == SDL_BUTTON_RIGHT && game.gameover)
+					startGame();
+				else if (state == VS_IDLE) {
+					button = ev.button.button;
+					buttonX = ev.button.x;
+					buttonY = ev.button.y;
+				}
 			}
 		}
 
