@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: lpairs2 2.3\n"
+"Project-Id-Version: lpairs2 2.3.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-28 18:28+0200\n"
+"POT-Creation-Date: 2024-06-22 16:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,83 +17,87 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/view.cpp:82
-msgid "Press R to restart (or ESC for menu)."
+msgid "Press R or right mouse button to restart (or ESC for menu)."
 msgstr ""
 
-#: src/view.cpp:215
+#: src/view.cpp:83
+msgid "Menu"
+msgstr ""
+
+#: src/view.cpp:226
 #, c-format
 msgid "Time: %d:%02d"
 msgstr ""
 
-#: src/view.cpp:424
+#: src/view.cpp:436
 msgid "Tiny"
 msgstr ""
 
-#: src/view.cpp:424
+#: src/view.cpp:436
 msgid "Small"
 msgstr ""
 
-#: src/view.cpp:424
+#: src/view.cpp:436
 msgid "Medium"
 msgstr ""
 
-#: src/view.cpp:424
+#: src/view.cpp:436
 msgid "Large"
 msgstr ""
 
-#: src/view.cpp:424
+#: src/view.cpp:436
 msgid "Huge"
 msgstr ""
 
-#: src/view.cpp:425
+#: src/view.cpp:437
 msgid "No Limit"
 msgstr ""
 
-#: src/view.cpp:425
+#: src/view.cpp:437
 msgid "200 FPS"
 msgstr ""
 
-#: src/view.cpp:425
+#: src/view.cpp:437
 msgid "100 FPS"
 msgstr ""
 
-#: src/view.cpp:428
+#: src/view.cpp:440
 msgid "Solo"
 msgstr ""
 
-#: src/view.cpp:428
+#: src/view.cpp:440
 msgid "Vs CPU"
 msgstr ""
 
-#: src/view.cpp:428
+#: src/view.cpp:440
 msgid "Vs Human"
 msgstr ""
 
-#: src/view.cpp:428
+#: src/view.cpp:440
 msgid "Survivor"
 msgstr ""
 
-#: src/view.cpp:429
+#: src/view.cpp:441
 msgid "Off"
 msgstr ""
 
-#: src/view.cpp:429
+#: src/view.cpp:441
 msgid "On Shift"
 msgstr ""
 
-#: src/view.cpp:429
+#: src/view.cpp:441
 msgid "Always"
 msgstr ""
 
-#: src/view.cpp:447
+#: src/view.cpp:459
 msgid "Start Game"
 msgstr ""
 
-#: src/view.cpp:449 src/view.cpp:478
+#: src/view.cpp:461 src/view.cpp:490
 msgid "Mode"
 msgstr ""
 
-#: src/view.cpp:450
+#: src/view.cpp:462
 msgid ""
 "You can play alone or against a human or CPU opponent.\n"
 "\n"
@@ -102,147 +106,147 @@ msgid ""
 "below is ignored."
 msgstr ""
 
-#: src/view.cpp:452
+#: src/view.cpp:464
 msgid "Set Size"
 msgstr ""
 
-#: src/view.cpp:453
+#: src/view.cpp:465
 msgid ""
 "Tiny=4x4, Small=6x4, Medium=8x4, Large=10x5, Huge=12x6.\n"
 "Note, that it's slightly different in window mode to match the different "
 "ratio."
 msgstr ""
 
-#: src/view.cpp:455
+#: src/view.cpp:467
 msgid "Match Size"
 msgstr ""
 
-#: src/view.cpp:458
+#: src/view.cpp:470
 msgid "Close Delay"
 msgstr ""
 
-#: src/view.cpp:461
+#: src/view.cpp:473
 msgid "Captions"
 msgstr ""
 
-#: src/view.cpp:462
+#: src/view.cpp:474
 msgid ""
 "Display caption of open card if mouse pointer is on it. With 'On Shift' a "
 "shift key must additionally be pressed."
 msgstr ""
 
-#: src/view.cpp:475
+#: src/view.cpp:487
 msgid "Theme"
 msgstr ""
 
-#: src/view.cpp:476
+#: src/view.cpp:488
 msgid "Select theme. (not applied yet)"
 msgstr ""
 
-#: src/view.cpp:479
+#: src/view.cpp:491
 msgid "Select mode. (not applied yet)"
 msgstr ""
 
-#: src/view.cpp:480
+#: src/view.cpp:492
 msgid "Window"
 msgstr ""
 
-#: src/view.cpp:480
+#: src/view.cpp:492
 msgid "Fullscreen"
 msgstr ""
 
-#: src/view.cpp:481
+#: src/view.cpp:493
 msgid "Apply Theme&Mode"
 msgstr ""
 
-#: src/view.cpp:482
+#: src/view.cpp:494
 msgid "Apply the above settings."
 msgstr ""
 
-#: src/view.cpp:484
+#: src/view.cpp:496
 msgid "Animations"
 msgstr ""
 
-#: src/view.cpp:486
+#: src/view.cpp:498
 msgid "Frame Limit"
 msgstr ""
 
-#: src/view.cpp:492
+#: src/view.cpp:504
 msgid "Sound"
 msgstr ""
 
-#: src/view.cpp:493
+#: src/view.cpp:505
 msgid "Volume"
 msgstr ""
 
-#: src/view.cpp:496
+#: src/view.cpp:508
 msgid "Buffer Size"
 msgstr ""
 
-#: src/view.cpp:497
+#: src/view.cpp:509
 msgid ""
 "Reduce buffer size if you experience sound delays. Might have more CPU "
 "impact though. (not applied yet)"
 msgstr ""
 
-#: src/view.cpp:499
+#: src/view.cpp:511
 msgid "Channels"
 msgstr ""
 
-#: src/view.cpp:500
+#: src/view.cpp:512
 msgid ""
 "More channels gives more sound variety, less channels less (not applied yet)"
 msgstr ""
 
-#: src/view.cpp:502
+#: src/view.cpp:514
 msgid "Apply Size&Channels"
 msgstr ""
 
-#: src/view.cpp:503
+#: src/view.cpp:515
 msgid "Apply above settings"
 msgstr ""
 
-#: src/view.cpp:511
+#: src/view.cpp:523
 msgid "New Game"
 msgstr ""
 
-#: src/view.cpp:513
+#: src/view.cpp:525
 msgid "Graphics"
 msgstr ""
 
-#: src/view.cpp:514
+#: src/view.cpp:526
 msgid "Audio"
 msgstr ""
 
-#: src/view.cpp:518
+#: src/view.cpp:530
 msgid "Quit"
 msgstr ""
 
-#: src/view.cpp:678
+#: src/view.cpp:690
 msgid "Time: 0:00"
 msgstr ""
 
-#: src/view.cpp:739
+#: src/view.cpp:751
 #, c-format
 msgid "Score: %d (%d Mistakes)"
 msgstr ""
 
-#: src/view.cpp:742
+#: src/view.cpp:754
 #, c-format
 msgid "Stage: %d"
 msgstr ""
 
-#: src/view.cpp:745
+#: src/view.cpp:757
 #, c-format
 msgid "Matches: %d/%d"
 msgstr ""
 
-#: src/view.cpp:749
+#: src/view.cpp:761
 #, c-format
 msgid "Mistakes: %d"
 msgstr ""
 
-#: src/view.cpp:753 src/view.cpp:759
+#: src/view.cpp:765 src/view.cpp:771
 #, c-format
 msgid "%s: %d"
 msgstr ""
