@@ -535,6 +535,10 @@ void tetris_run()
 		case SDL_QUIT:
 			term_game = 1;
 		    break;
+		case SDL_JOYBUTTONUP:
+			if (event.jbutton.button == config.gp_pause)
+				request_pause = 1;
+			break;
                 case SDL_KEYUP:
                     if (game_over) {
                 	    /* only exit if ESC, SPACE or ENTER is pressed */
