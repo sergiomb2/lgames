@@ -1,3 +1,5 @@
+- updated levelset JustGoForIt by anonymous (2024/07/25 MS)
+
 1.1.9:
 - install icon according to specification (again) (2024/04/20 MS)
 
@@ -8,7 +10,7 @@
 - properly read windows files in preview and editor (2024/04/14 MS)
 
 1.1.7:
-- added new levelset JustGoForIt by unknown (2024/04/06 MS)
+- added new levelset JustGoForIt by anonymous (2024/04/06 MS)
 - workaround: return ball to paddle for illegal targets (2024/04/06 MS)
 - fixed mini game Invaders (2024/04/05 MS)
 - workaround: reset ball if in brick before getting target (2024/04/05 MS)
