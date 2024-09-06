@@ -100,6 +100,7 @@ Patience \
 Pawset \
 PCGames \
 Ph33r \
+Picky \
 P.I.T.A. \
 PlayAgain \
 Popcorn \
