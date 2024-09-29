@@ -192,7 +192,7 @@ void View::run()
 			buttonY += cyoff;
 		}
 		/* check auto flip */
-		if (!menuActive && state == VS_IDLE &&
+		if (config.autoflip && !menuActive && state == VS_IDLE &&
 					game.isOnFlippableCard(mcx - cxoff, mcy - cyoff)) {
 			if (autoFlipDelay.update(ms)) {
 				button = SDL_BUTTON_LEFT;
@@ -450,7 +450,7 @@ void View::createMenus()
 	const int channelNums[] = { 8, 16, 32 };
 	const char *modeNames[] = {_("Solo"), _("Vs CPU"), _("Vs Human"), _("Survivor")};
 	const char *captionModeNames[] = {_("Off"),_("On Shift"),_("Always")};
-	const char *autoflipOptions[] = { _("Off"), _("1 sec"), _("2 secs") };
+	const char *autoflipOptions[] = { _("Off"), _("Fast"), _("Slow") };
 
 	/* XXX too lazy to set fonts for each and every item...
 	 * use static pointers instead */
