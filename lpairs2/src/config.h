@@ -32,6 +32,7 @@ public:
 	int matchsize;
 	int closedelay;
 	int motifcaption;
+	int autoflip;
 
 	/* sound */
 	int sound;

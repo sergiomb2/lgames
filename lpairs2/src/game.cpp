@@ -499,3 +499,27 @@ void Game::initNextSurvivorStage()
 		initCards(10,7,2);
 	stage++;
 }
+
+/** Return true if on a card that can be turned over. */
+bool Game::isOnFlippableCard(int bx, int by)
+{
+	int cid = -1;
+
+	for (uint i = 0; i < numCards; i++)
+		if (cards[i].hasFocus(bx,by) && cards[i].isClosed()) {
+			cid = i;
+			break;
+		}
+
+	if (cid == -1)
+		return false;
+
+	if (numOpenCards < numMaxOpenCards)
+		return true;
+
+	/* single player may skip closing timeout */
+	if (numPlayers == 1 && numOpenCards == numMaxOpenCards)
+		return true;
+
+	return false;
+}

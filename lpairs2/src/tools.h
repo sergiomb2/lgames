@@ -114,9 +114,9 @@ bool fileExists(const string& name);
 /** Count continuously from start to end. Delay is in milliseconds for
  * changing counter by one (e.g. delay=1000 means it takes one second per step. */
 enum {
-	SCT_ONCE = 0,
-	SCT_REPEAT,
-	SCT_UPDOWN
+	SCT_ONCE = 0, /* only once */
+	SCT_REPEAT, /* start at min again */
+	SCT_UPDOWN /* min -> max -> min -> ... */
 };
 class SmoothCounter {
 	int type;
@@ -137,8 +137,12 @@ public:
 		}
 		running = true;
 	}
+	void reset() {
+		cur = min;
+		running = true;
+	}
 	int update(int ms) {
-		if (cpms == 0 && !running)
+		if (!running)
 			return 0;
 
 		int ret = 0;
@@ -147,7 +151,7 @@ public:
 			if (type == SCT_REPEAT)
 				cur = min;
 			else if (type == SCT_ONCE)
-				cpms = 0;
+				running = false;
 			else if (type == SCT_UPDOWN) {
 				cur = max;
 				cpms *= -1;
@@ -157,15 +161,13 @@ public:
 			if (type == SCT_REPEAT)
 				cur = max;
 			else if (type == SCT_ONCE)
-				cpms = 0;
+				running = false;
 			else if (type == SCT_UPDOWN) {
 				cur = min;
 				cpms *= -1;
 			}
 			ret = 1;
 		}
-		if (type == SCT_ONCE && ret)
-			running = false;
 		return ret;
 	}
 	double get() { return cur; }
@@ -178,6 +180,16 @@ public:
 		SmoothCounter::init(SCT_REPEAT, 0, -0.01 + max, delay);
 	}
 	int get() { return SmoothCounter::get(); }
+};
+
+/** Delay in milliseconds. get() returns relative
+ * position so 0 = start, 1 = end. */
+class Delay : public SmoothCounter
+{
+public:
+	void init(int ms) {
+		SmoothCounter::init(SCT_ONCE, 0, 1, ms);
+	}
 };
 
 void strprintf(string& str, const char *fmt, ... );

@@ -68,6 +68,7 @@ class View {
 	int mcx, mcy; /* mouse cursor position */
 	list<unique_ptr<Sprite>> sprites;
 	int captionKeyPressed;
+	Delay autoFlipDelay;
 
 	/* stats */
 	Uint32 fpsCycles, fpsStart;

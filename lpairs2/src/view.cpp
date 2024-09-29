@@ -135,7 +135,9 @@ void View::run()
 		if (SDL_PollEvent(&ev)) {
 			if (ev.type == SDL_QUIT)
 				quitReceived = true;
-			else if (ev.type == SDL_KEYUP) {
+			else if (ev.type == SDL_MOUSEMOTION) {
+				autoFlipDelay.reset();
+			} else if (ev.type == SDL_KEYUP) {
 				switch (ev.key.keysym.scancode) {
 				case SDL_SCANCODE_F:
 					if (!menuActive)
@@ -179,12 +181,24 @@ void View::run()
 			}
 		}
 
+		/* get passed time */
+		ms = ticks.get();
+
 		/* get input state */
 		SDL_GetMouseState(&mcx, &mcy);
 		if (state == VS_IDLE && game.getCurrentPlayer().isCPU()) {
 			game.getNextCPUClick(button, buttonX, buttonY);
 			buttonX += cxoff;
 			buttonY += cyoff;
+		}
+		/* check auto flip */
+		if (!menuActive && state == VS_IDLE &&
+					game.isOnFlippableCard(mcx - cxoff, mcy - cyoff)) {
+			if (autoFlipDelay.update(ms)) {
+				button = SDL_BUTTON_LEFT;
+				buttonX = mcx;
+				buttonY = mcy;
+			}
 		}
 
 		/* get key state */
@@ -193,9 +207,6 @@ void View::run()
 			captionKeyPressed = 1;
 		else
 			captionKeyPressed = 0;
-
-		/* get passed time */
-		ms = ticks.get();
 
 		/* update animations and particles */
 		for (auto it = begin(sprites); it != end(sprites); ++it) {
@@ -439,6 +450,7 @@ void View::createMenus()
 	const int channelNums[] = { 8, 16, 32 };
 	const char *modeNames[] = {_("Solo"), _("Vs CPU"), _("Vs Human"), _("Survivor")};
 	const char *captionModeNames[] = {_("Off"),_("On Shift"),_("Always")};
+	const char *autoflipOptions[] = { _("Off"), _("1 sec"), _("2 secs") };
 
 	/* XXX too lazy to set fonts for each and every item...
 	 * use static pointers instead */
@@ -473,6 +485,9 @@ void View::createMenus()
 	mNewGame->add(new MenuItemList(_("Captions"),
 			_("Display caption of open card if mouse pointer is on it. With 'On Shift' a shift key must additionally be pressed."),
 			AID_NONE,config.motifcaption,captionModeNames,3));
+	mNewGame->add(new MenuItemList(_("Auto Flip"),
+			_("Automatically flip over a card if cursor is motionless on it."),
+			AID_AUTOFLIP,config.autoflip,autoflipOptions,3));
 	mNewGame->add(new MenuItemSep());
 /*	mNewGame->add(new MenuItemRange(_("Players"),
 			_("Number and names of players. Players alternate whenever a life is lost."),
@@ -676,6 +691,9 @@ void View::handleMenuEvent(SDL_Event &ev)
 			menuActive = false;
 			waitForInputRelease();
 			break;
+		case AID_AUTOFLIP:
+			autoFlipDelay.init(config.autoflip*500);
+			break;
 		}
 	}
 }
@@ -690,6 +708,7 @@ void View::startGame()
 	lblTime.setText(theme.fNormal, _("Time: 0:00"));
 	renderPlayerInfo();
 	shadowOffset = game.cgap / 2;
+	autoFlipDelay.init(config.autoflip*500);
 }
 
 void View::changeWallpaper()

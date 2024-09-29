@@ -218,6 +218,7 @@ public:
 	}
 	uint getAdjacentCards(uint cid, vector<uint> *adjCards, bool onlyClosed);
 	void getNextCPUClick(int &button, int &bx, int &by);
+	bool isOnFlippableCard(int bx, int by);
 };
 
 #endif /* GAME_H_ */

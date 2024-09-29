@@ -28,6 +28,7 @@ Config::Config()
 	matchsize = 2;
 	closedelay = 3;
 	motifcaption = 1; /* on shift is default */
+	autoflip = 0;
 
 	/* sounds */
 	sound = 1;
@@ -66,6 +67,7 @@ Config::Config()
 	fp.get( "matchsize", matchsize );
 	fp.get( "closedelay", closedelay );
 	fp.get( "motifcaption", motifcaption );
+	fp.get( "autoflip", autoflip );
 	fp.get( "sound", sound );
 	fp.get( "volume", volume );
 	fp.get( "speech", speech );
@@ -97,6 +99,7 @@ void Config::save()
 	ofs << "matchsize=" << matchsize << "\n";
 	ofs << "closedelay=" << closedelay << "\n";
 	ofs << "motifcaption=" << motifcaption << "\n";
+	ofs << "autoflip=" << autoflip << "\n";
 	ofs << "sound=" << sound << "\n";
 	ofs << "volume=" << volume << "\n";
 	ofs << "speech=" << speech << "\n";
