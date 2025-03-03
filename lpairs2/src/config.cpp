@@ -29,6 +29,7 @@ Config::Config()
 	closedelay = 3;
 	motifcaption = 1; /* on shift is default */
 	autoflip = 0;
+	autoflipframe = 1;
 
 	/* sounds */
 	sound = 1;
@@ -68,6 +69,7 @@ Config::Config()
 	fp.get( "closedelay", closedelay );
 	fp.get( "motifcaption", motifcaption );
 	fp.get( "autoflip", autoflip );
+	fp.get( "autoflipframe", autoflipframe );
 	fp.get( "sound", sound );
 	fp.get( "volume", volume );
 	fp.get( "speech", speech );
@@ -100,6 +102,7 @@ void Config::save()
 	ofs << "closedelay=" << closedelay << "\n";
 	ofs << "motifcaption=" << motifcaption << "\n";
 	ofs << "autoflip=" << autoflip << "\n";
+	ofs << "autoflipframe=" << autoflipframe << "\n";
 	ofs << "sound=" << sound << "\n";
 	ofs << "volume=" << volume << "\n";
 	ofs << "speech=" << speech << "\n";

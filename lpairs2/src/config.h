@@ -33,6 +33,7 @@ public:
 	int closedelay;
 	int motifcaption;
 	int autoflip;
+	int autoflipframe;
 
 	/* sound */
 	int sound;

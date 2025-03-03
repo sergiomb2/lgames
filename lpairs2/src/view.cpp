@@ -112,6 +112,7 @@ void View::run()
 	string str;
 	int button = 0; /* pressed button */
 	int buttonX = 0, buttonY = 0; /* position if pressed */
+	int oldMCX = -1, oldMCY = -1;
 
 	state = VS_IDLE;
 
@@ -135,9 +136,7 @@ void View::run()
 		if (SDL_PollEvent(&ev)) {
 			if (ev.type == SDL_QUIT)
 				quitReceived = true;
-			else if (ev.type == SDL_MOUSEMOTION) {
-				autoFlipDelay.reset();
-			} else if (ev.type == SDL_KEYUP) {
+			else if (ev.type == SDL_KEYUP) {
 				switch (ev.key.keysym.scancode) {
 				case SDL_SCANCODE_F:
 					if (!menuActive)
@@ -185,6 +184,8 @@ void View::run()
 		ms = ticks.get();
 
 		/* get input state */
+		oldMCX = mcx;
+		oldMCY = mcy;
 		SDL_GetMouseState(&mcx, &mcy);
 		if (state == VS_IDLE && game.getCurrentPlayer().isCPU()) {
 			game.getNextCPUClick(button, buttonX, buttonY);
@@ -192,6 +193,8 @@ void View::run()
 			buttonY += cyoff;
 		}
 		/* check auto flip */
+		if (abs(mcx - oldMCX) > 3 || abs(mcy - oldMCY) > 3)
+			autoFlipDelay.reset();
 		if (config.autoflip && !menuActive && state == VS_IDLE &&
 				game.isOnFlippableCard(mcx - cxoff, mcy - cyoff)) {
 			if (autoFlipDelay.update(ms)) {
@@ -802,6 +805,9 @@ void View::renderPlayerInfo()
 /** Render a highlight frame for a flippable card. */
 void View::renderFlipFrame(uint cid)
 {
+	if (!config.autoflipframe)
+		return;
+
 	Card &c = game.cards[cid];
 	int bsize = 2; /* border size */
 	int blen = 0; /* length of a line */
