@@ -492,7 +492,7 @@ void View::createMenus()
 			_("Display caption of open card if mouse pointer is on it. With 'On Shift' a shift key must additionally be pressed."),
 			AID_NONE,config.motifcaption,captionModeNames,3));
 	mNewGame->add(new MenuItemList(_("Auto Flip"),
-			_("Automatically flip over a card if cursor is motionless on it."),
+			_("Automatically flip over a card when the mouse pointer remains still on it."),
 			AID_AUTOFLIP,config.autoflip,autoflipOptions,3));
 	mNewGame->add(new MenuItemSep());
 /*	mNewGame->add(new MenuItemRange(_("Players"),
