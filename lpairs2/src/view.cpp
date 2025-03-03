@@ -821,7 +821,7 @@ void View::renderFlipFrame(uint cid)
 	else
 		blen = (int)((autoFlipDelay.get()-0.3)*c.w/0.60);
 
-	SDL_SetRenderDrawColor(mrc, 255, 255, 255, autoFlipDelay.get()*255);
+	SDL_SetRenderDrawColor(mrc, 255,255,255, autoFlipDelay.get()*255);
 	SDL_SetRenderDrawBlendMode(mrc, SDL_BLENDMODE_BLEND);
 
 	SDL_Rect top = {cxoff + c.x, cyoff + c.y - bsize, blen, bsize};
