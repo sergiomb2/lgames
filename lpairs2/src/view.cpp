@@ -193,7 +193,7 @@ void View::run()
 		}
 		/* check auto flip */
 		if (config.autoflip && !menuActive && state == VS_IDLE &&
-					game.isOnFlippableCard(mcx - cxoff, mcy - cyoff)) {
+				game.isOnFlippableCard(mcx - cxoff, mcy - cyoff)) {
 			if (autoFlipDelay.update(ms)) {
 				button = SDL_BUTTON_LEFT;
 				buttonX = mcx;
@@ -329,9 +329,12 @@ void View::render()
 			theme.motifs[c.id].getTexture().copy(cxoff + c.x,cyoff + c.y,c.w,c.h);
 		else if (!menuActive && state == VS_IDLE &&
 				!game.getCurrentPlayer().isCPU() &&
-				c.hasFocus(mcx - cxoff, mcy - cyoff))
+				c.hasFocus(mcx - cxoff, mcy - cyoff)) {
 			theme.cardFocus.copy(cxoff + c.x,cyoff + c.y,c.w,c.h);
-		else
+			/* draw flip frame if autoflip is running */
+			if (autoFlipDelay.isRunning())
+				renderFlipFrame(i);
+		} else
 			theme.cardBack.copy(cxoff + c.x,cyoff + c.y,c.w,c.h);
 
 		/* motif caption */
@@ -794,4 +797,37 @@ void View::renderPlayerInfo()
 		else
 			lblInfoRight.setText(theme.fNormal, s);
 	}
+}
+
+/** Render a highlight frame for a flippable card. */
+void View::renderFlipFrame(uint cid)
+{
+	Card &c = game.cards[cid];
+	int bsize = 2; /* border size */
+	int blen = 0; /* length of a line */
+
+	if (autoFlipDelay.get() <= 0.30)
+		return;
+
+	/* scale 30%-90% of time to width which is also height since square */
+	if (autoFlipDelay.get() >= 0.9)
+		blen = c.w;
+	else
+		blen = (int)((autoFlipDelay.get()-0.3)*c.w/0.60);
+
+	SDL_SetRenderDrawColor(mrc, 255, 255, 255, autoFlipDelay.get()*255);
+	SDL_SetRenderDrawBlendMode(mrc, SDL_BLENDMODE_BLEND);
+
+	SDL_Rect top = {cxoff + c.x, cyoff + c.y - bsize, blen, bsize};
+	SDL_RenderDrawRect(renderer.get(), &top);
+	SDL_Rect bottom = {cxoff + c.x + c.w - blen, cyoff + c.y + c.h, blen, bsize};
+	SDL_RenderDrawRect(renderer.get(), &bottom);
+	SDL_Rect left = {cxoff + c.x - bsize, cyoff + c.y, bsize, blen};
+	SDL_RenderDrawRect(renderer.get(), &left);
+	SDL_Rect right = {cxoff + c.x + c.w, cyoff + c.y + c.h - blen, bsize, blen};
+	SDL_RenderDrawRect(renderer.get(), &right);
+
+
+
+	SDL_SetRenderDrawBlendMode(mrc, SDL_BLENDMODE_NONE);
 }

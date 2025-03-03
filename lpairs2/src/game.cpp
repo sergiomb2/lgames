@@ -500,7 +500,8 @@ void Game::initNextSurvivorStage()
 	stage++;
 }
 
-/** Return true if on a card that can be turned over. */
+/** Return true if on a card that can be turned over.
+ * @bx, @by is cursor position in game board. */
 bool Game::isOnFlippableCard(int bx, int by)
 {
 	int cid = -1;

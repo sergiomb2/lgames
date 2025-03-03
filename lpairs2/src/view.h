@@ -87,6 +87,7 @@ class View {
 	void startTurningAnimation(uint cid);
 	bool skipAnimatedCard(uint cid);
 	void renderPlayerInfo();
+	void renderFlipFrame(uint cid);
 public:
 	View(Renderer &r, Config &cfg, Game &gm);
 	void init(string t, uint f);
