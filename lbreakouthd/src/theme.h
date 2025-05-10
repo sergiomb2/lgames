@@ -64,6 +64,7 @@ class Theme {
 	SDL_Color menuFontColorNormal, menuFontColorFocus;
 
 	Image menuBackground;
+	Image cursor;
 	Image wallpapers[MAXWALLPAPERS];
 	uint numWallpapers;
 	Image frame, frameShadow;

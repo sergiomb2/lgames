@@ -434,6 +434,16 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	fNormal.setColor(fontColorNormal);
 	fSmall.setColor(fontColorNormal);
 
+	/* cursor - scale to 0.036 of screen height */
+	if (fileExists(path + "/cursor.png"))
+		fpath = path + "/cursor.png";
+	else
+		fpath = stdPath + "/cursor.png";
+	cursor.load(fpath);
+	uint ch = 0.036 * screenHeight;
+	uint cw = cursor.getWidth() * ch / cursor.getHeight();
+	cursor.scale(cw,ch);
+
 	/* menu stuff */
 	if (fileExists(path + "/menuback.png"))
 		menuBackground.load(path + "/menuback.png");

@@ -1377,6 +1377,8 @@ void View::runMenu()
 	curMenu->resetSelection();
 	renderMenu();
 
+	SDL_ShowCursor(0);
+
 	while (!quitReceived) {
 		/* handle events */
 		newEvent = false;
@@ -1523,6 +1525,8 @@ void View::runMenu()
 
 	/* clear events for menu loop */
 	waitForInputRelease();
+
+	SDL_ShowCursor(1);
 }
 
 void View::renderMenu()
@@ -1533,12 +1537,15 @@ void View::renderMenu()
 	lblCredits2.copy(mw->getWidth()-2,mw->getHeight() - theme.fSmall.getLineHeight(),
 				ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
 	curMenu->render();
+
+	int cx, cy;
+	SDL_GetMouseState(&cx, &cy);
+	theme.cursor.copy(cx,cy);
 }
 
 void View::grabInput(int grab)
 {
 	if (grab) {
-		SDL_ShowCursor(0);
 		SDL_SetWindowGrab(mw->mw, SDL_TRUE );
 		if (config.rel_motion) {
 			SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
@@ -1546,7 +1553,6 @@ void View::grabInput(int grab)
 			SDL_GetRelativeMouseState(0,0);
 		}
 	} else {
-		SDL_ShowCursor(1);
 		SDL_SetWindowGrab(mw->mw, SDL_FALSE );
 		if (config.rel_motion) {
 			SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "0", SDL_HINT_OVERRIDE);
