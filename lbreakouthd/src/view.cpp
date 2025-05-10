@@ -1218,6 +1218,10 @@ void View::createMenus()
 			_("Invert mouse motion if needed. (relative motion only)"),
 			AID_NONE,config.invert));
 	mControls->add(new MenuItemSep());
+	mControls->add(new MenuItemList(_("Gamepad"),
+			_("Enable/disable gamepad support. You can press F5 during a game to (re)connect. Buttons cannot be configured yet."),
+			AID_NONE,config.gp_enabled,_("Off"),_("On")));
+	mControls->add(new MenuItemSep());
 	mControls->add(new MenuItemBack(mOptions));
 
 	mGraphics->add(new MenuItemList(_("Theme"),
