@@ -371,21 +371,23 @@ void View::run()
 		if (keystate[config.k_warp])
 			pis.warp = 1;
 		/* gamepad input */
-		const Uint8 *gpadstate = gamepad.update();
-		if (gpadstate[GPAD_LEFT])
-			pis.left = 1;
-		if (gpadstate[GPAD_RIGHT])
-			pis.right = 2;
-		if (gpadstate[GPAD_BUTTON0 + config.gp_lfire])
-			pis.leftFire = 1;
-		if (gpadstate[GPAD_BUTTON0 + config.gp_rfire])
-			pis.rightFire = 1;
-		if (gpadstate[GPAD_BUTTON0 + config.gp_turbo])
-			pis.turbo = 1;
-		if (gpadstate[GPAD_BUTTON0 + config.gp_warp])
-			pis.warp = 1;
-		if (gpadstate[GPAD_BUTTON0 + config.gp_maxballspeed])
-			pis.speedUp = 1;
+		if (config.gp_enabled) {
+			const Uint8 *gpadstate = gamepad.update();
+			if (gpadstate[GPAD_LEFT])
+				pis.left = 1;
+			if (gpadstate[GPAD_RIGHT])
+				pis.right = 2;
+			if (gpadstate[GPAD_BUTTON0 + config.gp_lfire])
+				pis.leftFire = 1;
+			if (gpadstate[GPAD_BUTTON0 + config.gp_rfire])
+				pis.rightFire = 1;
+			if (gpadstate[GPAD_BUTTON0 + config.gp_turbo])
+				pis.turbo = 1;
+			if (gpadstate[GPAD_BUTTON0 + config.gp_warp])
+				pis.warp = 1;
+			if (gpadstate[GPAD_BUTTON0 + config.gp_maxballspeed])
+				pis.speedUp = 1;
+		}
 
 		/* get passed time */
 		ms = ticks.get();
