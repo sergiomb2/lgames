@@ -15,24 +15,25 @@
 #ifndef SRC_TOOLS_H_
 #define SRC_TOOLS_H_
 
-using namespace std;
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <dirent.h>
+#include <stdint.h>
 #ifdef WIN32
-  #include <stdint.h>
   typedef uint32_t uint;
 #endif
+#include <math.h>
+#include <dirent.h>
+
+using namespace std;
+
 #include <list>
 #include <string>
 #include <vector>
 #include <memory>
-#include <cstdio>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+
 #include "config.h"
 
 /* i18n */
