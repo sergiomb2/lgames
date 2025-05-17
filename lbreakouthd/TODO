@@ -2,6 +2,7 @@ polish editor:
 - properly translate ids to chars to init test level
 - preview of levels
 - undo/redo stacks with snapshot before/after each action
+- translation
 
 menu with key control
 menu for gamepad

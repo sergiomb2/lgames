@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.0.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-10 10:31+0200\n"
+"POT-Creation-Date: 2025-05-17 13:16+0200\n"
 "PO-Revision-Date: 2022-07-07 17:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -995,6 +995,70 @@ msgstr "Tillbaka"
 #: src/menu.h:336
 msgid "Enter Name"
 msgstr "Skriv namn"
+
+#: src/editor.cpp:219
+#, fuzzy
+#| msgid "(Level "
+msgid "Level "
+msgstr "(Bana "
+
+#: src/editor.cpp:391
+#, fuzzy
+#| msgid "Restart level? y/n"
+msgid "Clear level? y/n"
+msgstr "Starta om bana? j/n"
+
+#: src/editor.cpp:395
+#, fuzzy
+#| msgid "Restart level? y/n"
+msgid "Delete level? y/n"
+msgstr "Starta om bana? j/n"
+
+#: src/editor.cpp:415
+#, fuzzy
+#| msgid "Quit Game? y/n"
+msgid "Quit editor? y/n"
+msgstr "Avsluta spel? j/n"
+
+#: src/editor.cpp:417
+msgid " (unsaved changes!)"
+msgstr ""
+
+#: src/editor.cpp:425
+msgid "Reload levelset from file? y/n"
+msgstr ""
+
+#: src/editor.cpp:474
+msgid "Title"
+msgstr ""
+
+#: src/editor.cpp:476
+msgid "Author"
+msgstr ""
+
+#: src/editor.cpp:478
+msgid "Version"
+msgstr ""
+
+#: src/editor.cpp:490
+msgid "Editing: "
+msgstr ""
+
+#: src/editor.cpp:493
+msgid "Version: "
+msgstr ""
+
+#: src/editor.cpp:496
+msgid "Title: "
+msgstr ""
+
+#: src/editor.cpp:499
+msgid "Author: "
+msgstr ""
+
+#: src/editor.cpp:545
+msgid "Current Level: "
+msgstr ""
 
 #, c-format
 #~ msgid "Wave: %d, Invaders: %d/%d"

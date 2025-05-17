@@ -8,4 +8,4 @@ src/selectdlg.cpp
 src/sdl.h
 src/sdl.cpp
 src/menu.h
-
+src/editor.cpp

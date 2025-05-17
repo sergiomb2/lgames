@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lbreakouthd 1.1.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-10 10:31+0200\n"
+"POT-Creation-Date: 2025-05-17 13:16+0200\n"
 "PO-Revision-Date: 2024-01-12 14:04+0300\n"
 "Last-Translator: Olesya Gerasimenko <translation-team@basealt.ru>\n"
 "Language-Team: Basealt Translation Team\n"
@@ -978,6 +978,72 @@ msgstr "Назад"
 #: src/menu.h:336
 msgid "Enter Name"
 msgstr "Введите имя"
+
+#: src/editor.cpp:219
+#, fuzzy
+#| msgid "(Level "
+msgid "Level "
+msgstr "(Уровень "
+
+#: src/editor.cpp:391
+#, fuzzy
+#| msgid "Restart level? y/n"
+msgid "Clear level? y/n"
+msgstr "Перезапустить уровень? д/н"
+
+#: src/editor.cpp:395
+#, fuzzy
+#| msgid "Restart level? y/n"
+msgid "Delete level? y/n"
+msgstr "Перезапустить уровень? д/н"
+
+#: src/editor.cpp:415
+#, fuzzy
+#| msgid "Quit Game? y/n"
+msgid "Quit editor? y/n"
+msgstr "Выйти из игры? д/н"
+
+#: src/editor.cpp:417
+msgid " (unsaved changes!)"
+msgstr ""
+
+#: src/editor.cpp:425
+msgid "Reload levelset from file? y/n"
+msgstr ""
+
+#: src/editor.cpp:474
+msgid "Title"
+msgstr ""
+
+#: src/editor.cpp:476
+msgid "Author"
+msgstr ""
+
+#: src/editor.cpp:478
+msgid "Version"
+msgstr ""
+
+#: src/editor.cpp:490
+#, fuzzy
+#| msgid "Edit Existing Set"
+msgid "Editing: "
+msgstr "Изменить существующий набор"
+
+#: src/editor.cpp:493
+msgid "Version: "
+msgstr ""
+
+#: src/editor.cpp:496
+msgid "Title: "
+msgstr ""
+
+#: src/editor.cpp:499
+msgid "Author: "
+msgstr ""
+
+#: src/editor.cpp:545
+msgid "Current Level: "
+msgstr ""
 
 #, c-format
 #~ msgid "Wave: %d, Invaders: %d/%d"
