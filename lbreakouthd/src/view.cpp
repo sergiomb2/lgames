@@ -1377,8 +1377,6 @@ void View::runMenu()
 	curMenu->resetSelection();
 	renderMenu();
 
-	SDL_ShowCursor(0);
-
 	while (!quitReceived) {
 		/* handle events */
 		newEvent = false;
@@ -1525,8 +1523,6 @@ void View::runMenu()
 
 	/* clear events for menu loop */
 	waitForInputRelease();
-
-	SDL_ShowCursor(1);
 }
 
 void View::renderMenu()
@@ -1538,21 +1534,25 @@ void View::renderMenu()
 				ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
 	curMenu->render();
 
+	/* XXX don't use cursor yet, all the different event loops are
+	 * too much of a hassle...
 	int cx, cy;
 	SDL_GetMouseState(&cx, &cy);
-	theme.cursor.copy(cx,cy);
+	theme.cursor.copy(cx,cy);*/
 }
 
 void View::grabInput(int grab)
 {
 	if (grab) {
 		SDL_SetWindowGrab(mw->mw, SDL_TRUE );
+		SDL_ShowCursor(0);
 		if (config.rel_motion) {
 			SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
 			SDL_SetRelativeMouseMode(SDL_TRUE);
 			SDL_GetRelativeMouseState(0,0);
 		}
 	} else {
+		SDL_ShowCursor(1);
 		SDL_SetWindowGrab(mw->mw, SDL_FALSE );
 		if (config.rel_motion) {
 			SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "0", SDL_HINT_OVERRIDE);

@@ -1,3 +1,4 @@
+- disabled custom cursor (too many separate event loops) (2025/05/17 MS)
 - always include stdint.h for compatibility (2025/05/17 Ricardo Garcia)
 
 1.1.10
