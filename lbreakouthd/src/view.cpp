@@ -267,6 +267,7 @@ void View::run()
 	renderBricksImage();
 	renderScoreImage();
 	render();
+	fade(FADE_IN);
 
 	grabInput(1);
 
@@ -448,7 +449,7 @@ void View::run()
 			if (flags & CGF_NEWLEVEL)
 				if (!(flags & CGF_LIFELOST) && config.speech && (rand()%2))
 					mixer.play((rand()%2)?theme.sVeryGood:theme.sExcellent);
-			dim();
+			fade();
 			ticks.reset();
 			if (!(flags & CGF_LIFELOST)) {
 				initTitleLabel();
@@ -510,8 +511,7 @@ void View::run()
 	}
 	updateResumeGameTooltip();
 
-	if (!quitReceived)
-		dim();
+	fade();
 	grabInput(0);
 }
 
@@ -902,20 +902,23 @@ void View::renderActiveExtra(int id, int ms, int x, int y)
 				to_string(ms/1000+1));
 }
 
-/* Dim screen to black. As game engine is already set for new state
- * we cannot use render() but need current screen state. */
-void View::dim()
+/* Fade in or out current screen content. For fading in
+ * SDL_RenderPresent must not have been called yet. */
+void View::fade(int style)
 {
 	Image img;
 	img.createFromScreen();
 
-	for (uint8_t a = 250; a > 0; a -= 10) {
+	for (uint8_t alpha = 255; alpha > 0; alpha -= 5) {
 		SDL_SetRenderDrawColor(mrc,0,0,0,255);
 		SDL_RenderClear(mrc);
-		img.setAlpha(a);
+		if (style == FADE_OUT)
+			img.setAlpha(alpha);
+		else
+			img.setAlpha(255 - alpha);
 		img.copy();
 		SDL_RenderPresent(mrc);
-		SDL_Delay(10);
+		SDL_Delay(5);
 	}
 
 	/* make sure no input is given yet for next state */
@@ -1356,7 +1359,7 @@ void View::handleEditor(int type)
 					editor.getCurrentLevel()->author,
 					editor.getCurrentLevel()->bricks,
 					editor.getCurrentLevel()->extras) == 0) {
-				dim();
+				fade();
 				run();
 			}
 		} else
@@ -1376,6 +1379,7 @@ void View::runMenu()
 	curMenu = rootMenu.get();
 	curMenu->resetSelection();
 	renderMenu();
+	fade(FADE_IN);
 
 	while (!quitReceived) {
 		/* handle events */
@@ -1470,14 +1474,14 @@ void View::runMenu()
 				break;
 			case AID_RESUME:
 				if (resumeGame()) {
-					dim();
+					fade();
 					run();
 					ticks.reset();
 				}
 				break;
 			case AID_STARTORIGINAL:
 				cgame.init("LBreakoutHD");
-				dim();
+				fade();
 				run();
 				ticks.reset();
 				break;
@@ -1490,7 +1494,7 @@ void View::runMenu()
 					if (selectDlg.get() == TOURNAMENT)
 						config.freakout_seed = rand();
 					cgame.init(selectDlg.get());
-					dim();
+					fade();
 					run();
 					ticks.reset();
 				} else if (selectDlg.quitRcvd())
@@ -1506,7 +1510,7 @@ void View::runMenu()
 			case AID_EDITNEWSET:
 			case AID_EDITCUSTOM:
 				handleEditor(aid);
-				dim();
+				fade();
 				ticks.reset();
 				break;
 			}
@@ -1519,7 +1523,7 @@ void View::runMenu()
 			SDL_Delay(10);
 		SDL_FlushEvent(SDL_MOUSEMOTION); /* prevent event loop from dying */
 	}
-	dim();
+	fade();
 
 	/* clear events for menu loop */
 	waitForInputRelease();

@@ -33,7 +33,11 @@ enum {
 	/* waitForKey types */
 	WT_ANYKEY = 0,
 	WT_YESNO,
-	WT_PAUSE
+	WT_PAUSE,
+
+	/* fade effect */
+	FADE_OUT = 0,
+	FADE_IN
 };
 
 class View {
@@ -101,7 +105,7 @@ class View {
 	void renderExtrasImage();
 	void renderActiveExtra(int id, int ms, int x, int y);
 	void renderBalls(bool shadow = false);
-	void dim();
+	void fade(int style = FADE_OUT);
 	bool showInfo(const string &line, int type=WT_ANYKEY);
 	bool showInfo(const vector<string> &text, int type=WT_ANYKEY);
 	void showHelp();
