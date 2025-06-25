@@ -477,8 +477,10 @@ void View::run()
 		playSounds();
 
 		/* render */
-		render();
-		SDL_RenderPresent(mrc);
+		if (!leave) { /* don't when leaving to keep dialog for fading effect */
+			render();
+			SDL_RenderPresent(mrc);
+		}
 
 		/* stats */
 		fpsCycles++;
@@ -1474,15 +1476,19 @@ void View::runMenu()
 				break;
 			case AID_RESUME:
 				if (resumeGame()) {
-					fade();
+					fade(FADE_OUT);
 					run();
+					renderMenu();
+					fade(FADE_IN);
 					ticks.reset();
 				}
 				break;
 			case AID_STARTORIGINAL:
 				cgame.init("LBreakoutHD");
-				fade();
+				fade(FADE_OUT);
 				run();
+				renderMenu();
+				fade(FADE_IN);
 				ticks.reset();
 				break;
 			case AID_STARTCUSTOM:
@@ -1494,8 +1500,10 @@ void View::runMenu()
 					if (selectDlg.get() == TOURNAMENT)
 						config.freakout_seed = rand();
 					cgame.init(selectDlg.get());
-					fade();
+					fade(FADE_OUT);
 					run();
+					renderMenu();
+					fade(FADE_IN);
 					ticks.reset();
 				} else if (selectDlg.quitRcvd())
 					quitReceived = true;

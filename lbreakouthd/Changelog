@@ -1,3 +1,5 @@
+- added fade out effect (2025/06/22 MS)
+
 1.1.11:
 - disabled custom cursor (too many separate event loops) (2025/05/17 MS)
 - always include stdint.h for compatibility (2025/05/17 Ricardo Garcia)
