@@ -79,6 +79,7 @@ src/Makefile
 src/levels/Makefile 
 src/themes/Makefile 
 src/themes/Standard/Makefile 
+src/themes/Classic/Makefile 
 ])
 AC_OUTPUT
 
