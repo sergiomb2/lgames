@@ -113,6 +113,7 @@ void View::init(string t, uint r)
 	/* determine resolution and scale factor */
 	int ww, wh; /* size of sdl window */
 	int sw, sh; /* either screen or viewport size, is used to scale assets */
+	viewport.x = viewport.y = viewport.w = viewport.h = 0;
 	if (r == 0) {
 		/* fullscreen is tricky... might also be 16:10,4:3,...
 		 * set largest possible 16:9 viewport centered */

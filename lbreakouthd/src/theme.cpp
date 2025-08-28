@@ -48,8 +48,8 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	brickFileWidth = 40;
 	brickFileHeight = 20;
 	shadowOffset = 10;
-	fontColorNormal = {255,255,255,255};
-	fontColorHighlight = {255,220,0,255};
+	fontColorNormal = {255,220,0,255};
+	fontColorHighlight = {255,255,255,255};
 	shotFrameNum = 4;
 	shotAnimDelay = 200;
 	weaponFrameNum = 4;
@@ -70,8 +70,8 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	menuFontNormalSize = 18;
 	menuFontFocusName = "fnormal.otf";
 	menuFontFocusSize = 21;
-	menuFontColorNormal = {255,255,255,255};
-	menuFontColorFocus  = {255,220,0,255};
+	menuFontColorFocus = {255,255,255,255};
+	menuFontColorNormal  = {255,220,0,255};
 
 	/* load theme values */
 	if (fileExists(path + "/theme.ini")) {
