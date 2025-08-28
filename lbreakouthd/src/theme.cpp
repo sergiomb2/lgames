@@ -73,7 +73,7 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	menuFontColorFocus = {255,255,255,255};
 	menuFontColorNormal  = {255,220,0,255};
 
-	/* load theme values */
+	/* load theme values (only for new themes) */
 	if (fileExists(path + "/theme.ini")) {
 		oldTheme = false;
 		FileParser fp(path + "/theme.ini");

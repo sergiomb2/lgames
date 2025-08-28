@@ -27,7 +27,7 @@ extern SDL_Renderer *mrc;
 extern int last_ball_brick_reflect_x;
 
 View::View(Config &cfg, ClientGame &_cg)
-	: config(cfg), mw(NULL), editor(theme,mixer),
+	: config(cfg), mw(NULL), editor(theme,mixer), layout(VL_STANDARD),
 	  curMenu(NULL), graphicsMenu(NULL), resumeMenuItem(NULL),
 	  selectDlg(theme, mixer), lblCredits1(true), lblCredits2(true),
 	  cgame(_cg), quitReceived(false),
@@ -112,7 +112,7 @@ void View::init(string t, uint r)
 
 	/* determine resolution and scale factor */
 	int ww, wh; /* size of sdl window */
-	int sw, sh; /* either screen or viewport size, is used to scale assets */
+	int sw, sh; /* viewport ("screen") size, is used to scale assets */
 	viewport.x = viewport.y = viewport.w = viewport.h = 0;
 	if (r == 0) {
 		/* fullscreen is tricky... might also be 16:10,4:3,...
@@ -137,8 +137,6 @@ void View::init(string t, uint r)
 			viewport.w = sw;
 			viewport.h = sh;
 			_loginfo("Fullscreen resolution %dx%d not 16:9\n",ww,wh);
-			_loginfo("  Using viewport x=%d,y=%d,w=%d,h=%d\n",
-					viewport.x, viewport.y, viewport.w, viewport.h);
 		} else
 			_loginfo("Using fullscreen, resolution %dx%d\n",ww,wh);
 	} else {
@@ -171,6 +169,20 @@ void View::init(string t, uint r)
 	showWarpIcon = false;
 	energyBallAlphaCounter.init(SCT_UPDOWN, 32, 255, 2);
 
+	/* set 4:3 viewport for old themes */
+	if (theme.oldTheme) {
+		viewport.h = sh;
+		viewport.w = 4 * sh / 3;
+		/* TODO adjust x as well */
+		layout = VL_CLASSIC;
+	} else {
+		layout = VL_STANDARD;
+	}
+
+	if (viewport.w != 0)
+		_loginfo("  Using viewport x=%d,y=%d,w=%d,h=%d\n",
+				viewport.x, viewport.y, viewport.w, viewport.h);
+
 	/* create menu structure */
 	createMenus();
 
@@ -183,17 +195,29 @@ void View::init(string t, uint r)
 	imgBackground.create(sw,sh);
 	imgBackground.setBlendMode(0);
 	curWallpaperId = rand() % theme.numWallpapers;
-	imgScore.create(brickScreenWidth*3, brickScreenHeight);
-	imgScoreX = theme.boardX + (theme.boardWidth - imgScore.getWidth())/2;
-	imgScoreY = brickScreenHeight * 15 + brickScreenHeight/2;
+	if (layout == VL_STANDARD) {
+		imgScore.create(brickScreenWidth*3, brickScreenHeight);
+		imgScoreX = theme.boardX + (theme.boardWidth - imgScore.getWidth())/2;
+		imgScoreY = brickScreenHeight * 15 + brickScreenHeight/2;
+	} else {
+		imgScore.create(4.5*brickScreenWidth, 0.8*brickScreenHeight);
+		imgScoreX = 10.125 * brickScreenWidth;
+		imgScoreY = 0;
+	}
 	/* EDITHEIGHT+1 enough for everything except barrier so make it bigger */
 	imgBricks.create(EDITWIDTH*brickScreenWidth,
 				(EDITHEIGHT+4)*brickScreenHeight);
 	imgBricksX = brickScreenWidth;
 	imgBricksY = brickScreenHeight;
-	imgExtras.create(theme.boardWidth, 4*brickScreenHeight);
-	imgExtrasX = theme.boardX;
-	imgExtrasY = 19*brickScreenHeight;
+	if (layout == VL_STANDARD) {
+		imgExtras.create(theme.boardWidth, 4*brickScreenHeight);
+		imgExtrasX = theme.boardX;
+		imgExtrasY = 19*brickScreenHeight;
+	} else {
+		imgExtras.create(brickScreenWidth, 13*brickScreenHeight);
+		imgExtrasX = (MAP_WIDTH-1)*brickScreenWidth;
+		imgExtrasY = 3.9*brickScreenHeight;
+	}
 	imgFloor.create(EDITWIDTH*brickScreenWidth,brickScreenHeight);
 	imgFloorX = brickScreenWidth;
 	imgFloorY = (MAPHEIGHT-1)*brickScreenHeight;
@@ -666,6 +690,10 @@ void View::render()
 					(MAPHEIGHT-1)*brickScreenHeight,sx,sy);
 	}
 
+	/* copy active extras again for classic layout as on right-hand side of frame */
+	if (layout == VL_CLASSIC)
+		imgExtras.copy(imgExtrasX,imgExtrasY);
+
 	/* title and author */
 	if (lblTitleCounter.isRunning()) {
 		double a = 255;
@@ -694,7 +722,7 @@ void View::render()
 		//theme.fSmall.write(0,theme.fSmall.getLineHeight(),to_string((int)(cgame.getPaddleVelocity()*1000)));
 	}
 
-	if (viewport.w)
+	if (viewport.w != 0)
 		SDL_RenderSetViewport(mrc, NULL);
 }
 
@@ -824,9 +852,20 @@ void View::renderScoreImage()
 {
 	imgScore.fill(0,0,0,0);
 	SDL_SetRenderTarget(mrc, imgScore.getTex());
-	theme.fNormal.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
-	theme.fNormal.write(imgScore.getWidth()/2, imgScore.getHeight()/2,
-				to_string(cgame.getCurrentPlayer()->getScore()));
+	if (layout == VL_STANDARD) {
+		theme.fNormal.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
+		theme.fNormal.write(imgScore.getWidth()/2, imgScore.getHeight()/2,
+					to_string(cgame.getCurrentPlayer()->getScore()));
+	} else {
+		/* XXX to simplify the process we render the name as well otherwise
+		 * we'd have to adjust render_background as well */
+		theme.fSmall.setAlign(ALIGN_X_LEFT | ALIGN_Y_CENTER);
+		theme.fSmall.write(0, imgScore.getHeight()/2,
+					cgame.getCurrentPlayer()->getName());
+		theme.fSmall.setAlign(ALIGN_X_RIGHT | ALIGN_Y_CENTER);
+		theme.fSmall.write(imgScore.getWidth()-1, imgScore.getHeight()/2,
+					to_string(cgame.getCurrentPlayer()->getScore()));
+	}
 	SDL_SetRenderTarget(mrc, NULL);
 }
 void View::renderExtrasImage()
@@ -844,51 +883,77 @@ void View::renderExtrasImage()
 	SDL_RenderClear(mrc);
 
 	theme.extras.setAlpha(192);
-	/* energy/explosive/weak balls */
-	if (game->extra_active[EX_METAL])
-		renderActiveExtra(EX_METAL, game->extra_time[EX_METAL], x, y);
-	else if (game->extra_active[EX_EXPL_BALL])
-		renderActiveExtra(EX_EXPL_BALL, game->extra_time[EX_EXPL_BALL], x, y);
-	else if (game->extra_active[EX_WEAK_BALL])
-		renderActiveExtra(EX_WEAK_BALL, game->extra_time[EX_WEAK_BALL], x, y);
-	x += xoff;
-	/* slow/fast balls */
-	if (game->extra_active[EX_SLOW])
-		renderActiveExtra(EX_SLOW, game->extra_time[EX_SLOW], x, y);
-	else if (game->extra_active[EX_FAST])
-		renderActiveExtra(EX_FAST, game->extra_time[EX_FAST], x, y);
-	x += xoff;
-	/* chaotic */
-	if (game->extra_active[EX_CHAOS])
-		renderActiveExtra(EX_CHAOS, game->extra_time[EX_CHAOS], x, y);
-	x = xstart;
-	y += yoff;
-	/* sticky paddle */
-	if (game->paddles[0]->extra_active[EX_SLIME])
-		renderActiveExtra(EX_SLIME, game->paddles[0]->extra_time[EX_SLIME], x, y);
-	x += xoff;
-	/* weapon - paddle */
-	if (game->paddles[0]->extra_active[EX_WEAPON])
-		renderActiveExtra(EX_WEAPON, game->paddles[0]->extra_time[EX_WEAPON], x, y);
-	x += xoff;
-	/* goldshower - paddle */
-	if (game->paddles[0]->extra_active[EX_GOLDSHOWER])
-		renderActiveExtra(EX_GOLDSHOWER, game->paddles[0]->extra_time[EX_GOLDSHOWER], x, y);
-	x = xstart;
-	y += yoff;
-	/* wall - paddle */
-	if (game->paddles[0]->extra_active[EX_WALL])
-		renderActiveExtra(EX_WALL, game->paddles[0]->extra_time[EX_WALL], x, y);
-	x += xoff;
-	/* magnet - paddle */
-	if (game->paddles[0]->extra_active[EX_BONUS_MAGNET])
-		renderActiveExtra(EX_BONUS_MAGNET, game->paddles[0]->extra_time[EX_BONUS_MAGNET], x, y);
-	else if (game->paddles[0]->extra_active[EX_MALUS_MAGNET])
-		renderActiveExtra(EX_MALUS_MAGNET, game->paddles[0]->extra_time[EX_MALUS_MAGNET], x, y);
-	x += xoff;
-	/* ghost - paddle */
-	if (game->paddles[0]->extra_active[EX_GHOST_PADDLE])
-		renderActiveExtra(EX_GHOST_PADDLE, game->paddles[0]->extra_time[EX_GHOST_PADDLE], x, y);
+
+	if (layout == VL_CLASSIC) {
+		/* for classic display at right-hand side of frame */
+		int slots[EX_NUMBER];
+		slots[EX_METAL] = slots[EX_WEAK_BALL] = slots[EX_EXPL_BALL] = 0;
+		slots[EX_FAST] = slots[EX_SLOW] = 1;
+		slots[EX_CHAOS] = 2;
+		slots[EX_SLIME] = 3;
+		slots[EX_WEAPON] = 4;
+		slots[EX_WALL] = 5;
+		slots[EX_GOLDSHOWER] = 6;
+		slots[EX_GHOST_PADDLE] = 7;
+		slots[EX_BONUS_MAGNET] = slots[EX_MALUS_MAGNET] = 8;
+
+		for (int i = 0; i < EX_NUMBER; i++)
+			if (game->extra_active[i])
+				renderActiveExtra(i, game->extra_time[i], 0,
+						1.5*slots[i]*brickScreenHeight);
+		/* this works as there is no multiplayer in lbreakhouthd */
+		for (int i = 0; i < EX_NUMBER; i++)
+			if (game->paddles[0]->extra_active[i])
+				renderActiveExtra(i, game->paddles[0]->extra_time[i], 0,
+						1.5*slots[i]*brickScreenHeight);
+	} else {
+
+		/* energy/explosive/weak balls */
+		if (game->extra_active[EX_METAL])
+			renderActiveExtra(EX_METAL, game->extra_time[EX_METAL], x, y);
+		else if (game->extra_active[EX_EXPL_BALL])
+			renderActiveExtra(EX_EXPL_BALL, game->extra_time[EX_EXPL_BALL], x, y);
+		else if (game->extra_active[EX_WEAK_BALL])
+			renderActiveExtra(EX_WEAK_BALL, game->extra_time[EX_WEAK_BALL], x, y);
+		x += xoff;
+		/* slow/fast balls */
+		if (game->extra_active[EX_SLOW])
+			renderActiveExtra(EX_SLOW, game->extra_time[EX_SLOW], x, y);
+		else if (game->extra_active[EX_FAST])
+			renderActiveExtra(EX_FAST, game->extra_time[EX_FAST], x, y);
+		x += xoff;
+		/* chaotic */
+		if (game->extra_active[EX_CHAOS])
+			renderActiveExtra(EX_CHAOS, game->extra_time[EX_CHAOS], x, y);
+		x = xstart;
+		y += yoff;
+		/* sticky paddle */
+		if (game->paddles[0]->extra_active[EX_SLIME])
+			renderActiveExtra(EX_SLIME, game->paddles[0]->extra_time[EX_SLIME], x, y);
+		x += xoff;
+		/* weapon - paddle */
+		if (game->paddles[0]->extra_active[EX_WEAPON])
+			renderActiveExtra(EX_WEAPON, game->paddles[0]->extra_time[EX_WEAPON], x, y);
+		x += xoff;
+		/* goldshower - paddle */
+		if (game->paddles[0]->extra_active[EX_GOLDSHOWER])
+			renderActiveExtra(EX_GOLDSHOWER, game->paddles[0]->extra_time[EX_GOLDSHOWER], x, y);
+		x = xstart;
+		y += yoff;
+		/* wall - paddle */
+		if (game->paddles[0]->extra_active[EX_WALL])
+			renderActiveExtra(EX_WALL, game->paddles[0]->extra_time[EX_WALL], x, y);
+		x += xoff;
+		/* magnet - paddle */
+		if (game->paddles[0]->extra_active[EX_BONUS_MAGNET])
+			renderActiveExtra(EX_BONUS_MAGNET, game->paddles[0]->extra_time[EX_BONUS_MAGNET], x, y);
+		else if (game->paddles[0]->extra_active[EX_MALUS_MAGNET])
+			renderActiveExtra(EX_MALUS_MAGNET, game->paddles[0]->extra_time[EX_MALUS_MAGNET], x, y);
+		x += xoff;
+		/* ghost - paddle */
+		if (game->paddles[0]->extra_active[EX_GHOST_PADDLE])
+			renderActiveExtra(EX_GHOST_PADDLE, game->paddles[0]->extra_time[EX_GHOST_PADDLE], x, y);
+	}
 
 	theme.extras.clearAlpha();
 	SDL_SetRenderTarget(mrc, NULL);

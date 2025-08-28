@@ -37,7 +37,11 @@ enum {
 
 	/* fade effect */
 	FADE_OUT = 0,
-	FADE_IN
+	FADE_IN,
+
+	/* layout */
+	VL_STANDARD = 0, /* 16:9 */
+	VL_CLASSIC /* 4:3 for old themes */
 };
 
 class View {
@@ -49,6 +53,7 @@ class View {
 	SDL_Rect viewport; /* used if width not 0 */
 	Gamepad gamepad;
 	Editor editor;
+	int layout;
 
 	/* menu */
 	unique_ptr<Menu> rootMenu;
