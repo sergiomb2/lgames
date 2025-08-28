@@ -173,7 +173,7 @@ void View::init(string t, uint r)
 	if (theme.oldTheme) {
 		viewport.h = sh;
 		viewport.w = 4 * sh / 3;
-		/* TODO adjust x as well */
+		viewport.x += sw/8;
 		layout = VL_CLASSIC;
 	} else {
 		layout = VL_STANDARD;
