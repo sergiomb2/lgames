@@ -4,7 +4,7 @@ ball.png bricks.png explosions_dark.png explosions.png \
 extras.png f_frame.png f_game.png fr_left.png fr_right.png \
 fr_top.png f_small_red.png f_small_white.png f_small_yellow.png \
 f_tiny_black.png f_white.png f_yellow.png life.png cursor.png \
-menuback.png paddle.png shine.png shot.png warp.png weapon.png \
+menuback.jpg paddle.png shine.png shot.png warp.png weapon.png \
 attach.wav       energyhit.wav  goldshower.wav     shot.wav \
 bonusmagnet.wav  excellent.wav  joker.wav          shrink.wav \
 brickhit.wav     expand.wav     looselife.wav      speeddown.wav \
