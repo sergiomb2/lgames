@@ -20,6 +20,27 @@
 
 extern SDL_Renderer *mrc;
 
+/** Check if a theme by @name is an old classic theme from LBreakout2
+ * which is the case if no theme.ini is present or oldTheme is 1. */
+bool Theme::isOldTheme(const string &name) {
+	string path;
+
+	if (name[0] == '~')
+		path = getHomeDir() + "/" + CONFIGDIR + "/themes/" + name.substr(1);
+	else
+		path = string(DATADIR) + "/themes/" + name;
+
+	if (!fileExists(path + "/theme.ini"))
+		return true;
+	FileParser fp(path + "/theme.ini");
+	uint old = 0;
+	fp.get("oldTheme",old);
+	if (old)
+		return true;
+
+	return false;
+}
+
 /** Load resources and scale if necessary using bricks screen height.
  * Whatever is missing: Fall back to Standard theme. */
 void Theme::load(string name, uint screenWidth, uint screenHeight,

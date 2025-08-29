@@ -96,6 +96,7 @@ class Theme {
 			fpath = stdPath + "/" + fname;
 		return fpath;
 	}
+	static bool isOldTheme(const string &name);
 public:
 	Theme() : oldTheme(true), boardX(0), boardWidth(0),
 			brickFileWidth(0), brickFileHeight(0), shadowOffset(0),

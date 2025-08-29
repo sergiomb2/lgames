@@ -67,7 +67,6 @@ class View {
 
 	/* game */
 	ClientGame &cgame;
-	Uint32 brickAreaWidth, brickAreaHeight;
 	Uint32 brickScreenWidth, brickScreenHeight;
 	int scaleFactor; // *100, e.g., 140 means 1.4
 	bool quitReceived;

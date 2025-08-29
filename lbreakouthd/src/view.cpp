@@ -110,49 +110,71 @@ void View::init(string t, uint r)
 	}
 	_loginfo("Using display %d\n",cpdix);
 
-	/* determine resolution and scale factor */
+	/* determine whether it is an old classic theme and decide layout */
+	int ratioX, ratioY; /* resolution ratio */
+	if (Theme::isOldTheme(t)) {
+		/* retro theme, use 4:3 */
+		layout = VL_CLASSIC;
+		ratioX = 4;
+		ratioY = 3;
+		_loginfo("Classic theme, using 4:3 layout\n");
+	} else {
+		/* modern theme, use 16:9 */
+		layout = VL_STANDARD;
+		ratioX = 16;
+		ratioY = 9;
+		_loginfo("Modern theme, using 16:9 layout\n");
+	}
+
+	/* reset viewport */
+	viewport.x = 0;
+	viewport.y = 0;
+	viewport.w = 0;
+	viewport.h = 0;
+
+	/* determine viewport */
 	int ww, wh; /* size of sdl window */
-	int sw, sh; /* viewport ("screen") size, is used to scale assets */
-	viewport.x = viewport.y = viewport.w = viewport.h = 0;
-	if (r == 0) {
-		/* fullscreen is tricky... might also be 16:10,4:3,...
-		 * set largest possible 16:9 viewport centered */
+	if (r == 0) { /* fullscreen */
 		SDL_DisplayMode mode;
 		SDL_GetCurrentDisplayMode(cpdix,&mode);
-		/* TEST  mode.w = 1600; mode.h = 1200; */
 		ww = mode.w;
 		wh = mode.h;
-		sw = mode.w;
-		sh = mode.w/16*9;
-		if (sh != wh) {
-			if (sh < wh) { /* e.g. 4:3 */
-				viewport.x = 0;
-				viewport.y = (wh - sh)/2;
-			} else { /* e.g. 21:9 */
-				sh = wh;
-				sw = sh / 9 * 16;
-				viewport.x = (ww - sw)/2;
-				viewport.y = 0;
-			}
-			viewport.w = sw;
-			viewport.h = sh;
-			_loginfo("Fullscreen resolution %dx%d not 16:9\n",ww,wh);
-		} else
-			_loginfo("Using fullscreen, resolution %dx%d\n",ww,wh);
-	} else {
-		wh = sh = r;
-		ww = sw = sh * 16 / 9;
+		viewport.w = ww; /* try optimal width */
+		viewport.h = ww/ratioX*ratioY;
+		if (viewport.h > wh) {
+			/* doesn't fit, use optimal height */
+			viewport.h = wh;
+			viewport.w = wh/ratioY*ratioX;
+		}
+		_loginfo("Using fullscreen, resolution %dx%d\n",ww,wh);
+	} else { /* window */
+		wh = r;
+		ww = wh * ratioX / ratioY;
+		viewport.w = ww;
+		viewport.h = wh;
 		_loginfo("Using window mode, size %dx%d\n",ww,wh);
 	}
 
-	/* depending on screen ratio we don't fit all of the screen with bricks */
-	brickScreenHeight = sh / MAPHEIGHT;
+	/* determine scale factor and adjust viewport if needed */
+	brickScreenHeight = viewport.h / MAPHEIGHT;
 	scaleFactor = brickScreenHeight * 100 / VG_BRICKHEIGHT;
 	brickScreenWidth = v2s(VG_BRICKWIDTH);
-	brickAreaWidth = brickScreenWidth * MAPHEIGHT;
-	brickAreaHeight = brickScreenHeight * MAPHEIGHT;
 	_loginfo("Scale factor x100: %d\n",scaleFactor);
 	_loginfo("Brick screen size: %dx%d\n",brickScreenWidth,brickScreenHeight);
+
+	/* adjust viewport size if needed to fit bricks perfectly */
+	if (brickScreenHeight * MAPHEIGHT < (uint)viewport.h)
+		viewport.h = brickScreenHeight*MAPHEIGHT;
+	if (layout == VL_CLASSIC && brickScreenWidth * MAPWIDTH < (uint)viewport.w)
+		viewport.w = brickScreenWidth * MAPWIDTH;
+	/* we don't adjust for standard 16:9 layout as it is only a minimal error */
+
+	/* adjust viewport position */
+	viewport.x = (ww - viewport.w) / 2;
+	viewport.y = (wh - viewport.h) / 2;
+
+	_loginfo("Using viewport x=%d,y=%d,w=%d,h=%d\n",
+			viewport.x, viewport.y, viewport.w, viewport.h);
 
 	/* (re)create main window */
 	if (mw)
@@ -160,7 +182,7 @@ void View::init(string t, uint r)
 	mw = new MainWindow("LBreakoutHD", ww, wh, (r==0) );
 
 	/* load theme (scaled if necessary) */
-	theme.load(t, sw, sh, brickScreenWidth, brickScreenHeight, config.antialiasing);
+	theme.load(t, viewport.w, viewport.h, brickScreenWidth, brickScreenHeight, config.antialiasing);
 	weaponFrameCounter.init(theme.weaponFrameNum, theme.weaponAnimDelay);
 	shotFrameCounter.init(theme.shotFrameNum, theme.shotAnimDelay);
 	shineFrameCounter.init(theme.shineFrameNum, theme.shineAnimDelay);
@@ -168,20 +190,6 @@ void View::init(string t, uint r)
 	warpIconAlphaCounter.init(SCT_UPDOWN, 64, 255, 3);
 	showWarpIcon = false;
 	energyBallAlphaCounter.init(SCT_UPDOWN, 32, 255, 2);
-
-	/* set 4:3 viewport for old themes */
-	if (theme.oldTheme) {
-		viewport.h = sh;
-		viewport.w = 4 * sh / 3;
-		viewport.x += sw/8;
-		layout = VL_CLASSIC;
-	} else {
-		layout = VL_STANDARD;
-	}
-
-	if (viewport.w != 0)
-		_loginfo("  Using viewport x=%d,y=%d,w=%d,h=%d\n",
-				viewport.x, viewport.y, viewport.w, viewport.h);
 
 	/* create menu structure */
 	createMenus();
@@ -192,7 +200,7 @@ void View::init(string t, uint r)
 	lblInfo.setBorder(2);
 
 	/* create render images and positions */
-	imgBackground.create(sw,sh);
+	imgBackground.create(viewport.w,viewport.h);
 	imgBackground.setBlendMode(0);
 	curWallpaperId = rand() % theme.numWallpapers;
 	if (layout == VL_STANDARD) {
@@ -227,6 +235,10 @@ void View::init(string t, uint r)
 	SDL_SetRenderTarget(mrc, NULL);
 	warpIconX = (MAPWIDTH - 2)*brickScreenWidth;
 	warpIconY = (MAPHEIGHT - 1)*brickScreenHeight;
+
+	/* clear viewport if not really needed */
+	if (viewport.w == ww && viewport.h == wh)
+		viewport.w = 0;
 }
 
 View::~View()
