@@ -33,7 +33,7 @@ class Theme {
 	friend Editor;
 
 	string stdPath; /* path to standard theme for fallbacks */
-	bool oldTheme;
+	uint oldTheme; /* not a bool to read easier from file */
 	int boardX;
 	uint boardWidth;
 

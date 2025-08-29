@@ -41,7 +41,7 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	_loginfo("Loading theme %s\n",path.c_str());
 
 	/* set default config values for old themes */
-	oldTheme = true;
+	oldTheme = 1;
 	title = "unknown";
 	author = "unknown";
 	version= "v?.??";
@@ -73,10 +73,11 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	menuFontColorFocus = {255,255,255,255};
 	menuFontColorNormal  = {255,220,0,255};
 
-	/* load theme values (only for new themes) */
+	/* load theme values */
 	if (fileExists(path + "/theme.ini")) {
-		oldTheme = false;
 		FileParser fp(path + "/theme.ini");
+		oldTheme = 0;
+		fp.get("oldTheme",oldTheme);
 		fp.get("title",title);
 		fp.get("author",author);
 		fp.get("version",version);
@@ -451,6 +452,7 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 		menuBackground.load(path + "/menuback.jpg");
 	else {
 		menuBackground.load(stdPath + "/menuback.jpg");
+		/* TODO try menuback.png as well for classic themes */
 		stdSettings.get("menu.centerX",menuX);
 		stdSettings.get("menu.centerY",menuY);
 		stdSettings.get("menu.itemWidth",menuItemWidth);
