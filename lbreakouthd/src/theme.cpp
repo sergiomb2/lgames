@@ -148,6 +148,10 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 	boardWidth = 4.33 * brickScreenWidth;
 
 	/* load standard values for fallback */
+	if (oldTheme)
+		stdPath = string(DATADIR) + "/themes/Classic";
+	else
+		stdPath = string(DATADIR) + "/themes/Standard";
 	FileParser stdSettings(stdPath + "/theme.ini");
 	int sbfw, sbfh; /* standard brick file width/height */
 	stdSettings.get("brickWidth",sbfw);
@@ -373,10 +377,7 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 
 	/* warp symbol is brick size */
 	/* ignore old warp icon as it's geometry sucks big time */
-	if (!oldTheme)
-		warpIcon.load(testRc(path,"warp.png"));
-	else
-		warpIcon.load(stdPath + "/warp.png");
+	warpIcon.load(testRc(path,"warp.png"));
 	warpIcon.scale(brickScreenWidth,brickScreenHeight);
 
 	/* explosions are square, scaled according to brick ratio */
@@ -473,7 +474,6 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 		menuBackground.load(path + "/menuback.jpg");
 	else {
 		menuBackground.load(stdPath + "/menuback.jpg");
-		/* TODO try menuback.png as well for classic themes */
 		stdSettings.get("menu.centerX",menuX);
 		stdSettings.get("menu.centerY",menuY);
 		stdSettings.get("menu.itemWidth",menuItemWidth);

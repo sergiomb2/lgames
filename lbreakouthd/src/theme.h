@@ -98,7 +98,7 @@ class Theme {
 	}
 	static bool isOldTheme(const string &name);
 public:
-	Theme() : oldTheme(true), boardX(0), boardWidth(0),
+	Theme() : oldTheme(1), boardX(0), boardWidth(0),
 			brickFileWidth(0), brickFileHeight(0), shadowOffset(0),
 			fontSmallSize(0), fontNormalSize(0),
 			shotFrameNum(0), shotAnimDelay(0),
@@ -108,7 +108,7 @@ public:
 			menuX(0), menuY(0), menuItemWidth(0), menuItemHeight(0),
 			menuFontNormalSize(0), menuFontFocusSize(0),
 			numWallpapers(0)
-		{
+	{
 		stdPath = string(DATADIR) + "/themes/Standard";
 	}
 	void load(string name, uint screenWidth, uint screenHeight,
