@@ -44,13 +44,11 @@ public:
 		SDL_GetCurrentDisplayMode(0,&mode);
 		list.clear();
 		list.push_back(_("Fullscreen"));
-		list.push_back(_("853x480 Window"));
+		list.push_back(_("480p Window"));
 		if (mode.h >= 720)
-			list.push_back(_("1280x720 Window"));
-		if (mode.h >= 768)
-			list.push_back(_("1366x768 Window"));
+			list.push_back(_("720p Window"));
 		if (mode.h >= 1080)
-			list.push_back(_("1920x1080 Window"));
+			list.push_back(_("1080p Window"));
 		return list.size();
 	}
 	static int getModeResolution(int mode) {

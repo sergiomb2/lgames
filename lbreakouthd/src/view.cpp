@@ -1310,7 +1310,7 @@ void View::createMenus()
 	mControls->add(new MenuItemBack(mOptions));
 
 	mGraphics->add(new MenuItemList(_("Theme"),
-			_("Select theme. (not applied yet)"),
+			_("'Standard' is the default HD theme.\n'Classic' is the default retro LBreakout2 theme.\n\nYou can download more retro themes from https://lgames.sf.net/LBreakout2/themes.php\n\n(not applied yet)"),
 			AID_NONE,config.theme_id,themeNames));
 	mGraphics->add(new MenuItemList(_("Mode"),
 			_("Select mode. (not applied yet)"),
