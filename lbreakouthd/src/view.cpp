@@ -153,6 +153,7 @@ void View::init(string t, uint r)
 		viewport.w = ww;
 		viewport.h = wh;
 		_loginfo("Using window mode, size %dx%d\n",ww,wh);
+		/* TEST ww = 1280; wh = 720; */
 	}
 
 	/* determine scale factor and adjust viewport if needed */
@@ -303,7 +304,7 @@ void View::run()
 	renderBackgroundImage();
 	renderBricksImage();
 	renderScoreImage();
-	render();
+	render(true);
 	fade(FADE_IN);
 
 	grabInput(1);
@@ -487,7 +488,6 @@ void View::run()
 				if (!(flags & CGF_LIFELOST) && config.speech && (rand()%2))
 					mixer.play((rand()%2)?theme.sVeryGood:theme.sExcellent);
 			fade();
-			ticks.reset();
 			if (!(flags & CGF_LIFELOST)) {
 				initTitleLabel();
 				showWarpIcon = false;
@@ -509,6 +509,12 @@ void View::run()
 			showWarpIcon = true;
 		if (flags & CGF_UPDATEINFO)
 			lblInfo.setText(theme.fSmall, cgame.getBonusLevelInfo());
+
+		if ((flags & CGF_NEWLEVEL) || (flags & CGF_RESTARTLEVEL)) {
+			render(true);
+			fade(FADE_IN);
+			ticks.reset();
+		}
 
 		/* handle sounds by accessing game->mod */
 		playSounds();
@@ -554,16 +560,22 @@ void View::run()
 	grabInput(0);
 }
 
-/** Render current game state. */
-void View::render()
+/** Render current game state. If @clear is true fill whole screen black first
+ * if viewport is used. */
+void View::render(bool clear)
 {
 	Game *game = cgame.getGameContext(); /* direct lib game context */
 	Paddle *paddle = game->paddles[0]; /* local paddle always at bottom */
 	Extra *extra = 0;
 	Shot *shot = 0;
 
-	if (viewport.w != 0)
+	if (viewport.w != 0) {
+		if (clear) {
+			SDL_SetRenderDrawColor(mrc,2,2,2,255);
+			SDL_RenderClear(mrc);
+		}
 		SDL_RenderSetViewport(mrc,&viewport);
+	}
 
 	if (cgame.darknessActive()) {
 		SDL_SetRenderDrawColor(mrc,0,0,0,255);

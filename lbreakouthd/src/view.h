@@ -136,7 +136,7 @@ public:
 	~View();
 	void init(string t, uint r);
 	void run();
-	void render();
+	void render(bool clear=false);
 	void runMenu();
 	void renderMenu();
 };
