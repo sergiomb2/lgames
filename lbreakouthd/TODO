@@ -1,13 +1,12 @@
 polish editor:
+- support for 4:3 classic layout (bricks/extras not shown right now)
 - properly translate ids to chars to init test level
 - preview of levels
 - undo/redo stacks with snapshot before/after each action
 - translation
 
-menu with key control
 menu for gamepad
 warp mouse for absolute position to keep inside playing field
-random set: build set from 10 random levels with randomly generated extras
 
 new extras
 - free paddle y movement
@@ -16,5 +15,7 @@ new extras
 - instant warp
 - smaller/bigger balls (?)
 - laser (clears entire row, limited number of shots)
-- net: bring back one lost ball
+- net: permanent, bring back one lost ball
+- compatibility with old themes: choose random bonus/malus
+  if not supported or write name in box
 
