@@ -238,8 +238,12 @@ void View::init(string t, uint r)
 	warpIconY = (MAPHEIGHT - 1)*brickScreenHeight;
 
 	/* clear viewport if not really needed */
-	if (viewport.w == ww && viewport.h == wh)
+	if (viewport.w == ww && viewport.h == wh) {
+		viewport.x = 0;
+		viewport.y = 0;
 		viewport.w = 0;
+		viewport.h = 0;
+	}
 }
 
 View::~View()
@@ -570,10 +574,12 @@ void View::render(bool clear)
 	Shot *shot = 0;
 
 	if (viewport.w != 0) {
-		if (clear) {
-			SDL_SetRenderDrawColor(mrc,2,2,2,255);
-			SDL_RenderClear(mrc);
-		}
+		/* XXX filling whole screen with black should only be needed
+		 * when clear is set but it seems the area outside the viewport
+		 * is not stable so we need to clear everytime when using
+		 * a viewport. */
+		SDL_SetRenderDrawColor(mrc,2,2,2,255);
+		SDL_RenderClear(mrc);
 		SDL_RenderSetViewport(mrc,&viewport);
 	}
 
@@ -2006,8 +2012,16 @@ void View::runBrickDestroyDlg()
 	int selx = -1, sely = -1;
 	int texty = (EDITHEIGHT+2)*brickScreenHeight;
 
-	imgBackground.copy();
-	darkenScreen(64);
+	if (viewport.w != 0) {
+		SDL_SetRenderDrawColor(mrc,2,2,2,255);
+		SDL_RenderClear(mrc);
+		SDL_RenderSetViewport(mrc,&viewport);
+	}
+
+	/* just have a black background as background image gets
+	 * wrongly scaled for some reason when using a viewport
+	imgBackground.copy(0,0);
+	darkenScreen(64); */
 	imgBricks.setAlpha(128);
 	imgBricks.copy(imgBricksX,imgBricksY);
 	imgBricks.clearAlpha();
@@ -2034,8 +2048,8 @@ void View::runBrickDestroyDlg()
 			if (ev.type == SDL_KEYUP)
 				leave = true;
 			if (ev.type == SDL_MOUSEBUTTONUP && ev.button.button == SDL_BUTTON_LEFT) {
-				selx = ev.button.x / brickScreenWidth;
-				sely = ev.button.y / brickScreenHeight;
+				selx = (ev.button.x - viewport.x) / brickScreenWidth;
+				sely = (ev.button.y - viewport.y) / brickScreenHeight;
 				if (!cgame.destroyBrick(selx,sely))
 					selx = sely = -1; /* no brick found */
 				else
@@ -2043,6 +2057,12 @@ void View::runBrickDestroyDlg()
 			}
 		}
 		SDL_FlushEvent(SDL_MOUSEMOTION);
+	}
+
+	if (viewport.w != 0) {
+		SDL_RenderSetViewport(mrc, NULL);
+		SDL_SetRenderDrawColor(mrc,2,2,2,255);
+		SDL_RenderClear(mrc);
 	}
 
 	grabInput(1);
