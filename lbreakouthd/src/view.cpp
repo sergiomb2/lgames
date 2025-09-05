@@ -1640,10 +1640,22 @@ void View::runMenu()
 
 void View::renderMenu()
 {
+	int lx, ly; /* label position */
+	if (viewport.w != 0) {
+		SDL_SetRenderDrawColor(mrc,2,2,2,255);
+		SDL_RenderClear(mrc);
+		SDL_RenderSetViewport(mrc,&viewport);
+
+		lx = viewport.w - 2;
+		ly = viewport.h - 2;
+	} else {
+		lx = mw->getWidth() - 2;
+		ly = mw->getHeight() - 2;
+	}
+
 	theme.menuBackground.copy();
-	lblCredits1.copy(mw->getWidth()-2,mw->getHeight(),
-				ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
-	lblCredits2.copy(mw->getWidth()-2,mw->getHeight() - theme.fSmall.getLineHeight(),
+	lblCredits1.copy(lx, ly, ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
+	lblCredits2.copy(lx, ly - theme.fSmall.getLineHeight(),
 				ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
 	curMenu->render();
 
@@ -1652,6 +1664,9 @@ void View::renderMenu()
 	int cx, cy;
 	SDL_GetMouseState(&cx, &cy);
 	theme.cursor.copy(cx,cy);*/
+
+	if (viewport.w != 0)
+		SDL_RenderSetViewport(mrc, NULL);
 }
 
 void View::grabInput(int grab)
