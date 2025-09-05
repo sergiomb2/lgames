@@ -25,6 +25,8 @@ Font *MenuItem::fNormal = NULL;
 Font *MenuItem::fFocus = NULL;
 Font *MenuItem::fTooltip = NULL;
 uint MenuItem::tooltipWidth = 300;
+int MenuItem::vpX = 0;
+int MenuItem::vpY = 0;
 
 /** Helper to render a part of the menu item. Position is determined
  * by given alignment. */

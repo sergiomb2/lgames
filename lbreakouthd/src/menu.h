@@ -72,6 +72,7 @@ protected:
 public:
 	static Font *fNormal, *fFocus, *fTooltip;
 	static uint tooltipWidth;
+	static int vpX, vpY; /* viewport offset */
 
 	MenuItem(const string &c, const string &tt, int aid = AID_NONE) :
 			lblNormal(true), lblFocus(true),
@@ -101,7 +102,8 @@ public:
 					MenuItem::tooltipWidth);
 	}
 	bool hasPointer(int px, int py) {
-		return (px >= x && px < x + w && py >= y && py < y + h);
+		return (px-MenuItem::vpX >= x && px-MenuItem::vpX < x + w &&
+				py-MenuItem::vpY >= y && py-MenuItem::vpY < y + h);
 	}
 	void setFocus(int on) {
 		focus = on;

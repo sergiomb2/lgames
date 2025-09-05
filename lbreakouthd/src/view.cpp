@@ -1256,6 +1256,8 @@ void View::createMenus()
 	MenuItem::fFocus = &theme.fMenuFocus;
 	MenuItem::fTooltip = &theme.fSmall;
 	MenuItem::tooltipWidth = 0.3 * theme.menuBackground.getWidth();
+	MenuItem::vpX = viewport.x;
+	MenuItem::vpY = viewport.y;
 
 	rootMenu.reset(); /* delete any old menu ... */
 
