@@ -1238,7 +1238,7 @@ void View::playSounds()
 
 void View::createMenus()
 {
-	Menu *mNewGame, *mOptions, *mAudio, *mGraphics, *mControls, *mAdv, *mEditor;
+	Menu *mNewGame, *mOptions, *mAudio, *mGraphics, *mControls, *mMouse, *mAdv, *mEditor;
 	const char *diffNames[] = {_("Kids"),_("Very Easy"),_("Easy"),_("Medium"),_("Hard") } ;
 	const char *fpsLimitNames[] = {_("No Limit"),_("200 FPS"),_("100 FPS") } ;
 	const int bufSizes[] = { 256, 512, 1024, 2048, 4096 };
@@ -1260,6 +1260,7 @@ void View::createMenus()
 	mGraphics = new Menu(theme);
 	graphicsMenu = mGraphics; /* needed to return after mode/theme change */
 	mControls = new Menu(theme);
+	mMouse = new Menu(theme);
 	mAdv = new Menu(theme);
 	mEditor = new Menu(theme);
 
@@ -1301,25 +1302,29 @@ void View::createMenus()
 	mControls->add(new MenuItemKey(_("Idle Return"),
 			_("Return all idle balls (no effective brick hits for some time) to the paddle."),
 			config.k_return));
-	mControls->add(new MenuItemSep());
 	mControls->add(new MenuItemRange(_("Key Speed"),
 			_("The higher the value the faster the paddle moves by keys."),
 			AID_ADJUSTKEYSPEED,config.i_key_speed,100,1000,50));
-	mControls->add(new MenuItemList(_("Mouse Input"),
-			_("'Absolute' uses absolute mouse position. No fine tuning possible and you might experience delay (if moving too far to the right you'll need to come back to the paddle position first) but it will be more accurate for slow movements.\n'Relative' allows modifying paddle speed but might get inaccurate for slow movements with high resolution and high frame rates."),
-			AID_NONE,config.rel_motion,_("Absolute"),_("Relative")));
-	mControls->add(new MenuItemRange(_("Motion Modifier"),
-			_("Adjust mouse sensitivity. (relative motion only)"),
-			AID_NONE,config.motion_mod,40,160,10));
-	mControls->add(new MenuItemSwitch(_("Invert Motion"),
-			_("Invert mouse motion if needed. (relative motion only)"),
-			AID_NONE,config.invert));
+	mControls->add(new MenuItemSep());
+	mControls->add(new MenuItemSub(_("Mouse Options"),mMouse));
 	mControls->add(new MenuItemSep());
 	mControls->add(new MenuItemList(_("Gamepad"),
 			_("Enable/disable gamepad support. You can press F5 during a game to (re)connect. Buttons cannot be configured yet."),
 			AID_NONE,config.gp_enabled,_("Off"),_("On")));
 	mControls->add(new MenuItemSep());
 	mControls->add(new MenuItemBack(mOptions));
+
+	mMouse->add(new MenuItemList(_("Mouse Input"),
+			_("'Absolute' uses absolute mouse position. No fine tuning possible and you might experience delay (if moving too far to the right you'll need to come back to the paddle position first) but it will be more accurate for slow movements.\n'Relative' allows modifying paddle speed but might get inaccurate for slow movements with high resolution and high frame rates."),
+			AID_NONE,config.rel_motion,_("Absolute"),_("Relative")));
+	mMouse->add(new MenuItemRange(_("Motion Modifier"),
+			_("Adjust mouse sensitivity. (relative motion only)"),
+			AID_NONE,config.motion_mod,40,160,10));
+	mMouse->add(new MenuItemSwitch(_("Invert Motion"),
+			_("Invert mouse motion if needed. (relative motion only)"),
+			AID_NONE,config.invert));
+	mMouse->add(new MenuItemSep());
+	mMouse->add(new MenuItemBack(mControls));
 
 	mGraphics->add(new MenuItemList(_("Theme"),
 			_("'Standard' is the default HD theme.\n'Classic' is the default retro LBreakout2 theme.\n\nYou can download more retro themes from https://lgames.sf.net/LBreakout2/themes.php\n\n(not applied yet)"),
