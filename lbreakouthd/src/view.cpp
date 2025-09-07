@@ -330,6 +330,12 @@ void View::run()
 					gamepad.close();
 					gamepad.open();
 					break;
+				case SDL_SCANCODE_H:
+					if (layout == VL_CLASSIC) {
+						showFinalHiscores();
+						ticks.reset();
+					}
+					break;
 				case SDL_SCANCODE_P:
 					showInfo(_("Pause"),WT_PAUSE);
 					ticks.reset();
@@ -1661,6 +1667,13 @@ void View::renderMenu()
 	lblCredits2.copy(lx, ly - theme.fSmall.getLineHeight(),
 				ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
 	curMenu->render();
+
+	/* add a hint about pressing h for highscores */
+	if (layout == VL_CLASSIC) {
+		theme.fSmall.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
+		theme.fSmall.write(v2s(517),v2s(330),
+				_("Press h during game for highscores."));
+	}
 
 	/* XXX don't use cursor yet, all the different event loops are
 	 * too much of a hassle...
