@@ -738,7 +738,7 @@ void View::render(bool clear)
 		else if (lblTitleCounter.get() >= 4)
 			a = (5-lblTitleCounter.get()) * 255;
 		lblTitle.setAlpha(a);
-		lblTitle.copy((1+MAPWIDTH/2)*brickScreenWidth, mw->getHeight()/2);
+		lblTitle.copy(MAPWIDTH/2*brickScreenWidth, mw->getHeight()/2);
 	}
 
 	/* info for bonus levels */
