@@ -114,7 +114,7 @@ class ClientGame {
 
 	ClientPlayer *getNextPlayer();
 	void initLevel(Level *l);
-	int loadAllLevels();
+	int loadSuperset(const string &name);
 public:
 	ClientGame(Config &cfg);
 	~ClientGame();

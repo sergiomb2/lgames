@@ -213,14 +213,15 @@ LevelSet *levelset_load_all( List *levelsets, int seed, int addBonusLevels )
 	ListEntry *entry;
 	Level **pointers, *level;
 
-        /* use sets from install directory only (no preceding ~) */
+	/* use sets from install directory only (no preceding ~) */
 	list_reset( levelsets );
 	while ( (setname = list_next( levelsets )) && setname[0] != '~' )
         levels_load( setname, levels, &version, &update );
 	
     /* shake the levels a bit */
     srand(seed);
-    list_reset( levels ); i = 0;
+    list_reset( levels );
+    i = 0;
     pointers = calloc( levels->count, sizeof( Level* ) );
     while ( ( level = list_next( levels ) ) ) {
         i = rand() % levels->count;

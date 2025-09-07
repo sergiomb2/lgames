@@ -22,6 +22,7 @@
 
 #define NEW_SET _("<CREATE SET>")
 #define TOURNAMENT _("!FREAKOUT!")
+#define RANDOM20 _("!RANDOM20!")
 
 #ifdef __cplusplus
 extern "C" {

@@ -53,6 +53,8 @@ SetInfo::SetInfo(const string &n, Theme &theme)
 		theme.fMenuNormal.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
 		if (n == TOURNAMENT)
 			theme.fMenuNormal.write(preview.getWidth()/2,preview.getHeight()/2,_("Superset with ALL levels"));
+		else if (n == RANDOM20)
+			theme.fMenuNormal.write(preview.getWidth()/2,preview.getHeight()/2,_("20 randomly selected levels from all sets"));
 		else
 			theme.fMenuNormal.write(preview.getWidth()/2,preview.getHeight()/2,_("Mini Game"));
 		theme.frame.copy(0,0);
@@ -125,12 +127,13 @@ void SelectDialog::init(int sd_type)
 	/* mini-games and installed sets */
 	if (sd_type == SDT_ALL) {
 		list.push_back(_(TOURNAMENT));
-		list.push_back(_("!JUMPING_JACK!"));
-		list.push_back(_("!OUTBREAK!"));
+		list.push_back(_(RANDOM20));
 		list.push_back(_("!BARRIER!"));
-		list.push_back(_("!SITTING_DUCKS!"));
 		list.push_back(_("!HUNTER!"));
 		list.push_back(_("!INVADERS!"));
+		list.push_back(_("!JUMPING_JACK!"));
+		list.push_back(_("!OUTBREAK!"));
+		list.push_back(_("!SITTING_DUCKS!"));
 		readDir(string(DATADIR)+"/levels", RD_FILES, list2);
 		for (auto& s : list2)
 			list.push_back(s);
