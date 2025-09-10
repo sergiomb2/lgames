@@ -24,10 +24,10 @@ typedef struct {
 } ICoord;
 
 typedef struct {
-    float x; /* position if vertical line */
+    double x; /* position if vertical line */
     int vertical; /* if this is set monotony is not computed */
-    float m; /* monotony */
-    float n; /* y_offset */
+    double m; /* monotony */
+    double n; /* y_offset */
 } Line;
 
 /* integer line */
@@ -43,7 +43,7 @@ typedef struct {
 Return vector struct with the specified coordinates.
 ====================================================================
 */
-Vector vector_get( float x, float y );
+Vector vector_get( double x, double y );
 /*
 ====================================================================
 Give vector the normed length of 1.
@@ -55,22 +55,22 @@ void vector_norm( Vector *v );
 Return monotony of vector. If vertical return 0
 ====================================================================
 */
-float vector_monotony( Vector v );
+double vector_monotony( Vector v );
 /*
 ====================================================================
 Set length of a vector.
 ====================================================================
 */
-void vector_set_length( Vector *v, float length );
+void vector_set_length( Vector *v, double length );
 
 /*
 ====================================================================
 Initiate a line struct.
 ====================================================================
 */
-void line_set( Line *line, float x, float y, float m );
-void line_set_vert( Line *line, float x );
-void line_set_hori( Line *line, float y );
+void line_set( Line *line, double x, double y, double m );
+void line_set_vert( Line *line, double x );
+void line_set_hori( Line *line, double y );
 /*
 ====================================================================
 Intersect lines and set 'pos' to intersecting point.

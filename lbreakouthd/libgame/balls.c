@@ -23,13 +23,13 @@
 #include "bricks.h"
 #include "mathfuncs.h"
 
-#define TOARC(d) (((float)d/180)*M_PI)
-#define TODEG(a) (((float)a/M_PI)*180)
+#define TOARC(d) (((double)d/180)*M_PI)
+#define TODEG(a) (((double)a/M_PI)*180)
 #define VLEN(x, y) ( sqrt( (x)*(x) + (y)*(y) ) )
 #define REC_SQRT_2 (0.707106781)
 
-float ball_vhmask = 0.363970234; /* twenty degrees */
-float ball_vvmask = 5.67128182; /* ten degrees */
+double ball_vhmask = 0.363970234; /* twenty degrees */
+double ball_vvmask = 5.67128182; /* ten degrees */
 int ball_rad = 6;
 int ball_dia = 12;
 int ball_w = 12;
@@ -104,7 +104,7 @@ Reflect ball at brick assume normed perp_vector.
 */
 void ball_check_brick_reflection( Ball *b )
 {
-	float old_vx;
+	double old_vx;
 	Vector n;
 	int reflect;
 	int chaos_reflect;
@@ -116,7 +116,7 @@ void ball_check_brick_reflection( Ball *b )
 		return;
 
 	/* check if at target without using time
-	 * TODO remove unnecessary time attribute */
+	 * time attribute cannot be removed from target as shots use it */
 	if (b->vel.x > 0) {
 		if (b->vel.y > 0) {
 			/* moving right&down */
@@ -184,8 +184,8 @@ void ball_check_brick_reflection( Ball *b )
 			b->vel.y = n.y;
 		}
 		else {
-			b->vel.x = ((float)RANDOM( -10000, 10000 )) / 10000;
-			b->vel.y = (float)(RANDOM( -10000, 10000 )) / 10000;
+			b->vel.x = ((double)RANDOM( -10000, 10000 )) / 10000;
+			b->vel.y = (double)(RANDOM( -10000, 10000 )) / 10000;
 		}	
 		if ( b->target.side >= CORNER_UPPER_LEFT && !chaos_reflect )
 			ball_mask_vel( b, old_vx, BALL_ADD_ENTROPY );
@@ -234,7 +234,7 @@ or attach.
 */
 void ball_handle_paddle_contact( Ball *ball, Paddle *paddle, Vector perp_vector )
 {
-	float  old_vx = ball->vel.x;
+	double  old_vx = ball->vel.x;
 	Vector c; /* A(perp_vector) = c; */
 
 	ball->paddle = paddle;
@@ -328,7 +328,7 @@ result. ;-)
 void ball_get_tangents( Ball *ball, Coord *left, Coord *right )
 {
 	Vector norm_vel = ball->vel;
-	float center_x = ball->cur.x + ball_rad, center_y = ball->cur.y + ball_rad;
+	double center_x = ball->cur.x + ball_rad, center_y = ball->cur.y + ball_rad;
 
 	vector_norm( &norm_vel );
 	left->x = center_x + norm_vel.y * ball_rad;
@@ -601,7 +601,7 @@ and reset position x,y of the target. Does not update the ball.
 */
 void ball_reflect_at_side( Ball *ball, Target *target )
 {
-	float old_vx;
+	double old_vx;
 	int   compute_vel, start;
 	Line  ball_line;
 	Line  brick_line;
@@ -1233,9 +1233,9 @@ Adjust velocity of ball to spare out any illegal values.
 Add a little entropy to the vector if 'entropy' is True.
 ====================================================================
 */
-void ball_mask_vel(Ball *b, float old_vx, int entropy )
+void ball_mask_vel(Ball *b, double old_vx, int entropy )
 {
-	float m, entropy_level = 0;
+	double m, entropy_level = 0;
 
 	if ( b->vel.x == 0 && b->vel.y == 0 ) return;
 	
@@ -1248,7 +1248,7 @@ void ball_mask_vel(Ball *b, float old_vx, int entropy )
 	}
 
 	if ( entropy == BALL_ADD_ENTROPY )
-		entropy_level = (float)((rand() % 81)+40)/1000.0;
+		entropy_level = (double)((rand() % 81)+40)/1000.0;
 
 	m = b->vel.y / b->vel.x;
 	if (fabs(m) < ball_vhmask) {
@@ -1514,7 +1514,7 @@ enum { DIR_UP = 0, DIR_DOWN, DIR_LEFT, DIR_RIGHT };
 void ball_get_target( Ball *ball )
 {
 	int    cur_tang;
-	float  mono; /* monotony */
+	double mono; /* monotony */
 	Coord  tang_pts[2]; /* tangential points */
 	Line   tang; /* current tangent */
 	Coord  center = { ball->cur.x + ball_rad,
@@ -1524,7 +1524,7 @@ void ball_get_target( Ball *ball )
 	Coord  pt; /* auxiliary point. used for this 'n' that */
 	Target targets[2]; /* targets hit by the tangents: nearest is the actual target */
 	Target hori_target[2], vert_target[2]; /* used to get target of tangent */
-	float  dist; /* distance between two points */
+	double dist; /* distance between two points */
 	Vector norm_vel; /* normed ball velocity */
 #ifdef WITH_BUG_REPORT
 	char	tang_target_chosen_str[2][128]; /* either hori or vert target chosen */
@@ -1586,7 +1586,8 @@ void ball_get_target( Ball *ball )
 	/* monotony */
 	mono = ball->vel.y / ball->vel.x;
 	/* normed velocity */
-	norm_vel = ball->vel; vector_norm( &norm_vel );
+	norm_vel = ball->vel;
+	vector_norm( &norm_vel );
 	/* tangential points */
 	ball_get_tangents( ball, &tang_pts[TANG_LEFT], &tang_pts[TANG_RIGHT] );
 	/* get all map bricks the tangents intersect and check target */
@@ -1599,7 +1600,8 @@ void ball_get_target( Ball *ball )
 		/* intersect horizontal lines */
 		/* get direction */
 		dir = DIR_DOWN;
-		if ( ball->vel.y < 0 ) dir = DIR_UP;
+		if ( ball->vel.y < 0 )
+			dir = DIR_UP;
 		/* get starting line */
 		start = ((int)( tang_pts[cur_tang].y / BRICK_HEIGHT )) * BRICK_HEIGHT;
 		/* get end line */
@@ -1614,7 +1616,8 @@ void ball_get_target( Ball *ball )
 		}
 		/* get position change */
 		change = BRICK_HEIGHT;
-		if ( dir == DIR_UP ) change = -change;
+		if ( dir == DIR_UP )
+			change = -change;
 		/* we're at this brick so we can't reflect here */
 		start += change;
 		/* intersect */
@@ -1644,7 +1647,8 @@ void ball_get_target( Ball *ball )
 		/* intersect vertical lines */
 		/* get direction */
 		dir = DIR_RIGHT;
-		if ( ball->vel.x < 0 ) dir = DIR_LEFT;
+		if ( ball->vel.x < 0 )
+			dir = DIR_LEFT;
 		/* get starting line */
 		start = ((int)( tang_pts[cur_tang].x / BRICK_WIDTH )) * BRICK_WIDTH;
 		/* get end line */
@@ -1659,7 +1663,8 @@ void ball_get_target( Ball *ball )
 		}
 		/* get position change */
 		change = BRICK_WIDTH;
-		if ( dir == DIR_LEFT ) change = -change;
+		if ( dir == DIR_LEFT )
+			change = -change;
 		/* we're at this brick so we can't reflect here */
 		start += change;
 		/* intersect */
@@ -1865,7 +1870,8 @@ void ball_get_target( Ball *ball )
 					vector of ball but doesn't change it otherwise */
 		/* target's reset position is center position right now but
 		   we need the upper left corner of the ball */
-		ball->target.x -= ball_rad; ball->target.y -= ball_rad;
+		ball->target.x -= ball_rad;
+		ball->target.y -= ball_rad;
 		/* some error information */
 #ifdef WITH_BUG_REPORT
 		pt.x = ball->cur.x; pt.y = ball->cur.y;
@@ -2017,7 +2023,7 @@ void ball_set_random_angle( Ball *ball, double ball_v )
 		ball->vel.y = 1.0;
 	else
 		ball->vel.y = -1.0;
-	ball->vel.x = (float)((rand() % 145) + 6);
+	ball->vel.x = (double)((rand() % 145) + 6);
 	if ( rand() % 2 )
 		ball->vel.x /= -100.0;
 	else
@@ -2077,7 +2083,7 @@ int balls_detach_from_paddle( Paddle *paddle, int dir )
 			/* when random angle is used the vector is not
 			 * changed but the one before the attachment is
 			 * used */
-			ball->vel.x = (float)dir;
+			ball->vel.x = (double)dir;
 			if ( ball->paddle->type == PADDLE_TOP )
 				ball->vel.y = 1.2;
 			else

@@ -23,7 +23,7 @@
 Return vector struct with the specified coordinates.
 ====================================================================
 */
-Vector vector_get( float x, float y )
+Vector vector_get( double x, double y )
 {
     Vector v = { x, y };
     return v;
@@ -35,7 +35,7 @@ Give vector the normed length of 1.
 */
 void vector_norm( Vector *v )
 {
-    float length;
+    double length;
     if ( v->x == 0 && v->y == 0 ) return; /* NULL vector may not be normed */
     length = sqrt( v->x * v->x + v->y * v->y );
     v->x /= length;
@@ -46,7 +46,7 @@ void vector_norm( Vector *v )
 Return monotony of vector. If vertical return 0
 ====================================================================
 */
-float vector_monotony( Vector v )
+double vector_monotony( Vector v )
 {
     if ( v.x == 0 ) return 0;
     return v.y / v.x;
@@ -56,7 +56,7 @@ float vector_monotony( Vector v )
 Set length of a vector.
 ====================================================================
 */
-void vector_set_length( Vector *v, float length )
+void vector_set_length( Vector *v, double length )
 {
     vector_norm( v );
     v->x *= length; v->y *= length;
@@ -67,18 +67,18 @@ void vector_set_length( Vector *v, float length )
 Initiate a line struct.
 ====================================================================
 */
-void line_set( Line *line, float x, float y, float m )
+void line_set( Line *line, double x, double y, double m )
 {
     line->vertical = 0;
     line->m = m;
     line->n = y - m*x;
 }
-void line_set_vert( Line *line, float x )
+void line_set_vert( Line *line, double x )
 {
     line->vertical = 1;
     line->x = x;
 }
-void line_set_hori( Line *line, float y )
+void line_set_hori( Line *line, double y )
 {
     line->vertical = 0;
     line->m = 0;
@@ -193,9 +193,9 @@ Return Value: True if intersecting, Intersecting points
 int circle_intersect( Vector m, int r, Vector pos, Vector v, Vector *t1, Vector *t2 )
 {
     Vector delta = { pos.x - m.x, pos.y - m.y };
-    float  delta_v = delta.x * v.x + delta.y * v.y;
-    float dis = delta_v * delta_v + r * r - ( delta.x * delta.x + delta.y * delta.y );
-    float t;
+    double  delta_v = delta.x * v.x + delta.y * v.y;
+    double dis = delta_v * delta_v + r * r - ( delta.x * delta.x + delta.y * delta.y );
+    double t;
 
     if (dis < 0)
         return 0;

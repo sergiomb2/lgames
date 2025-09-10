@@ -82,7 +82,7 @@ Adjust velocity of ball to spare out any illegal values.
 Add a little entropy to the vector if 'entropy' is True.
 ====================================================================
 */
-void ball_mask_vel(Ball *b, float old_vx, int entropy );
+void ball_mask_vel(Ball *b, double old_vx, int entropy );
 /*
 ====================================================================
 Get target for a ball.
@@ -91,11 +91,11 @@ input :
 function :
     -check if ball b hits a brick and if so:
     -compute the hitten brick in lev_map (int mx, my)
-    -the reset position of the ball after destroying the brick (float x, y)
+    -the reset position of the ball after destroying the brick (double x, y)
     -the time in milliseconds it takes the ball to hit the brick from its current position
     by using ball_v as velocity (int time)
     -the side at which the ball hits; might be LEFT, RIGHT, TOP, BOTTOM (int side)
-    -the reflection vector (float a); if reflecting at an horizontal wall it's a = {0, 1} else a = {1, 0}
+    -the reflection vector (double a); if reflecting at an horizontal wall it's a = {0, 1} else a = {1, 0}
 ====================================================================
 */
 void ball_get_target( Ball *b );

@@ -71,7 +71,7 @@ Config::Config()
 	mode = 0;
 	fade = 1;
 	bonus_info = 1;
-	fps = 1;
+	fps = 0; /* 60 FPS is default */
 	show_fps = 0;
 	ball_level = BALL_BELOW_BONUS;
 	antialiasing = 0;
