@@ -1,3 +1,9 @@
+use old classic warp icon geometry and properly place it 
+improve random20:
+- no levels that use closest two lines
+- not more than 30 strong/invis/regen bricks
+- not more than 4 narrow gaps (hori/vert 1 brick ways) 
+
 polish editor:
 - support for 4:3 classic layout (bricks/extras not shown right now)
 - properly translate ids to chars to init test level
