@@ -217,7 +217,7 @@ Actually resize paddle and return the -1 for shrinkage and 1
 for expansion.
 ====================================================================
 */
-int paddle_resize( Paddle *paddle, int ms )
+int paddle_resize( Paddle *paddle, double ms )
 {
 	if ( paddle->w == paddle->wanted_w ) return 0;
 	if ( !delay_timed_out( &paddle->resize_delay, ms ) ) return 0;
@@ -246,7 +246,7 @@ int paddle_resize( Paddle *paddle, int ms )
 Update paddle resize and fire weapon.
 ====================================================================
 */
-void paddle_update( Paddle *paddle, int ms )
+void paddle_update( Paddle *paddle, double ms )
 {
 	Ball *ball;
 	int result;

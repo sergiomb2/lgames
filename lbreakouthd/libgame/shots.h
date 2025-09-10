@@ -42,7 +42,7 @@ A list of all hit bricks is returned (at maximum
 PADDLE_WEAPON_AMMO * 4)
 ====================================================================
 */
-void shots_update( int ms );
+void shots_update( double ms );
 
 #endif
 

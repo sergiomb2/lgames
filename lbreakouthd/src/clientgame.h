@@ -121,7 +121,7 @@ public:
 	int init(const string& setname, int levelid = 0);
 	int initTestlevel(const string &title, const string &author,
 			int bricks[][EDIT_HEIGHT], int extras[][EDIT_HEIGHT]);
-	int update(uint ms, double rx, PaddleInputState &pis);
+	int update(double ms, double rx, PaddleInputState &pis);
 	Game *getGameContext() { return game; }
 	string getLevelsetName() { return levelset->name; }
 	void getCurrentLevelNameAndAuthor(string &name, string &author) {

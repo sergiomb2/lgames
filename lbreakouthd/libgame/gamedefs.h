@@ -232,16 +232,16 @@ typedef struct {
 } LevelSet;
 
 typedef struct {
-    float   x, y;
+    double   x, y;
 } Vector;
 typedef Vector Coord;
 
 typedef struct {
 	int     exists; /* is there a target */
 	int     mx, my; /* position in map */
-	float   x, y; /* reset position of ball */
-	int     time; /* time till contact */
-	int     cur_tm; /* current time */
+	double	x, y; /* reset position of ball */
+	double  time; /* time till contact */
+	double  cur_tm; /* current time */
 	Vector  perp_vector; /* reflection vector */
 	int     side; /* side/corner of brick hit */
 } Target;
@@ -283,17 +283,17 @@ typedef struct {
 typedef struct {
 	int	score; /* score/frags gained by this paddle */
 	int     type; /* either top or bottom */
-	float   cur_x;
+	double   cur_x;
 	int     x, y;
 	int     w, h; /* actual geometry */
 #ifdef PADDLE_FRICTION
-	float   v_x;
+	double   v_x;
 #endif
 	int	wanted_w; /* resize until w == wanted_w */
 	int     len; /* how many middle components ? */
 	int	start_len;
 	int     min_len, max_len; /* limits */
-	float   friction; /* how much relative speed is given to balls ? */
+	double  friction; /* how much relative speed is given to balls ? */
 	int     friction_delay; /* its hard to exactly hit the moment when the ball touches the paddle
 				   so while this is >0 friction is applied */
 	int     frozen; /* paddle frozen? */
@@ -351,8 +351,8 @@ typedef struct {
 	int		pic_y_offset; 
 	ScreenRect	update_rect; /* screen update region */
     
-    /* used for dummy paddles */
-    float   bot_vx; /* paddle velocity in pix/msec */
+	/* used for dummy paddles */
+	double		bot_vx; /* paddle velocity in pix/msec */
 } Paddle;
 
 typedef struct {
@@ -373,7 +373,7 @@ typedef struct {
 } Ball;
 
 typedef struct {
-    float   x, y;
+    double  x, y;
     Target  target;
     int     next_too; /* destroys right brick, too */
     Paddle *paddle; /* paddle that initiated the shot */
@@ -382,7 +382,7 @@ typedef struct {
                            and clear this flag */
 
     /* used by client */
-    float	cur_fr;
+    double  cur_fr;
     ScreenRect	update_rect; /* screen update region */
 } Shot;
 
@@ -416,8 +416,8 @@ typedef struct {
 } BrickHit;
 
 typedef struct {
-	float       x, y;
-	float       alpha;
+	double      x, y;
+	double      alpha;
 	int         type; 
 	int         offset; 	/* offset in extra pic */
 	int         dir; 	/* extra will move to this direction: 1 or -1 */
@@ -436,9 +436,9 @@ typedef struct {
 	int     paddle_size; /* paddle's starting size */
 	int     paddle_max_size; /* max size */
 	int     score_mod; /* 10: 100% �1: �10% */
-	float   v_start;
-	float 	v_add; /* change per speedup level */
-	float	v_max; /* velocity for this difficulty */
+	double	v_start;
+	double	v_add; /* change per speedup level */
+	double	v_max; /* velocity for this difficulty */
 	int	v_delay; /* delay between speedups */
 	int	allow_maluses; /* boolean */
 	int	time_mod; /* multiplier for bonus/regeneration time */
@@ -484,7 +484,7 @@ typedef struct {
 	int		balls_return_by_click;
 	int		balls_use_random_angle;
 	int		bcc_type; /* ball collision check type */
-        float           accelerated_ball_speed;
+	double          accelerated_ball_speed;
 	int		frag_limit; /* number of points a player must gain to win a 
 				       pingpong level */
 	int		level_over; /* wether level is finished */

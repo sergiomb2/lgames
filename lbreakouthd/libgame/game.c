@@ -330,7 +330,7 @@ void game_set_paddle_state( int id, int x, int y, int left_fire, int right_fire,
  * return whether level has been finished and the id of the winning paddle
  * in network games. -1 is a draw. level_over and winner is saved in the
  * game struct. */
-void game_update( int ms )
+void game_update( double ms )
 {
 	int i;
 

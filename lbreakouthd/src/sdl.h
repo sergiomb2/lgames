@@ -261,6 +261,25 @@ public:
 	}
 };
 
+/* High performance ticks with sub milliseconds precision */
+class HPTicks {
+	Uint64 now, last;
+public:
+	HPTicks() { now = last = SDL_GetPerformanceCounter(); }
+	void reset() { now = last = SDL_GetPerformanceCounter(); }
+	double get(bool zeroOK = false) {
+		now = SDL_GetPerformanceCounter();
+		double secs = (now - last) / ((double)SDL_GetPerformanceFrequency());
+		double ms = secs * 1000.0;
+		if (ms == 0 && !zeroOK)
+			ms = 1; /* we will not have more than 1000 frames and this
+				makes sure the int delays work properly */
+		last = now;
+		return ms;
+	}
+};
+
+
 class Label {
 	bool empty;
 	Image img;

@@ -920,7 +920,7 @@ void balls_set_chaos( int chaos )
 Update balls and detach attached balls if fire was pressed.
 ====================================================================
 */
-void balls_update( int ms )
+void balls_update( double ms )
 {
 	int top = 0, bottom = 0; /* num of lost balls */
 	int i, x, y;

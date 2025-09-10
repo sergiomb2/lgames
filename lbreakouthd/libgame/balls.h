@@ -67,7 +67,7 @@ void balls_alphashow( int alpha );
 Update balls and detach attached balls if fire was pressed.
 ====================================================================
 */
-void balls_update( int ms );
+void balls_update( double ms );
 /*
 ====================================================================
 All balls with target mx,my will have there 'get_target' flag

@@ -165,7 +165,7 @@ ClientPlayer *ClientGame::getNextPlayer()
  * pis is what controls have been activated
  * return flags what has to be rendered new
  */
-int ClientGame::update(uint ms, double rx, PaddleInputState &pis)
+int ClientGame::update(double ms, double rx, PaddleInputState &pis)
 {
 	int oldScore = game->paddles[0]->score;
 	int ret = 0;
@@ -206,14 +206,14 @@ int ClientGame::update(uint ms, double rx, PaddleInputState &pis)
 				pvel = pvelmin;
 				pveldir = -1;
 			}
-			px -= pvel * (ms << pis.turbo);
+			px -= pvel * ms * (pis.turbo+1);
 		}
 		if (pis.right) {
 			if (pveldir != 1) {
 				pvel = pvelmin;
 				pveldir = 1;
 			}
-			px += pvel * (ms << pis.turbo);
+			px += pvel * ms * (pis.turbo+1);
 		}
 		if (pvel < pvelmax) {
 			pvel += pacc * ms;

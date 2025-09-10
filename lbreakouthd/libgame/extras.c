@@ -284,7 +284,7 @@ void extra_use( Paddle *paddle, int extra_type )
 Update extras
 ====================================================================
 */
-void extras_update( int ms )
+void extras_update( double ms )
 {
 	Extra       *ex;
 	int i, j;
@@ -439,7 +439,7 @@ void extras_update( int ms )
 }
 
 /* wall */
-void walls_update( int ms )
+void walls_update( double ms )
 {
 	int i, j;
 

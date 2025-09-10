@@ -19,7 +19,7 @@
 class Sprite {
 public:
 	virtual ~Sprite() {};
-	virtual int update(uint ms) = 0; /* return 1 if to be removed, 0 otherwise */
+	virtual int update(double ms) = 0; /* return 1 if to be removed, 0 otherwise */
 	virtual void render() = 0;
 };
 
@@ -33,7 +33,7 @@ public:
 				: img(_img), id(_id), x(_x), y(_y) {
 		fc.init(img.getGridSizeX(), delay);
 	}
-	int update(uint ms) {
+	int update(double ms) {
 		if (fc.update(ms))
 			return 1; /* die */
 		return 0;
@@ -51,7 +51,7 @@ class Particle : public Sprite {
 public:
 	Particle(GridImage &simg, int gx, int gy, int sx, int sy, int sw, int sh,
 			double px, double py, double vx, double vy, double vpms, uint lifetime);
-	int update(uint ms) {
+	int update(double ms) {
 		pos.add(ms, vel);
 		return sc.update(ms);
 	}

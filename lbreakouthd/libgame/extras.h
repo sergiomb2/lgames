@@ -35,13 +35,13 @@ void extra_use( Paddle *paddle, int type );
 Update extras
 ====================================================================
 */
-void extras_update( int ms );
+void extras_update( double ms );
 /*
 ====================================================================
 Wall
 ====================================================================
 */
-void walls_update( int ms );
+void walls_update( double ms );
 
 
 int extra_is_malus( int type );

@@ -1,3 +1,4 @@
+- use high resolution counter to reduce jittering (2025/09/10 MS)
 - added pseudoset RANDOM20 with 20 random levels (2025/09/07 MS)
 - separate submenu for mouse options (2025/09/05 MS)
 - added default retro theme Classic (2025/08/29 MS)

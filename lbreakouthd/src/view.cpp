@@ -280,10 +280,9 @@ void View::run()
 	SDL_Event ev;
 	int flags;
 	PaddleInputState pis;
-	Ticks ticks;
-	Ticks renderTicks;
-	int maxDelay, delay = 0;
-	Uint32 ms;
+	HPTicks ticks;
+	int frameDelay;
+	double ms;
 	bool leave = false;
 	bool resumeLater = false;
 	double rx = 0;
@@ -295,12 +294,14 @@ void View::run()
 	fpsStart = SDL_GetTicks();
 	fpsCycles = 0;
 
-	if (config.fps == 1)
-		maxDelay = 5;
-	else if (config.fps == 2)
-		maxDelay = 10;
+	/* FIXME assume render time of ~1ms and use fixed delay as
+	 * variable Delay causes jittering because 1ms steps is too coarse */
+	if (config.fps == 0)
+		frameDelay = 16; /* roughly 60 FPS */
+	else if (config.fps == 1)
+		frameDelay = 7; /* roughly 120 FPS */
 	else
-		maxDelay = 0;
+		frameDelay = 2; /* roughly 300 FPS */
 
 	initTitleLabel();
 	lblInfo.clearText();
@@ -314,7 +315,6 @@ void View::run()
 	grabInput(1);
 
 	while (!leave) {
-		renderTicks.reset();
 		flags = 0;
 
 		/* handle events */
@@ -545,9 +545,7 @@ void View::run()
 		}
 
 		/* limit frame rate */
-		delay = maxDelay - renderTicks.get(true);
-		if (delay > 0)
-			SDL_Delay(delay);
+		SDL_Delay(frameDelay);
 		SDL_FlushEvent(SDL_MOUSEMOTION); /* prevent event loop from dying */
 	}
 
@@ -1252,7 +1250,7 @@ void View::createMenus()
 {
 	Menu *mNewGame, *mOptions, *mAudio, *mGraphics, *mControls, *mMouse, *mAdv, *mEditor;
 	const char *diffNames[] = {_("Kids"),_("Very Easy"),_("Easy"),_("Medium"),_("Hard") } ;
-	const char *fpsLimitNames[] = {_("No Limit"),_("200 FPS"),_("100 FPS") } ;
+	const char *fpsLimitNames[] = {_("60 FPS"),_("120 FPS"),_("300 FPS") } ;
 	const int bufSizes[] = { 256, 512, 1024, 2048, 4096 };
 	const int channelNums[] = { 8, 16, 32 };
 
@@ -1353,7 +1351,7 @@ void View::createMenus()
 			_("Apply the above settings."),AID_APPLYTHEMEMODE));
 	mGraphics->add(new MenuItemSep());
 	mGraphics->add(new MenuItemList(_("Frame Limit"),
-			_("Maximum number of frames per second.\nBe careful: The higher the limit the more insensitive your mouse might become to slow movements (because relative motion is used and program cycles are shorter).\n200 FPS should be a good value."),
+			_("Maximum number of frames per second.\nBe careful: The higher the limit the more insensitive your mouse might become to slow movements if relative motion is used as program cycles get shorter.\n120 FPS should be a good value."),
 			AID_NONE,config.fps,fpsLimitNames,3));
 	mGraphics->add(new MenuItemSep());
 	mGraphics->add(new MenuItemBack(mOptions));
@@ -1666,7 +1664,6 @@ void View::renderMenu()
 	lblCredits1.copy(lx, ly, ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
 	lblCredits2.copy(lx, ly - theme.fSmall.getLineHeight(),
 				ALIGN_X_RIGHT | ALIGN_Y_BOTTOM);
-	curMenu->render();
 
 	/* add a hint about pressing h for highscores */
 	if (layout == VL_CLASSIC) {
@@ -1674,6 +1671,8 @@ void View::renderMenu()
 		theme.fSmall.write(v2s(517),v2s(330),
 				_("Press H during game for highscores."));
 	}
+
+	curMenu->render();
 
 	/* XXX don't use cursor yet, all the different event loops are
 	 * too much of a hassle...

@@ -61,8 +61,8 @@ void shot_get_target( Shot *shot ) {
             }
     }
     shot->target.cur_tm = 0;
-    shot->target.time = abs( 
-		(int)((shot->y + 3 + 
+    shot->target.time = fabs(
+		(double)((shot->y + 3 +
 		((shot->dir==1)?5:0) - 
 		(shot->target.my * BRICK_HEIGHT + ((shot->dir==-1)?(BRICK_HEIGHT - 1):0) )) / 
 		fabs(shot_v_y)) );
@@ -118,7 +118,7 @@ A list of all hit bricks is returned (at maximum
 PADDLE_WEAPON_AMMO * 4)
 ====================================================================
 */
-void shots_update( int ms )
+void shots_update( double ms )
 {
 	int i;
 	ListEntry  *entry = cur_game->shots->head->next;
