@@ -1672,7 +1672,7 @@ void View::renderMenu()
 	if (layout == VL_CLASSIC) {
 		theme.fSmall.setAlign(ALIGN_X_CENTER | ALIGN_Y_CENTER);
 		theme.fSmall.write(v2s(517),v2s(330),
-				_("Press h during game for highscores."));
+				_("Press H during game for highscores."));
 	}
 
 	/* XXX don't use cursor yet, all the different event loops are
@@ -1960,9 +1960,9 @@ void View::showHelp()
 		"number of lives, ball speed, paddle size and score.\n\n"
 		"While playing you can press\n"
 		"  - ESC to leave the game (you'll have to confirm)\n"
-		"  - w to warp to next level (if enough bricks were destroyed)\n"
-		"  - p to pause/unpause the game\n"
-		"  - d to destroy a brick (workaround for bad level design)\n\n"
+		"  - W to warp to next level (if enough bricks were destroyed)\n"
+		"  - P to pause/unpause the game\n"
+		"  - D to destroy a brick (workaround for bad level design)\n\n"
 		"If you leave a game, you can resume it later (no hiscores entry yet).\n\n"
 		"If you lose all lives, you can buy a continue (score set to 0, initial number of lives restored). "
 		"If you don't buy a continue, the game is over (hiscores entry is checked) and can no longer be resumed. "
