@@ -375,10 +375,11 @@ void Theme::load(string name, uint screenWidth, uint screenHeight,
 		shine.load(stdPath+ "/shine.png",sbfw,sbfh);
 	shine.scale(brickScreenWidth,brickScreenHeight);
 
-	/* warp symbol is brick size */
-	/* ignore old warp icon as it's geometry sucks big time */
+	/* warp symbol is brick size for hd themes but a bit wonky
+	 * for old themes, so scale according to its own ratio */
 	warpIcon.load(testRc(path,"warp.png"));
-	warpIcon.scale(brickScreenWidth,brickScreenHeight);
+	warpIcon.scale(warpIcon.getWidth() * brickScreenWidth / brickFileWidth,
+			warpIcon.getHeight() * brickScreenHeight / brickFileHeight);
 
 	/* explosions are square, scaled according to brick ratio */
 	if (fileExists(path + "/explosions.png"))

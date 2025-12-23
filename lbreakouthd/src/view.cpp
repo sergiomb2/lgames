@@ -245,8 +245,16 @@ void View::init(string t, uint r)
 	for (int i = 0; i < EDITWIDTH; i++)
 		theme.bricks.copy(1, 0, i*brickScreenWidth, 0);
 	SDL_SetRenderTarget(mrc, NULL);
-	warpIconX = (MAPWIDTH - 2)*brickScreenWidth;
-	warpIconY = (MAPHEIGHT - 1)*brickScreenHeight;
+
+	/* warp icon is different shape and position for old/new themes */
+	if (theme.oldTheme) {
+		warpIconX = brickScreenWidth*(MAPWIDTH-1) +
+					(brickScreenWidth - theme.warpIcon.getWidth())/2;
+		warpIconY = brickScreenHeight*MAPHEIGHT - theme.warpIcon.getHeight();
+	} else {
+		warpIconX = (MAPWIDTH - 2)*brickScreenWidth;
+		warpIconY = (MAPHEIGHT - 1)*brickScreenHeight;
+	}
 
 	/* clear viewport if not really needed */
 	if (viewport.w == ww && viewport.h == wh) {
