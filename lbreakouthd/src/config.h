@@ -94,9 +94,10 @@ public:
 	int antialiasing;
 	/* various */
 	int use_hints;
-	int return_on_click; /* autoreturn on click if true else automatically */
-	int theme_id; /* 0 == default theme */
-	int theme_count; /* to check and properly reset id if number of themes changed */
+	int return_on_click; /* return on click if true else automatically */
+	string theme; /* name of current theme */
+	int theme_id; /* internal id, updated on scanning themes */
+	int theme_count;
 	string edit_setname;
 	int bcc_type; /* how to get targets: by clipping or trajectory */
 

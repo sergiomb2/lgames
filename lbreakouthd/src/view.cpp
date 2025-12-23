@@ -52,9 +52,20 @@ View::View(Config &cfg, ClientGame &_cg)
 		for (auto &e : homeThemes)
 			themeNames.push_back(string("~")+e);
 	}
-	if ((uint)config.theme_id >= themeNames.size())
-		config.theme_id = 0;
 	config.theme_count = themeNames.size();
+	/* get theme id by name */
+	size_t pos = find(themeNames.begin(),themeNames.end(),config.theme)
+						- themeNames.begin();
+	if (pos < themeNames.size()) {
+		config.theme_id = (int)pos;
+		_loginfo("Theme %s has index %d\n",config.theme.c_str(),
+						config.theme_id);
+	} else {
+		config.theme_id = 0; /* fallback to first in list */
+		_loginfo("Theme %s not found, using theme %s at index %d\n",
+				config.theme.c_str(), themeNames[0].c_str(),
+				config.theme_id);
+	}
 
 	/* name for saved game */
 	if (string(CONFIGDIR) != ".")
@@ -251,6 +262,9 @@ View::~View()
 	delete mw;
 	mixer.close();
 	gamepad.close();
+
+	/* update theme name in config */
+	config.theme = themeNames[config.theme_id];
 
 	/* XXX fonts need to be killed before SDL/TTF_Quit otherwise they
 	 * segfault but attribute's dtors are called after ~View is finished */

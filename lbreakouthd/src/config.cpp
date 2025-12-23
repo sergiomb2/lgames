@@ -78,6 +78,7 @@ Config::Config()
 	/* various */
 	use_hints = 1;
 	return_on_click = 0;
+	theme = "Standard";
 	theme_id = 0;
 	theme_count = 1;
 	edit_setname ="newset";
@@ -154,6 +155,7 @@ Config::Config()
 	fp.get( "antialiasing", antialiasing );
 	fp.get( "use_hints", use_hints );
 	fp.get( "return_on_click", return_on_click );
+	fp.get( "theme", theme );
 	fp.get( "theme_id", theme_id );
 	fp.get( "theme_count", theme_count );
 	fp.get( "edit_setname", edit_setname );
@@ -218,6 +220,7 @@ void Config::save()
 	ofs << "antialiasing=" << antialiasing << "\n";
 	ofs << "use_hints=" << use_hints << "\n";
 	ofs << "return_on_click=" << return_on_click << "\n";
+	ofs << "theme=" << theme << "\n";
 	ofs << "theme_id=" << theme_id << "\n";
 	ofs << "theme_count=" << theme_count << "\n";
 	ofs << "edit_setname=" << edit_setname << "\n";
