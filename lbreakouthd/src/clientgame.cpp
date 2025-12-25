@@ -433,20 +433,50 @@ int ClientGame::loadSuperset(const string &name)
 		list_add(sets, s.c_str());
 #endif
 
-	levelset = levelset_load_all(sets, config.freakout_seed,
-						config.add_bonus_levels);
+	int bonuslevels = config.add_bonus_levels;
+	if (name == RANDOM20)
+		bonuslevels = 0; /* disable for now, makes checks easier */
+
+	levelset = levelset_load_all(sets, config.freakout_seed, bonuslevels);
 	list_delete(sets);
 
-	if (levelset != 0) {
-		if (name == RANDOM20) {
-			snprintf(levelset->name,20,"%s",RANDOM20);
-			levelset->count = 20;
-			_loginfo("Using first 20 levels as %s\n",RANDOM20);
+	if (levelset == NULL)
+		return 0;
+
+	if (name == RANDOM20) {
+		/* check for and remove badly designed levels */
+		int numlev = (levelset->count>20)?20:(levelset->count-1);
+		int subpos = numlev;
+		Level **levels = levelset->levels;
+
+		_logdebug(2,"Checking %s for bad levels...\n", RANDOM20);
+		for (int i = 0; i < numlev; i++) {
+			if (!checkLevel(levels[i])) {
+				_logdebug(2,"  [%d] %s is bad...", i, levels[i]->name);
+				while (!checkLevel(levels[subpos])) {
+					subpos++;
+					if (subpos == levelset->count) {
+						subpos--; /* use this last level even if bad */
+						break;
+					}
+				}
+				_logdebug(2," replacing with [%d] %s\n",subpos,
+							levels[subpos]->name);
+				memcpy(levels[i],levels[subpos],sizeof(Level));
+				subpos++;
+				if (subpos == levelset->count) {
+					_logdebug(2,"  no more good replacement levels...\n");
+					break;
+				}
+			}
 		}
-		return 1;
+
+		snprintf(levelset->name,20,"%s",RANDOM20);
+		levelset->count = numlev;
+		_loginfo("Using first %d levels as %s\n",numlev,RANDOM20);
 	}
 
-	return 0;
+	return 1;
 }
 
 /** Restart level */
@@ -469,4 +499,43 @@ int ClientGame::restartLevel()
 	game->paddles[0]->score = p->getScore();
 
 	return CGF_RESTARTLEVEL | CGF_LIFELOST;
+}
+
+/** Check whether level is ok (return true) or bad (return false)
+ * for casual play by checking various criteria. */
+bool ClientGame::checkLevel(const Level *l)
+{
+	/* if last two lines are used, level is considered too low */
+	bool tooLow = false;
+	for (int j = EDITHEIGHT-2; j < EDITHEIGHT; j++)
+		for (int i = 0; i < EDITWIDTH; i++)
+			if (l->bricks[i][j] != '.')
+				tooLow = true;
+	if (tooLow)
+		return false;
+
+	/* should not have more than 20 wall bricks of any kind
+	 * TODO: improve this to actually check for narrow passages
+	 * but testing for not too many wall bricks should do the
+	 * trick for now. */
+	string wallChars = "E#@";
+	uint wallCount = 0;
+	for (int j = 0; j < EDITHEIGHT; j++)
+		for (int i = 0; i < EDITWIDTH; i++)
+			if (wallChars.find(l->bricks[i][j]) != std::string::npos)
+				wallCount++;
+	if (wallCount >= 20)
+		return false;
+
+	/* not more than 20 strong or regen bricks */
+	string strongChars = "abcvxyz";
+	uint strongCount = 0;
+	for (int j = 0; j < EDITHEIGHT; j++)
+		for (int i = 0; i < EDITWIDTH; i++)
+			if (strongChars.find(l->bricks[i][j]) != std::string::npos)
+				strongCount++;
+	if (strongCount >= 20)
+		return false;
+
+	return true;
 }
