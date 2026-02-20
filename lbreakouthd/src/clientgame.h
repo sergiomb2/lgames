@@ -115,6 +115,7 @@ class ClientGame {
 	ClientPlayer *getNextPlayer();
 	void initLevel(Level *l);
 	int loadSuperset(const string &name);
+	bool isWall(const Level *l, int x, int y);
 	bool checkLevel(const Level *l);
 public:
 	ClientGame(Config &cfg);

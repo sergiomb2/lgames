@@ -446,21 +446,23 @@ int ClientGame::loadSuperset(const string &name)
 	if (name == RANDOM20) {
 		/* check for and remove badly designed levels */
 		int numlev = (levelset->count>20)?20:(levelset->count-1);
-		int subpos = numlev;
+		int subpos = numlev; /* position of substitute level */
 		Level **levels = levelset->levels;
 
 		_logdebug(2,"Checking %s for bad levels...\n", RANDOM20);
 		for (int i = 0; i < numlev; i++) {
 			if (!checkLevel(levels[i])) {
-				_logdebug(2,"  [%d] %s is bad...", i, levels[i]->name);
+				_logdebug(2,"  rejecting [%d] %s\n", i, levels[i]->name);
 				while (!checkLevel(levels[subpos])) {
+					_logdebug(2,"  rejecting [%d] %s\n",
+							subpos, levels[subpos]->name);
 					subpos++;
 					if (subpos == levelset->count) {
 						subpos--; /* use this last level even if bad */
 						break;
 					}
 				}
-				_logdebug(2," replacing with [%d] %s\n",subpos,
+				_logdebug(2,"  replacing with [%d] %s\n",subpos,
 							levels[subpos]->name);
 				memcpy(levels[i],levels[subpos],sizeof(Level));
 				subpos++;
@@ -501,41 +503,109 @@ int ClientGame::restartLevel()
 	return CGF_RESTARTLEVEL | CGF_LIFELOST;
 }
 
+/** Return whether position in edit area has a wall brick. If outside edit area
+ * always true (outer boundary) except for bottom that is always open */
+bool ClientGame::isWall(const Level *l, int x, int y)
+{
+	if (x < 0 || y < 0 || x >= EDITWIDTH)
+		return true;
+	if (y >= EDITHEIGHT)
+		return false;
+
+	string wallChars = "E#@";
+	if (wallChars.find(l->bricks[x][y]) != std::string::npos)
+		return true;
+
+	return false;
+}
+
 /** Check whether level is ok (return true) or bad (return false)
  * for casual play by checking various criteria. */
 bool ClientGame::checkLevel(const Level *l)
 {
-	/* if last two lines are used, level is considered too low */
-	bool tooLow = false;
-	for (int j = EDITHEIGHT-2; j < EDITHEIGHT; j++)
-		for (int i = 0; i < EDITWIDTH; i++)
-			if (l->bricks[i][j] != '.')
-				tooLow = true;
-	if (tooLow)
-		return false;
+	bool ret = true;
 
-	/* should not have more than 20 wall bricks of any kind
-	 * TODO: improve this to actually check for narrow passages
-	 * but testing for not too many wall bricks should do the
-	 * trick for now. */
-	string wallChars = "E#@";
+	/* if any of the last two lines has more than 50% bricks,
+	 * level is considered too low */
+	int llBrickLimit = EDITWIDTH/2; /* last lines brick limit */
+	int llc1 = 0, llc2 = 0;
+	for (int i = 0; i < EDITWIDTH; i++) {
+		if (l->bricks[i][EDITHEIGHT-1] != '.')
+			llc1++;
+		if (l->bricks[i][EDITHEIGHT-2] != '.')
+			llc2++;
+	}
+	if (llc1 > llBrickLimit || llc2 > llBrickLimit) {
+		_logdebug(2,"  too many low bricks (%d, %d)\n",llc1,llc2);
+		ret = false;
+	}
+
+	/* should not have more than 30 wall bricks of any kind */
 	uint wallCount = 0;
 	for (int j = 0; j < EDITHEIGHT; j++)
 		for (int i = 0; i < EDITWIDTH; i++)
-			if (wallChars.find(l->bricks[i][j]) != std::string::npos)
+			if (isWall(l,i,j))
 				wallCount++;
-	if (wallCount >= 20)
-		return false;
+	if (wallCount > 30) {
+		_logdebug(2,"  too many walls (%d)\n",wallCount);
+		ret = false;
+	}
 
-	/* not more than 20 strong or regen bricks */
-	string strongChars = "abcvxyz";
+	/* not more than 30 strong bricks */
+	string strongChars = "bcv"; /* a is one-hint, does not count */
 	uint strongCount = 0;
 	for (int j = 0; j < EDITHEIGHT; j++)
 		for (int i = 0; i < EDITWIDTH; i++)
 			if (strongChars.find(l->bricks[i][j]) != std::string::npos)
 				strongCount++;
-	if (strongCount >= 20)
-		return false;
+	if (strongCount > 30) {
+		_logdebug(2,"  too many strong bricks (%d)\n",strongCount);
+		ret = false;
+	}
 
-	return true;
+	/* not more than 12 regen bricks */
+	string regenChars = "xyz";
+	uint regenCount = 0;
+	for (int j = 0; j < EDITHEIGHT; j++)
+		for (int i = 0; i < EDITWIDTH; i++)
+			if (regenChars.find(l->bricks[i][j]) != std::string::npos)
+				regenCount++;
+	if (regenCount > 12) {
+		_logdebug(2,"  too many regen bricks (%d)\n",regenCount);
+		ret = false;
+	}
+
+	/* not more than 30 grow bricks */
+	string growChars = "!";
+	uint growCount = 0;
+	for (int j = 0; j < EDITHEIGHT; j++)
+		for (int i = 0; i < EDITWIDTH; i++)
+			if (growChars.find(l->bricks[i][j]) != std::string::npos)
+				growCount++;
+	if (growCount > 30) {
+		_logdebug(2,"  too many grow bricks (%d)\n",growCount);
+		ret = false;
+	}
+
+	/* not more than 5 narrow passages which are defined as "not wall" surrounded
+	 * by at least 2 walls on opposite sites (or outer boundary). so it doesn't
+	 * matter if a brick is temporarily blocking the choke point. */
+	uint narrowCount = 0;
+	for (int j = 0; j < EDITHEIGHT; j++) {
+		for (int i = 0; i < EDITWIDTH; i++) {
+			if (isWall(l,i,j))
+				continue;
+
+			/* test adjacent positions */
+			if ((isWall(l,i-1,j) && isWall(l,i+1,j)) ||
+					(isWall(l,i,j-1) && isWall(l,i,j+1)))
+				narrowCount++;
+		}
+	}
+	if (narrowCount > 5) {
+		_logdebug(2,"  too many narrow gaps (%d)\n",narrowCount);
+		ret = false;
+	}
+
+	return ret;
 }
