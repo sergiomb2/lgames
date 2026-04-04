@@ -31,7 +31,8 @@
  #define MKDIR mkdir
 #endif
 
-char c_pth[512];
+char configDir[512]; /* config directory also used for profiles */
+char c_pth[1024];
 Cfg cfg;
 
 /*
@@ -39,23 +40,25 @@ Cfg cfg;
 */
 void C_StPth()
 {
-    DIR *dir;
-#ifdef _WIN32
-    snprintf( c_pth, sizeof(c_pth)-1, "%s/lgames", (getenv( "HOME" )?getenv( "HOME" ):".") );
-#else
-    snprintf( c_pth, sizeof(c_pth)-1, "%s/.lgames", getenv( "HOME" ) );
-#endif
-    /* create .lgames directory if not found */
-    if ( (dir = opendir( c_pth )) == 0 ) {
-        fprintf( stderr, _("Config directory ~/.lgames not found. Creating it.\n") );
-        MKDIR( c_pth, S_IRWXU );
-    }
-    else
-    {
-	closedir(dir);
-    }
-    /* get full path of config file */
-    strcat( c_pth, "/lmarbles.conf" );
+	DIR *dir;
+	/* build config dir by expanding home directory if needed,
+	 * use c_pth as auxiliary var */
+	snprintf(configDir, sizeof(configDir), CONFIGDIR);
+	if (configDir[0] == '~')
+		snprintf(c_pth, sizeof(c_pth), "%s/%s", getenv( "HOME" ), configDir+1);
+	else
+		snprintf(c_pth, sizeof(c_pth), "%s", configDir);
+	snprintf(configDir, sizeof(configDir), c_pth);
+	printf(_("config directory: %s\n"), configDir);
+	/* create directory if not found */
+	if ((dir = opendir(configDir)) == 0) {
+		fprintf(stderr, _("  not found, creating it\n"));
+		MKDIR(configDir, S_IRWXU);
+	} else {
+		closedir(dir);
+	}
+	/* get full path of config file */
+	snprintf(c_pth, sizeof(c_pth), "%s/lmarbles.conf", configDir);
 }
 
 /*

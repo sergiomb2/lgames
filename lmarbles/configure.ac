@@ -26,7 +26,7 @@ AC_SUBST(ascii_flag)
 # Flags
 datdir=$datadir/$PACKAGE
 profdir=$localstatedir
-configdir="~"
+configdir="~/.lmarbles"
 debugflags=""
 AC_ARG_ENABLE( install,
 [  --disable-install       No installation. Start from source directory.], 

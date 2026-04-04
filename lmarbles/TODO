@@ -1,1 +1,7 @@
-mr.bones's suggestions
+load/save profile file in config dir
+have move and time profile for user 
+add shadow surface for scaling
+remove SDL_1_1_5 flag
+fix sound
+simple ascii config
+add proper crosscompiling

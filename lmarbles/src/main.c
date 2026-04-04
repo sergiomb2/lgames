@@ -455,7 +455,8 @@ int main(int argc, char *argv[])
     // show hardware capabilities //
     Sdl_HwCps();
 
-    // load config //
+    /* load config (and create config dir which is also used
+     * for profiles) */
     C_StPth();
     C_Ld();
 
