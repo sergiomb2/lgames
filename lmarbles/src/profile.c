@@ -58,9 +58,7 @@ int Prf_Ld()
     FILE    *f = 0;
     int  not_f = 0;
     char    str[256];
-#ifdef ASCII
     int     i;
-#endif
 
     printf(_("loading profiles... "));
 
@@ -72,30 +70,15 @@ int Prf_Ld()
     }
     else {
         /* load ascii identification */
-#ifdef ASCII
-        F_GetE(f, str, F_VAL); str[strlen(str) - 1] = 0;
+        fileGetEntry(f, str, F_VAL); str[strlen(str) - 1] = 0;
         if (strncmp(str,"ascii",5)) {
             printf("\nWARNING: trying to load raw binary data in ascii; cannot read profiles\n", prf_pth);
             Prf_Crt("Michael");
             not_f = 1;
         }
         else {
-#else
-        fread(str, 5, 1, f);
-        if (!strncmp(str,"ascii",5)) {
-            printf("\nWARNING: trying to load in ascii instead of raw binary format; cannot read profiles\n");
-            Prf_Crt("Michael");
-            not_f = 1;
-        }
-        else {
-            fseek(f, SEEK_SET, 0);
-#endif
         /* load numbers of profiles */
-#ifdef ASCII
-        F_GetE(f, str, F_VAL); F_ValToInt(str, &p_num);
-#else
-        fread((void*)&p_num, sizeof(int), 1, f);
-#endif
+        fileGetEntry(f, str, F_VAL); F_ValToInt(str, &p_num);
         if (p_num <= 0) {
             printf("WARNING: bad profile counter: %i\n", p_num);
             Prf_Crt("Michael");
@@ -104,65 +87,39 @@ int Prf_Ld()
         else {
             while (p_num--) {
                  p = malloc(sizeof(Prf));
-#ifdef ASCII
                  /* name */
-                 F_GetE(f, p->nm, F_VAL); p->nm[strlen(p->nm) - 1] = 0;
+                 fileGetEntry(f, p->nm, F_VAL); p->nm[strlen(p->nm) - 1] = 0;
                  /* levels played */
-                 F_GetE(f, str, F_VAL); F_ValToInt(str, &p->lvls);
+                 fileGetEntry(f, str, F_VAL); F_ValToInt(str, &p->lvls);
                  /* score */
-                 F_GetE(f, str, F_VAL); F_ValToInt(str, &p->scr);
+                 fileGetEntry(f, str, F_VAL); F_ValToInt(str, &p->scr);
                  /* percentage */
-                 F_GetE(f, str, F_VAL); F_ValToFloat(str, &p->pct);
+                 fileGetEntry(f, str, F_VAL); F_ValToFloat(str, &p->pct);
                  /* number of levelsets */
-                 F_GetE(f, str, F_VAL); F_ValToInt(str, &s_num);
-#else
-                 /* name */
-                 fread(p->nm, sizeof(p->nm), 1, f);
-                 /* levels played */
-                 fread(&p->lvls, sizeof(p->lvls), 1, f);
-                 /* score */
-                 fread(&p->scr, sizeof(p->scr), 1, f);
-                 /* percentage */
-                 fread(&p->pct, sizeof(p->pct), 1, f);
-                 /* number of levelsets */
-                 fread(&s_num, sizeof(int), 1, f);
-#endif
+                 fileGetEntry(f, str, F_VAL); F_ValToInt(str, &s_num);
                  DL_Ini(&p->sts);
                  p->sts.flgs = DL_AUTODEL | DL_NOCB;
                  if (s_num >= 0)
                      while (s_num--) {
                          /* level sets */
                          st = malloc(sizeof(SInf));
-#ifdef ASCII
-                         F_GetE(f, st->nm, F_VAL); st->nm[strlen(st->nm) - 1] = 0;
-                         F_GetE(f, str, F_VAL); F_ValToInt(str, &st->num);
-                         F_GetE(f, str, F_VAL); F_ValToInt(str, &st->l_num);
-                         F_GetE(f, str, F_VAL); F_ValToInt(str, &st->c_num);
+                         fileGetEntry(f, st->nm, F_VAL); st->nm[strlen(st->nm) - 1] = 0;
+                         fileGetEntry(f, str, F_VAL); F_ValToInt(str, &st->num);
+                         fileGetEntry(f, str, F_VAL); F_ValToInt(str, &st->l_num);
+                         fileGetEntry(f, str, F_VAL); F_ValToInt(str, &st->c_num);
                          for ( i = 0; i < st->c_num; i++) {
-                             F_GetE(f, str, F_VAL); F_ValToChar(str, &st->c_opn[i]);
+                             fileGetEntry(f, str, F_VAL); F_ValToChar(str, &st->c_opn[i]);
                          }
                          for ( i = 0; i < st->num; i++) {
-                             F_GetE(f, str, F_VAL); F_ValToChar(str, &st->cmp[i]);
+                             fileGetEntry(f, str, F_VAL); F_ValToChar(str, &st->cmp[i]);
                          }
-#else
-                         fread(st->nm, sizeof(st->nm), 1, f);
-                         fread(&st->num, sizeof(int), 1, f);
-                         fread(&st->l_num, sizeof(int), 1, f);
-                         fread(&st->c_num, sizeof(int), 1, f);
-                         fread(st->c_opn, sizeof(char), st->c_num, f);
-                         fread(st->cmp, sizeof(char), st->num, f);
-#endif
                          DL_Add(&p->sts, st);
                      }
                  DL_Add(&prfs, p);
             }
         }
         printf("ok\n");
-#ifdef ASCII
         }
-#else
-        }
-#endif
         fclose(f);
     }
 
@@ -177,10 +134,8 @@ void Prf_Sv()
     Prf *p;
     SInf *st;
     FILE *f;
-#ifdef ASCII
     int i;
     char str[256];
-#endif
 
     printf(_("saving profiles... "));
     if ((f = fopen(prf_pth, "w")) == 0) {
@@ -188,75 +143,41 @@ void Prf_Sv()
     }
     else {
         /* save ascii identification */
-#ifdef ASCII
-        F_WrtE(f, "ascii");
-#endif
+        fileWriteEntry(f, "ascii");
         /* save numbers of profiles */
-#ifdef ASCII
-        F_IntToStr(str, prfs.cntr); F_WrtE(f, str);
-#else
-        fwrite((void*)&prfs.cntr, sizeof(int), 1, f);
-#endif
+        F_IntToStr(str, prfs.cntr); fileWriteEntry(f, str);
         while (e != &prfs.tl) {
             p = (Prf*)e->d;
-#ifdef ASCII
             /* save name -- 12 chars */
-            F_WrtE(f, p->nm);
+            fileWriteEntry(f, p->nm);
             /* levels played */
-            F_IntToStr(str, p->lvls); F_WrtE(f, str);
+            F_IntToStr(str, p->lvls); fileWriteEntry(f, str);
             /* score */
-            F_IntToStr(str, p->scr); F_WrtE(f, str);
+            F_IntToStr(str, p->scr); fileWriteEntry(f, str);
             /* percentage */
-            F_FloatToStr(str, p->pct); F_WrtE(f, str);
+            F_FloatToStr(str, p->pct); fileWriteEntry(f, str);
             /* save number of levelsets */
-            F_IntToStr(str, p->sts.cntr); F_WrtE(f, str);
-#else
-            /* save name -- 12 chars */
-            fwrite(p->nm, sizeof(p->nm), 1, f);
-            /* levels played */
-            fwrite(&p->lvls, sizeof(p->lvls), 1, f);
-            /* score */
-            fwrite(&p->scr, sizeof(p->scr), 1, f);
-            /* percentage */
-            fwrite(&p->pct, sizeof(p->pct), 1, f);
-            /* save number of levelsets */
-            fwrite(&p->sts.cntr, sizeof(int), 1, f);
-#endif
+            F_IntToStr(str, p->sts.cntr); fileWriteEntry(f, str);
             /* save all levelsets */
             le = p->sts.hd.n;
             while (le != &p->sts.tl) {
                 st = (SInf*)le->d;
-#ifdef ASCII
                 /* save name -- 32 chars */
-                F_WrtE(f, st->nm);
+                fileWriteEntry(f, st->nm);
                 /* save number of flags */
-                F_IntToStr(str, st->num); F_WrtE(f, str);
+                F_IntToStr(str, st->num); fileWriteEntry(f, str);
                 /* save level peer chapter number */
-                F_IntToStr(str, st->l_num); F_WrtE(f, str);
+                F_IntToStr(str, st->l_num); fileWriteEntry(f, str);
                 /* save chapter number */
-                F_IntToStr(str, st->c_num); F_WrtE(f, str);
+                F_IntToStr(str, st->c_num); fileWriteEntry(f, str);
                 /* save chapter open flags */
                 for ( i = 0; i < st->c_num; i++ ) {
-                    F_IntToStr(str, st->c_opn[i]); F_WrtE(f, str);
+                    F_IntToStr(str, st->c_opn[i]); fileWriteEntry(f, str);
                 }
                 /* save flags */
                 for ( i = 0; i < st->num; i++ ) {
-                    F_IntToStr(str, st->cmp[i]); F_WrtE(f, str);
+                    F_IntToStr(str, st->cmp[i]); fileWriteEntry(f, str);
                 }
-#else
-                /* save name -- 32 chars */
-                fwrite(st->nm, sizeof(st->nm), 1, f);
-                /* save number of flags */
-                fwrite(&st->num, sizeof(int), 1, f);
-                /* save level peer chapter number */
-                fwrite(&st->l_num, sizeof(int), 1, f);
-                /* save chapter number */
-                fwrite(&st->c_num, sizeof(int), 1, f);
-                /* save chapter open flags */
-                fwrite(st->c_opn, sizeof(char), st->c_num, f);
-                /* save flags */
-                fwrite(st->cmp, sizeof(char), st->num, f);
-#endif
                 le = le->n;
             }
             e = e->n;

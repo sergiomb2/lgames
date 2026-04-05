@@ -166,31 +166,31 @@ int L_LdSt(FILE *f)
     LSet *st = malloc(sizeof(LSet));
 
     // info section //
-    F_GetE(f, str, F_SUB | F_VAL);
-    if (!F_CkE(str, F_SUB, "<info>", 0)) {
+    fileGetEntry(f, str, F_SUB | F_VAL);
+    if (!fileCheckEntry(str, F_SUB, "<info>", 0)) {
         printf("ERROR: line %i: '<info>' expected\n", f_ln);
         free(st);
         return 0;
     }
     // levels per chapter //
-    F_GetE(f, str, F_VAL);
-    if (!F_CkE(str, F_VAL, "levels", val)) {
+    fileGetEntry(f, str, F_VAL);
+    if (!fileCheckEntry(str, F_VAL, "levels", val)) {
         printf("ERROR: line %i: 'levels' expected\n", f_ln);
         free(st);
         return 0;
     }
     st->l_num = atoi(val);
     // chapters //
-    F_GetE(f, str, F_VAL);
-    if (!F_CkE(str, F_VAL, "chapters", val)) {
+    fileGetEntry(f, str, F_VAL);
+    if (!fileCheckEntry(str, F_VAL, "chapters", val)) {
         printf("ERROR: line %i: 'chapters' expected\n", f_ln);
         free(st);
         return 0;
     }
     st->c_num = atoi(val);
     // limit type //
-    F_GetE(f, str, F_VAL);
-    if (!F_CkE(str, F_VAL, "limit", val)) {
+    fileGetEntry(f, str, F_VAL);
+    if (!fileCheckEntry(str, F_VAL, "limit", val)) {
         printf("ERROR: line %i: 'limit' expected\n", f_ln);
         free(st);
         return 0;
@@ -200,8 +200,8 @@ int L_LdSt(FILE *f)
     else
         st->limit_type = MOVES;
     // info section //
-    F_GetE(f, str, F_SUB | F_VAL);
-    if (!F_CkE(str, F_SUB, "</info>", 0)) {
+    fileGetEntry(f, str, F_SUB | F_VAL);
+    if (!fileCheckEntry(str, F_SUB, "</info>", 0)) {
         printf("ERROR: line %i: '</info>' expected\n", f_ln);
         free(st);
         return 0;
@@ -215,32 +215,32 @@ int L_LdSt(FILE *f)
     // chapters
     for (i = 0; i < st->c_num; i++) {
         // chapter start //
-        F_GetE(f, str, F_SUB | F_VAL);
-        if (!F_CkE(str, F_SUB, "<chapter>", 0)) {
+        fileGetEntry(f, str, F_SUB | F_VAL);
+        if (!fileCheckEntry(str, F_SUB, "<chapter>", 0)) {
             printf("ERROR: line %i: '<chapter>' expected\n", f_ln);
             goto failure;
         }
         // name //
-        F_GetE(f, str, F_VAL);
-        if (!F_CkE(str, F_VAL, "name", st->ch[i].nm)) {
+        fileGetEntry(f, str, F_VAL);
+        if (!fileCheckEntry(str, F_VAL, "name", st->ch[i].nm)) {
             printf("ERROR: line %i: 'name' expected\n", f_ln);
             goto failure;
         }
         // author //
-        F_GetE(f, str, F_VAL);
-        if (!F_CkE(str, F_VAL, "author", st->ch[i].authr)) {
+        fileGetEntry(f, str, F_VAL);
+        if (!fileCheckEntry(str, F_VAL, "author", st->ch[i].authr)) {
             printf("ERROR: line %i: 'author' expected\n", f_ln);
             goto failure;
         }
         // gset //
-        F_GetE(f, str, F_VAL);
-        if (!F_CkE(str, F_VAL, "gfx_set", st->ch[i].g_st)) {
+        fileGetEntry(f, str, F_VAL);
+        if (!fileCheckEntry(str, F_VAL, "gfx_set", st->ch[i].g_st)) {
             printf("ERROR: line %i: 'gfx_set' expected\n", f_ln);
             goto failure;
         }
         // open for play ? //
-        F_GetE(f, str, F_VAL);
-        if (!F_CkE(str, F_VAL, "open", val)) {
+        fileGetEntry(f, str, F_VAL);
+        if (!fileCheckEntry(str, F_VAL, "open", val)) {
             printf("ERROR: line %i: 'open' expected\n", f_ln);
             goto failure;
         }
@@ -249,21 +249,21 @@ int L_LdSt(FILE *f)
         // levels //
         for (j = 0; j < st->l_num; j++) {
             // level start //
-            F_GetE(f, str, F_SUB | F_VAL);
-            if (!F_CkE(str, F_SUB, "<level>", 0)) {
+            fileGetEntry(f, str, F_SUB | F_VAL);
+            if (!fileCheckEntry(str, F_SUB, "<level>", 0)) {
                 printf("ERROR: line %i: '<level>' expected\n", f_ln);
                 goto failure;
             }
             // time //
-            F_GetE(f, str, F_VAL);
-            if (!F_CkE(str, F_VAL, "limit", val)) {
+            fileGetEntry(f, str, F_VAL);
+            if (!fileCheckEntry(str, F_VAL, "limit", val)) {
                 printf("ERROR: line %i: 'limit' expected\n", f_ln);
                 goto failure;
             }
             st->ch[i].lvls[j].tm = atoi(val);
             // map width //
-            F_GetE(f, str, F_VAL);
-            if (!F_CkE(str, F_VAL, "map_w", val)) {
+            fileGetEntry(f, str, F_VAL);
+            if (!fileCheckEntry(str, F_VAL, "map_w", val)) {
                 printf("ERROR: line %i: 'map_w' expected\n", f_ln);
                 goto failure;
             }
@@ -272,8 +272,8 @@ int L_LdSt(FILE *f)
                 goto failure;
             }
             // map height //
-            F_GetE(f, str, F_VAL);
-            if (!F_CkE(str, F_VAL, "map_h", val)) {
+            fileGetEntry(f, str, F_VAL);
+            if (!fileCheckEntry(str, F_VAL, "map_h", val)) {
                 printf("ERROR: line %i: 'map_h' expected\n", f_ln);
                 goto failure;
             }
@@ -282,8 +282,8 @@ int L_LdSt(FILE *f)
                 goto failure;
             }
             // figure width //
-            F_GetE(f, str, F_VAL);
-            if (!F_CkE(str, F_VAL, "fig_w", val)) {
+            fileGetEntry(f, str, F_VAL);
+            if (!fileCheckEntry(str, F_VAL, "fig_w", val)) {
                 printf("ERROR: line %i: 'fig_w' expected\n", f_ln);
                 goto failure;
             }
@@ -293,8 +293,8 @@ int L_LdSt(FILE *f)
                 goto failure;
             }
             // figure height //
-            F_GetE(f, str, F_VAL);
-            if (!F_CkE(str, F_VAL, "fig_h", val)) {
+            fileGetEntry(f, str, F_VAL);
+            if (!fileCheckEntry(str, F_VAL, "fig_h", val)) {
                 printf("ERROR: line %i: 'fig_h' expected\n", f_ln);
                 goto failure;
             }
@@ -304,14 +304,14 @@ int L_LdSt(FILE *f)
             }
 
             // figure start //
-            F_GetE(f, str, F_SUB | F_VAL);
-            if (!F_CkE(str, F_SUB, "<figure>", 0)) {
+            fileGetEntry(f, str, F_SUB | F_VAL);
+            if (!fileCheckEntry(str, F_SUB, "<figure>", 0)) {
                 printf("ERROR: line %i: '<figure>' expected\n", f_ln);
                 goto failure;
             }
             // figure //
             for (k = 0; k < st->ch[i].lvls[j].f_h; k++) {
-                F_GetE(f, str, F_VAL);
+                fileGetEntry(f, str, F_VAL);
                 for (l = 0; l < st->ch[i].lvls[j].f_w; l++) {
                     if (str[l] >= '0' && str[l] <= '9')
                         st->ch[i].lvls[j].fgr[l][k] = str[l] - 48;
@@ -323,22 +323,22 @@ int L_LdSt(FILE *f)
                 }
             }
             // figure end //
-            F_GetE(f, str, F_SUB | F_VAL);
-            if (!F_CkE(str, F_SUB, "</figure>", 0)) {
+            fileGetEntry(f, str, F_SUB | F_VAL);
+            if (!fileCheckEntry(str, F_SUB, "</figure>", 0)) {
                 printf("ERROR: line %i: '</figure>' expected\n", f_ln);
                 goto failure;
             }
 
             // map start //
-            F_GetE(f, str, F_SUB | F_VAL);
-            if (!F_CkE(str, F_SUB, "<map>", 0)) {
+            fileGetEntry(f, str, F_SUB | F_VAL);
+            if (!fileCheckEntry(str, F_SUB, "<map>", 0)) {
                 printf("ERROR: line %i: '<map>' expected\n", f_ln);
                 goto failure;
             }
             // map
             for (k = 0; k < st->ch[i].lvls[j].m_h; k++) {
                 memset(str, 0, 256);
-                F_GetE(f, str, F_VAL);
+                fileGetEntry(f, str, F_VAL);
                 for (l = 0; l < st->ch[i].lvls[j].m_w; l++) {
                     if (str[l] >= '0' && str[l] <= '9')
                         L_StMpT(&st->ch[i].lvls[j].map[l][k], str[l] - 48, M_FLOOR, 0);
@@ -400,23 +400,23 @@ int L_LdSt(FILE *f)
                 }
             }
             // map end //
-            F_GetE(f, str, F_SUB | F_VAL);
-            if (!F_CkE(str, F_SUB, "</map>", 0)) {
+            fileGetEntry(f, str, F_SUB | F_VAL);
+            if (!fileCheckEntry(str, F_SUB, "</map>", 0)) {
                 printf("ERROR: line %i: '</map>' expected\n", f_ln);
                 goto failure;
             }
 
             // level end //
-            F_GetE(f, str, F_SUB | F_VAL);
-            if (!F_CkE(str, F_SUB, "</level>", 0)) {
+            fileGetEntry(f, str, F_SUB | F_VAL);
+            if (!fileCheckEntry(str, F_SUB, "</level>", 0)) {
                 printf("ERROR: line %i: '</level>' expected\n", f_ln);
                 goto failure;
             }
         }
 
         // chapter end //
-        F_GetE(f, str, F_SUB);
-        if (!F_CkE(str, F_SUB, "</chapter>", 0)) {
+        fileGetEntry(f, str, F_SUB);
+        if (!fileCheckEntry(str, F_SUB, "</chapter>", 0)) {
             printf("ERROR: line %i: '</chapter>' expected\n", f_ln);
             goto failure;
         }

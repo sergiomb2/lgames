@@ -24,7 +24,7 @@ int f_ln = 0;
 /*
     read an entry and return if the correct flag is set else read next entry
 */
-void F_GetE(FILE *f, char *str, int flgs)
+void fileGetEntry(FILE *f, char *str, int flgs)
 {
     int i = 0;
     char c;
@@ -92,7 +92,7 @@ int F_GetV(char *str, char *v)
 /*
     check entry for type and target name and assign p the value
 */
-int  F_CkE(char *str, int t, char *nm, char *v)
+int  fileCheckEntry(char *str, int t, char *nm, char *v)
 {
     char *n;
 
@@ -122,7 +122,7 @@ int  F_CkE(char *str, int t, char *nm, char *v)
 /*
     write an entry with a semicolon at its end
 */
-void F_WrtE(FILE *f, char *str)
+void fileWriteEntry(FILE *f, char *str)
 {
     char f_str[strlen(str) + 2];
 

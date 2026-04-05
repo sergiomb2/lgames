@@ -17,12 +17,6 @@ AC_CHECK_LIB(SDL_mixer, main,, AC_MSG_ERROR(lib SDL mixer is needed))
 
 CFLAGS="$CFLAGS -DSDL_1_1_5"
 
-dnl check ascii-flag
-ascii_flag=""
-AC_ARG_ENABLE( ascii,
-[  --enable-ascii          Enables 'save as ascii' option (for big-endian)], ascii_flag="-DASCII")
-AC_SUBST(ascii_flag)
-
 # Flags
 datdir=$datadir/$PACKAGE
 profdir=$localstatedir

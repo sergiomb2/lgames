@@ -24,10 +24,10 @@
 #define F_COM   0x0002
 #define F_VAL   0x0004
 
-void F_GetE(FILE *f, char *str, int flgs);
-int  F_CkE(char *str, int t, char *nm, char *v);
+void fileGetEntry(FILE *f, char *str, int flgs);
+int  fileCheckEntry(char *str, int t, char *nm, char *v);
 
-void F_WrtE(FILE *f, char *str);
+void fileWriteEntry(FILE *f, char *str);
 void F_IntToStr(char *str, int i);
 void F_FloatToStr(char *str, float f);
 void F_ValToInt(char *str, int *i);

@@ -86,9 +86,8 @@ void C_Ld()
         else
             
         {
-#ifdef ASCII
 
-        F_GetE(f, str, F_VAL);
+        fileGetEntry(f, str, F_VAL);
         if (strncmp(str,"ascii",5)) {
 
             printf(_("cfg file '%s' not in ascii; using defaults\n"), c_pth);
@@ -97,39 +96,22 @@ void C_Ld()
         }
         else {
 
-            F_GetE(f, cfg.prf_nm, F_VAL); cfg.prf_nm[strlen(cfg.prf_nm) - 1] = 0;
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.prf);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.s_vol);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.s_on);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.ani);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.trp);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.fscr);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.dim);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.diff);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.k_up);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.k_down);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.k_left);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.k_right);
-            F_GetE(f, str, F_VAL); F_ValToInt(str, &cfg.k_undo);
+            fileGetEntry(f, cfg.prf_nm, F_VAL); cfg.prf_nm[strlen(cfg.prf_nm) - 1] = 0;
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.prf);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.s_vol);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.s_on);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.ani);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.trp);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.fscr);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.dim);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.diff);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_up);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_down);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_left);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_right);
+            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_undo);
 
         }
-#else
-
-        fread(str, 5, 1, f);
-        if (!strncmp(str,"ascii",5)) {
-
-            printf(_("cfg file '%s' in ascii but raw binary data expected; using defaults\n"), c_pth);
-            C_Def();
-
-        }
-        else {
-
-            fseek(f,SEEK_SET,0);
-    		fread(&cfg, sizeof(Cfg), 1, f);
-
-        }
-
-#endif		
         }
         
 		fclose(f);
@@ -143,27 +125,23 @@ void C_Sv()
 {
     //save init //
     FILE	*f = fopen(c_pth, "w");
-#ifdef ASCII
     char    str[256];
 
-    F_WrtE(f, "ascii");
-    F_WrtE(f, cfg.prf_nm);
-    F_IntToStr(str, cfg.prf); F_WrtE(f, str);
-    F_IntToStr(str, cfg.s_vol); F_WrtE(f, str);
-    F_IntToStr(str, cfg.s_on); F_WrtE(f, str);
-    F_IntToStr(str, cfg.ani); F_WrtE(f, str);
-    F_IntToStr(str, cfg.trp); F_WrtE(f, str);
-    F_IntToStr(str, cfg.fscr); F_WrtE(f, str);
-    F_IntToStr(str, cfg.dim); F_WrtE(f, str);
-    F_IntToStr(str, cfg.diff); F_WrtE(f, str);
-    F_IntToStr(str, cfg.k_up); F_WrtE(f, str);
-    F_IntToStr(str, cfg.k_down); F_WrtE(f, str);
-    F_IntToStr(str, cfg.k_left); F_WrtE(f, str);
-    F_IntToStr(str, cfg.k_right); F_WrtE(f, str);
-    F_IntToStr(str, cfg.k_undo); F_WrtE(f, str);
-#else
-    fwrite(&cfg, sizeof(Cfg), 1, f);
-#endif
+    fileWriteEntry(f, "ascii");
+    fileWriteEntry(f, cfg.prf_nm);
+    F_IntToStr(str, cfg.prf); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.s_vol); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.s_on); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.ani); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.trp); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.fscr); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.dim); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.diff); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.k_up); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.k_down); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.k_left); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.k_right); fileWriteEntry(f, str);
+    F_IntToStr(str, cfg.k_undo); fileWriteEntry(f, str);
 
     fclose(f);
 }

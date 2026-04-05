@@ -5,3 +5,4 @@ remove SDL_1_1_5 flag
 fix sound
 simple ascii config
 add proper crosscompiling
+ignore Makefiles for levelset list
