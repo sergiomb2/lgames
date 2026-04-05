@@ -1,7 +1,7 @@
 bin_PROGRAMS = lmarbles
 lmarbles_SOURCES = audio.c cfg.c dynlist.c file.c game.c levels.c main.c menu.c \
-profile.c sdl.c timer.c audio.h cfg.h dynlist.h file.h game.h levels.h \
-menu.h profile.h sdl.h timer.h	
+profile.c sdl.c tools.c audio.h cfg.h dynlist.h file.h game.h levels.h \
+menu.h profile.h sdl.h tools.h	
 
 EXTRA_DIST = empty.prfs
 

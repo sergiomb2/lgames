@@ -1,8 +1,8 @@
 /***************************************************************************
-                          timer.c  -  description
+                          tools.h  -  description
                              -------------------
-    begin                : Mon Aug 14 2000
-    copyright            : (C) 2000 by Michael Speck
+    begin                : 2026/04/05
+    copyright            : (C) Michael Speck
     email                : kulkanie@gmx.net
  ***************************************************************************/
 
@@ -15,33 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <sys/time.h>
-#include <time.h>
-#include "timer.h"
-#include "sdl.h"
+#ifndef TOOLS_H
+#define TOOLS_H
 
-int t_c, t_lc;
+int T_Gt();
+void T_Rst();
 
-/*
-    get milliseconds since last call
-*/
-int T_Gt()
-{
-    int ms;
-    t_c = SDL_GetTicks();
-    ms = t_c - t_lc;
-    t_lc = t_c;
-    if (ms == 0) {
-        ms = 1;
-        SDL_Delay(1);
-    }
-    return ms;
-}
-
-/*
-    reset timer
-*/
-void T_Rst()
-{
-    t_lc = SDL_GetTicks();
-}
+#endif
