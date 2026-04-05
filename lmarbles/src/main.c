@@ -30,7 +30,7 @@
 #include "menu.h"
 #include "cfg.h"
 #include "levels.h"
-#include "timer.h"
+#include "tools.h"
 #include "sdl.h"
 #include "audio.h"
 #include "profile.h"

@@ -17,7 +17,7 @@
 
 #include <sys/time.h>
 #include <time.h>
-#include "timer.h"
+#include "tools.h"
 #include "sdl.h"
 
 int t_c, t_lc;

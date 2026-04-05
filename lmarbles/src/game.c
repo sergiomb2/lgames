@@ -22,7 +22,7 @@
 #include "file.h"
 #include "cfg.h"
 #include "menu.h"
-#include "timer.h"
+#include "tools.h"
 
 Game gm;
 /* levelset names & levelsets -- levels.h */

@@ -27,7 +27,7 @@
 #include "game.h"
 #include "file.h"
 #include "sdl.h"
-#include "timer.h"
+#include "tools.h"
 #include "cfg.h"
 
 /* game struct -- game.c */
