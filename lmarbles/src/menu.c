@@ -22,7 +22,7 @@
 
 extern Sdl sdl;
 MMng mm;
-extern Cfg cfg;
+extern Config config;
 
 // menu entry //
 /*
@@ -449,7 +449,7 @@ void MM_Shw(int rsz)
     D_DST(sdl.scr, mm.lx, mm.ly, mm.ss_logo->w, mm.ss_logo->h);
     D_SRC(mm.ss_logo, 0, 0);
     SS_Blt();
-    if (cfg.dim)
+    if (config.dim)
         SDL_UNDIM();
     else
         Sdl_FUpd();

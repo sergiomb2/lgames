@@ -41,7 +41,7 @@ extern struct timeb t_c, t_lc;
 // quit game quickly ? //
 int     trm_gm = 0;
 // menu config -- cfg.c //
-extern  Cfg cfg;
+extern  Config config;
 // menu manager -- menu.c //
 extern  MMng mm;
 // sdl struct //
@@ -114,7 +114,7 @@ void H_Shw()
     D_FSRC(sdl.scr);
     SS_Blt();
     // darken screen //
-    if (cfg.dim)
+    if (config.dim)
         SDL_DIM();
 
     // draw background //
@@ -122,7 +122,7 @@ void H_Shw()
     D_FSRC(mm.ss_bkgd);
     SS_Blt();
     // brighten screen //
-    if (cfg.dim)
+    if (config.dim)
         SDL_UNDIM();
     else
         Sdl_FUpd();
@@ -173,14 +173,14 @@ void H_Shw()
     Sdl_WtFrClk();
 
     //darken screen //
-    if (cfg.dim)
+    if (config.dim)
         SDL_DIM();
     // restore screen //
     D_FDST(sdl.scr);
     D_FSRC(buf);
     SS_Blt();
     // brighten screen //
-    if (cfg.dim)
+    if (config.dim)
         SDL_UNDIM();
     else
         Sdl_FUpd();
@@ -197,7 +197,7 @@ void H_Shw()
 void CB_Snd()
 {
 #ifdef SOUND
-    sound_enable(cfg.s_on);
+    sound_enable(config.sound);
 #endif
 }
 
@@ -207,7 +207,7 @@ void CB_Snd()
 void CB_StV()
 {
 #ifdef SOUND
-    sound_volume(cfg.s_vol * 16);
+    sound_volume(config.volume * 16);
 #endif
 }
 
@@ -216,12 +216,12 @@ void CB_StV()
 */
 void CB_CrtP()
 {
-    Prf_Crt(cfg.prf_nm);
+    Prf_Crt(config.prf_nm);
     Prf_CrtLst();
     // update menu entries //
-    ME_CngSwX(me_prf, &cfg.prf, prf_lst, prf_n);
-    ME_CngSwX(me_del, &cfg.prf, prf_lst, prf_n);
-    ME_CngSwX(me_clr, &cfg.prf, prf_lst, prf_n);
+    ME_CngSwX(me_prf, &config.prf, prf_lst, prf_n);
+    ME_CngSwX(me_del, &config.prf, prf_lst, prf_n);
+    ME_CngSwX(me_clr, &config.prf, prf_lst, prf_n);
 }
 
 /*
@@ -229,7 +229,7 @@ void CB_CrtP()
 */
 void CB_ClrP()
 {
-    Prf *p = DL_Get(&prfs, cfg.prf);
+    Prf *p = DL_Get(&prfs, config.prf);
     DL_Clr(&p->sts);
     p->lvls = 0;
     p->scr = 0;
@@ -246,12 +246,12 @@ void CB_DelP()
         return;
     }
     // delete from list //
-    DL_Del(&prfs, cfg.prf);
+    DL_Del(&prfs, config.prf);
     Prf_CrtLst();
     // update menu entries //
-    ME_CngSwX(me_prf, &cfg.prf, prf_lst, prf_n);
-    ME_CngSwX(me_del, &cfg.prf, prf_lst, prf_n);
-    ME_CngSwX(me_clr, &cfg.prf, prf_lst, prf_n);
+    ME_CngSwX(me_prf, &config.prf, prf_lst, prf_n);
+    ME_CngSwX(me_del, &config.prf, prf_lst, prf_n);
+    ME_CngSwX(me_clr, &config.prf, prf_lst, prf_n);
 }
 
 void CB_SrtP()
@@ -317,10 +317,10 @@ void MM_CrtE()
     M_Add(opts, ME_CrtSep(""));
     M_Add(opts, ME_CrtSub(_("Back"), _main));
     // sound //
-    e = ME_CrtSw2(_("Sound: "), &cfg.s_on, _("Off"), _("On"));
+    e = ME_CrtSw2(_("Sound: "), &config.sound, _("Off"), _("On"));
     e->cb = CB_Snd;
     M_Add(snd, e);
-    e = ME_CrtRng(_("Volume: "), &cfg.s_vol, 1, 8, 1);
+    e = ME_CrtRng(_("Volume: "), &config.volume, 1, 8, 1);
     e->cb = CB_StV;
     M_Add(snd, e);
     M_Add(snd, ME_CrtSep(""));
@@ -328,10 +328,10 @@ void MM_CrtE()
     // new game //
     M_Add(new, ME_CrtAct(_("Start"), MA_PLY));
     M_Add(new, ME_CrtSep(""));
-    M_Add(new, ME_CrtSwX(_("Difficulty:"), &cfg.diff, str_diff, 4));
-    if (cfg.ls >= ls_n) cfg.ls = 0; // maybe someone deleted some level sets //
-    M_Add(new, ME_CrtSwX(_("Levelset:"), &cfg.ls, ls_lst, ls_n));
-    me_prf = ME_CrtSwX(_("Profile:"), &cfg.prf, prf_lst, prf_n);
+    M_Add(new, ME_CrtSwX(_("Difficulty:"), &config.diff, str_diff, 4));
+    if (config.ls >= ls_n) config.ls = 0; // maybe someone deleted some level sets //
+    M_Add(new, ME_CrtSwX(_("Levelset:"), &config.ls, ls_lst, ls_n));
+    me_prf = ME_CrtSwX(_("Profile:"), &config.prf, prf_lst, prf_n);
     M_Add(new, me_prf);
     M_Add(new, ME_CrtSep(""));
     M_Add(new, ME_CrtSub(_("Edit Profiles"), edit));
@@ -346,7 +346,7 @@ void MM_CrtE()
     e->cb = CB_SrtP;
     M_Add(edit, e);
     // create //
-    M_Add(crt, ME_CrtStr(_("Profile Name"), cfg.prf_nm, 11));
+    M_Add(crt, ME_CrtStr(_("Profile Name"), config.prf_nm, 11));
     M_Add(crt, ME_CrtSub(_("Create Profile"), c_crt));
     M_Add(crt, ME_CrtSep(""));
     M_Add(crt, ME_CrtSub(_("Back"), edit));
@@ -356,7 +356,7 @@ void MM_CrtE()
     M_Add(c_crt, e);
     M_Add(c_crt, ME_CrtSub(_("No"), crt));
     // clear //
-    me_clr = ME_CrtSwX(_("Profile:"), &cfg.prf, prf_lst, prf_n);
+    me_clr = ME_CrtSwX(_("Profile:"), &config.prf, prf_lst, prf_n);
     M_Add(clr, me_clr);
     M_Add(clr, ME_CrtSub(_("Clear Profile"), c_clr));
     M_Add(clr, ME_CrtSep(""));
@@ -367,7 +367,7 @@ void MM_CrtE()
     M_Add(c_clr, e);
     M_Add(c_clr, ME_CrtSub(_("No"), clr));
     // delete //
-    me_del = ME_CrtSwX(_("Profile:"), &cfg.prf, prf_lst, prf_n);
+    me_del = ME_CrtSwX(_("Profile:"), &config.prf, prf_lst, prf_n);
     M_Add(del, me_del);
     M_Add(del, ME_CrtSub(_("Delete Profile"), c_del));
     M_Add(del, ME_CrtSep(""));
@@ -378,18 +378,18 @@ void MM_CrtE()
     M_Add(c_del, e);
     M_Add(c_del, ME_CrtSub(_("No"), del));
     // graphics //
-    M_Add(gfx, ME_CrtSw2(_("Animations:"), &cfg.ani, _("Off"), _("On")));
+    M_Add(gfx, ME_CrtSw2(_("Animations:"), &config.animations, _("Off"), _("On")));
 //    M_Add(gfx, ME_CrtSw2("Transparency:", &cfg.trp, _("Off"), _("On")));
-    M_Add(gfx, ME_CrtSw2(_("Fullscreen:"), &cfg.fscr, _("Off"), _("On")));
-    M_Add(gfx, ME_CrtSw2(_("Dim Effect:"), &cfg.dim, _("Off"), _("On")));
+    M_Add(gfx, ME_CrtSw2(_("Fullscreen:"), &config.fullscreen, _("Off"), _("On")));
+    M_Add(gfx, ME_CrtSw2(_("Dim Effect:"), &config.dim, _("Off"), _("On")));
     M_Add(gfx, ME_CrtSep(""));
     M_Add(gfx, ME_CrtSub(_("Back"), opts));
     // controls
-    M_Add(ctrl, ME_CrtKey(_("Up"), &cfg.k_up));
-    M_Add(ctrl, ME_CrtKey(_("Down"), &cfg.k_down));
-    M_Add(ctrl, ME_CrtKey(_("Left"), &cfg.k_left));
-    M_Add(ctrl, ME_CrtKey(_("Right"), &cfg.k_right));
-    M_Add(ctrl, ME_CrtKey(_("Undo"), &cfg.k_undo));
+    M_Add(ctrl, ME_CrtKey(_("Up"), &config.k_up));
+    M_Add(ctrl, ME_CrtKey(_("Down"), &config.k_down));
+    M_Add(ctrl, ME_CrtKey(_("Left"), &config.k_left));
+    M_Add(ctrl, ME_CrtKey(_("Right"), &config.k_right));
+    M_Add(ctrl, ME_CrtKey(_("Undo"), &config.k_undo));
     M_Add(ctrl, ME_CrtSep(""));
     M_Add(ctrl, ME_CrtSub(_("Back"), opts));
 
@@ -457,23 +457,23 @@ int main(int argc, char *argv[])
 
     /* load config (and create config dir which is also used
      * for profiles) */
-    C_StPth();
-    C_Ld();
+    configSetPath();
+    configLoad();
 
     // load profiles //
     Prf_Ini();
     if (!Prf_Ld())
-        cfg.prf = 0;
+        config.prf = 0;
             
     // create levelset list and reset config's levelset index if nescessary //
     L_CrtLst();
-    if (cfg.ls >= ls_n)
-        cfg.ls = 0;
+    if (config.ls >= ls_n)
+        config.ls = 0;
 
 #ifdef SOUND
     audio_open();
-    sound_enable( cfg.s_on );
-    sound_volume( cfg.s_vol * 16 );
+    sound_enable( config.sound );
+    sound_volume( config.volume * 16 );
 #endif
 		
     // game init //
@@ -529,7 +529,7 @@ int main(int argc, char *argv[])
 #endif
 
     // save config //
-    C_Sv();
+    configSave();
 
     // free levelset list //
     L_DelLst();

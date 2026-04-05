@@ -18,6 +18,8 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#define MAXSTRLEN 1024
+
 int T_Gt();
 void T_Rst();
 

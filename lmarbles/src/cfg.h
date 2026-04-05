@@ -33,25 +33,24 @@ typedef struct {
     // level set //
     int ls;
     // sound
-    int s_on;
-    int s_vol;
+    int sound;
+    int volume;
     // gfx //
-    int ani;
-    int trp;
-    int fscr; // fullscreen
-    int dim; // dim effect on?
+    int animations;
+    int fullscreen;
+    int dim;
     int diff; // difficulty
     int k_up; // controls
     int k_down;
     int k_left;
     int k_right;
     int k_undo;
-} Cfg;
+} Config;
 
-void C_StPth();
-void C_Ld();
-void C_Sv();
-void C_Def();
+void configSetPath();
+void configLoad();
+void configSave();
+void configSetDefaults();
 
 /* i18n */
 #ifdef HAVE_CONFIG_H

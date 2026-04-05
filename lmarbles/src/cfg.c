@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "cfg.h"
+#include "tools.h"
 #include "sdl.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,25 +32,26 @@
  #define MKDIR mkdir
 #endif
 
-char configDir[512]; /* config directory also used for profiles */
-char c_pth[1024];
-Cfg cfg;
+char configDir[MAXSTRLEN/2]; /* config directory also used for profiles */
+char configPath[MAXSTRLEN];
+Config config;
 
-/*
-    get the full path of the cfg file
-*/
-void C_StPth()
+/* Set configDir (directory for config, create if needed) and
+ * configPath (including file name)
+ */
+void configSetPath()
 {
 	DIR *dir;
-	/* build config dir by expanding home directory if needed,
-	 * use c_pth as auxiliary var */
-	snprintf(configDir, sizeof(configDir), CONFIGDIR);
-	if (configDir[0] == '~')
-		snprintf(c_pth, sizeof(c_pth), "%s/%s", getenv( "HOME" ), configDir+1);
+	char aux[MAXSTRLEN/2];
+
+	/* build config dir by expanding home directory if needed */
+	snprintf(aux, sizeof(aux), "%s", CONFIGDIR);
+	if (aux[0] == '~')
+		snprintf(configDir, sizeof(configDir), "%s/%s", getenv( "HOME" ), aux+1);
 	else
-		snprintf(c_pth, sizeof(c_pth), "%s", configDir);
-	snprintf(configDir, sizeof(configDir), c_pth);
+		snprintf(configDir, sizeof(configDir), "%s", aux);
 	printf(_("config directory: %s\n"), configDir);
+
 	/* create directory if not found */
 	if ((dir = opendir(configDir)) == 0) {
 		fprintf(stderr, _("  not found, creating it\n"));
@@ -57,91 +59,58 @@ void C_StPth()
 	} else {
 		closedir(dir);
 	}
+
 	/* get full path of config file */
-	snprintf(c_pth, sizeof(c_pth), "%s/lmarbles.conf", configDir);
+	snprintf(configPath, sizeof(configPath), "%s/lmarbles.conf", configDir);
 }
 
-/*
-    load it
-*/
-void C_Ld()
+void configLoad()
 {
-    char str[256];
-    FILE	*f;
-    struct stat dir_stat;
+	FILE	*f;
 
-    printf(_("loading configuration...\n"));
+	configSetDefaults();
 
-    // load init //
-    if ((f = fopen(c_pth, "r")) == 0) {
-        printf(_("cfg file '%s' not found; using defaults\n"), c_pth);
-        C_Def();
+	printf(_("loading configuration %s\n"), configPath);
+
+	if ((f = fopen(configPath, "r")) == 0) {
+		printf(_("config file not found, using defaults\n"));
+		return;
 	}
-    else {
-        stat( c_pth, &dir_stat );
-        if ( dir_stat.st_size != sizeof( Cfg ) ) {
-            fprintf( stderr, _("config file '%s' corrupted... using defaults\n"), c_pth );
-            C_Def();
-        }
-        else
-            
-        {
 
-        fileGetEntry(f, str, F_VAL);
-        if (strncmp(str,"ascii",5)) {
+	fileReadString(f, "profile", config.prf_nm);
+	fileReadInt(f, "profileid", &config.prf);
+	fileReadInt(f, "sound", &config.sound);
+	fileReadInt(f, "volume", &config.volume);
+	fileReadInt(f, "animations", &config.animations);
+	fileReadInt(f, "fullscreen", &config.fullscreen);
+	fileReadInt(f, "dim", &config.dim);
+	fileReadInt(f, "diff", &config.diff);
+	fileReadInt(f, "k_up", &config.k_up);
+	fileReadInt(f, "k_down", &config.k_down);
+	fileReadInt(f, "k_left", &config.k_left);
+	fileReadInt(f, "k_right", &config.k_right);
+	fileReadInt(f, "k_undo", &config.k_undo);
 
-            printf(_("cfg file '%s' not in ascii; using defaults\n"), c_pth);
-            C_Def();
-
-        }
-        else {
-
-            fileGetEntry(f, cfg.prf_nm, F_VAL); cfg.prf_nm[strlen(cfg.prf_nm) - 1] = 0;
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.prf);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.s_vol);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.s_on);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.ani);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.trp);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.fscr);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.dim);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.diff);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_up);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_down);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_left);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_right);
-            fileGetEntry(f, str, F_VAL); F_ValToInt(str, &cfg.k_undo);
-
-        }
-        }
-        
-		fclose(f);
-	}
+	fclose(f);
 }
 
-/*
-    save it
-*/
-void C_Sv()
+void configSave()
 {
-    //save init //
-    FILE	*f = fopen(c_pth, "w");
-    char    str[256];
+    FILE	*f = fopen(configPath, "w");
 
-    fileWriteEntry(f, "ascii");
-    fileWriteEntry(f, cfg.prf_nm);
-    F_IntToStr(str, cfg.prf); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.s_vol); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.s_on); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.ani); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.trp); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.fscr); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.dim); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.diff); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.k_up); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.k_down); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.k_left); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.k_right); fileWriteEntry(f, str);
-    F_IntToStr(str, cfg.k_undo); fileWriteEntry(f, str);
+    fprintf(f, "profile = %s;\n", config.prf_nm);
+    fprintf(f, "profileid = %d;\n", config.prf);
+    fprintf(f, "sound = %d;\n", config.sound);
+    fprintf(f, "volume = %d;\n", config.volume);
+    fprintf(f, "animations = %d;\n", config.animations);
+    fprintf(f, "fullscreen = %d;\n", config.fullscreen);
+    fprintf(f, "dim = %d;\n", config.dim);
+    fprintf(f, "diff = %d;\n", config.diff);
+    fprintf(f, "k_up = %d;\n", config.k_up);
+    fprintf(f, "k_down = %d;\n", config.k_down);
+    fprintf(f, "k_left = %d;\n", config.k_left);
+    fprintf(f, "k_right = %d;\n", config.k_right);
+    fprintf(f, "k_undo = %d;\n", config.k_undo);
 
     fclose(f);
 }
@@ -149,23 +118,22 @@ void C_Sv()
 /*
     default values
 */
-void C_Def()
+void configSetDefaults()
 {
-    strcpy(cfg.prf_nm, "Michael");
-    cfg.prf = 0;
+    strcpy(config.prf_nm, "Michael");
+    config.prf = 0;
     // sound //
-    cfg.s_vol = 6;
-    cfg.s_on = 1;
+    config.volume = 6;
+    config.sound = 1;
     // gfx //
-    cfg.ani = 1;
-    cfg.trp = 1;
-    cfg.fscr = 0;
-    cfg.dim = 1;
-    cfg.diff = DIFF_NORMAL;
+    config.animations = 1;
+    config.fullscreen = 0;
+    config.dim = 1;
+    config.diff = DIFF_NORMAL;
     // controls
-    cfg.k_up = SDLK_UP;
-    cfg.k_down = SDLK_DOWN;
-    cfg.k_left = SDLK_LEFT;
-    cfg.k_right = SDLK_RIGHT;
-    cfg.k_undo = SDLK_SPACE;
+    config.k_up = SDLK_UP;
+    config.k_down = SDLK_DOWN;
+    config.k_left = SDLK_LEFT;
+    config.k_right = SDLK_RIGHT;
+    config.k_undo = SDLK_SPACE;
 }

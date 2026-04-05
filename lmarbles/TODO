@@ -6,3 +6,4 @@ fix sound
 simple ascii config
 add proper crosscompiling
 ignore Makefiles for levelset list
+properly check string size in file.c

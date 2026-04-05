@@ -30,7 +30,7 @@ int  prf_n = 0;
 // profile source path //
 char prf_pth[256];
 // configuration //
-extern Cfg cfg;
+extern Config config;
 
 /* initialize dyn list and source path */
 void Prf_Ini()

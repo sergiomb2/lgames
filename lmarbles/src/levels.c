@@ -39,7 +39,7 @@ extern Sdl sdl;
 /* profiles -- profile.c */
 extern DLst prfs;
 /* config -- cfg.c */
-extern Cfg cfg;
+extern Config config;
 
 char **ls_lst = 0;
 int  ls_n = 0;
@@ -605,7 +605,7 @@ void L_Ini(int c, int l)
     D_FDST(sdl.scr);
     D_FSRC(gm.s_bkgd);
     SS_Blt();
-    if (cfg.dim)
+    if (config.dim)
         SDL_UNDIM();
     else
         Sdl_FUpd();
@@ -629,7 +629,7 @@ void L_Ini(int c, int l)
     else {
         /* gm.c_lvl->tm containts the move limit. this is modified according
            to the difficulty levels */
-        switch ( cfg.diff ) {
+        switch ( config.diff ) {
             case DIFF_EASY:
                 mv_mod = (int)ceil((float)gm.c_lvl->tm * 0.2 * ( 5 - gm.c_ch ) );
                 gm.c_lvl->tm += mv_mod;
@@ -734,7 +734,7 @@ void L_DrwMpTl(int i, int j)
     }
 
     // static animations ? //
-    if (!cfg.ani) {
+    if (!config.animations) {
         D_DST(gm.s_bkgd, gm.l_x + i * gm.t_w, gm.l_y + j * gm.t_h, gm.t_w, gm.t_h);
         switch (gm.c_lvl->map[i][j].t) {
             case M_OW_U:

@@ -25,7 +25,10 @@
 #define F_VAL   0x0004
 
 void fileGetEntry(FILE *f, char *str, int flgs);
-int  fileCheckEntry(char *str, int t, char *nm, char *v);
+int fileCheckEntry(char *str, int t, char *nm, char *v);
+
+int fileReadString(FILE *f, const char *id, char *val);
+int fileReadInt(FILE *f, const char *id, int *val);
 
 void fileWriteEntry(FILE *f, char *str);
 void F_IntToStr(char *str, int i);

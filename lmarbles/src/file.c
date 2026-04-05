@@ -18,6 +18,7 @@
 #include "file.h"
 #include <stdlib.h>
 #include <string.h>
+#include "tools.h"
 
 int f_ln = 0;
 
@@ -26,23 +27,31 @@ int f_ln = 0;
 */
 void fileGetEntry(FILE *f, char *str, int flgs)
 {
-    int i = 0;
-    char c;
-    str[0] = 0;
-    while (!feof(f)) {
-        fread(&c, 1/*sizeof(char)*/, 1, f); /* MUST BE exactly on byte */
-        if (c == 10) {
-            f_ln++; // increase line counter //
-            continue; // ignore returns //
-        }
-        str[i++] = c; str[i] = 0;
-        if ( (c == ';' && flgs & F_VAL) || (c == '>' && flgs & F_SUB) || (c == ')' && flgs & F_COM) )
-            break;
-        if (c == ';' || c == '>' || c == ')')
-            i = 0;
-    }
-    if (i == 1)
-        str[0] = 0;
+	int pos = 0;
+	char c;
+	str[0] = 0;
+	while (!feof(f)) {
+		/* read exactly one byte */
+		fread(&c, 1, 1, f);
+		/* ignore return carrier but count lines */
+		if (c == 10) {
+			f_ln++;
+			continue;
+		}
+		/* add character */
+		str[pos++] = c;
+		str[pos] = 0;
+		/* check valid end character */
+		if ( (c == ';' && (flgs & F_VAL)) ||
+				(c == '>' && (flgs & F_SUB)) ||
+				(c == ')' && (flgs & F_COM)) )
+			break;
+		/* ignore corrupted parts */
+		if (c == ';' || c == '>' || c == ')')
+			pos = 0;
+	}
+	if (pos == 1)
+		str[0] = 0; /* empty entry */
 }
 
 /*
@@ -89,10 +98,10 @@ int F_GetV(char *str, char *v)
     return 0;
 }
 
-/*
-    check entry for type and target name and assign p the value
+/* check entry for type @t and target name @nm and copy
+ * value to @v if not NULL. Return 0 on failure, 1 on success.
 */
-int  fileCheckEntry(char *str, int t, char *nm, char *v)
+int fileCheckEntry(char *str, int t, char *nm, char *v)
 {
     char *n;
 
@@ -117,6 +126,32 @@ int  fileCheckEntry(char *str, int t, char *nm, char *v)
             if (t & F_COM && F_FstC(str, 0) == '(' && F_LstC(str) == ')')
                 return 1;
     return 0;
+}
+
+/** Read next entry from file and verify it is a value item
+ * with the correct @id. Copy value to @val. Return 0 if not found,
+ * 1 if found.
+ */
+int fileReadString(FILE *f, const char *id, char *val)
+{
+	char entry[MAXSTRLEN]; /* FIXME fileGetEntry does not check length */
+	char str[MAXSTRLEN];
+	fileGetEntry(f, entry, F_VAL);
+	if (!fileCheckEntry(entry, F_VAL, id, val))
+		return 0;
+	return 1;
+}
+
+/** Read next entry from file and verify it is a value item
+ * with the correct @id. Copy value to @val. Return 0 if not found,
+ * 1 if found.
+ */
+int fileReadInt(FILE *f, const char *id, int *val)
+{
+	char str[MAXSTRLEN];
+	fileReadString(f, id, str);
+	*val = atoi(str);
+	return 1;
 }
 
 /*

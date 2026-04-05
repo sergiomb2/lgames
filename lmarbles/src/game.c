@@ -32,7 +32,7 @@ extern DLst l_sts;
 /* line counter -- file.c */
 extern int f_ln;
 /* config -- cfg.c */
-extern Cfg cfg;
+extern Config config;
 /* Sdl -- sdl.c */
 extern Sdl sdl;
 /* profiles -- profile.c */
@@ -389,7 +389,7 @@ int G_Opn()
     int     flgs = SDL_SWSURFACE;
 
     // get current level set
-    gm.c_l_st = (LSet*)DL_Get(&l_sts, cfg.ls);
+    gm.c_l_st = (LSet*)DL_Get(&l_sts, config.ls);
 
     // check if current level set is valid
     if (!G_CkLSt()) {
@@ -400,15 +400,15 @@ int G_Opn()
     }
 
     // current profile
-    gm.c_prf = (Prf*)DL_Get(&prfs, cfg.prf);
+    gm.c_prf = (Prf*)DL_Get(&prfs, config.prf);
 
     // current set info
     gm.c_s_inf = Prf_RegLS(gm.c_prf, gm.c_l_st);
 
     // dim & resize
-    if (cfg.dim)
+    if (config.dim)
         SDL_DIM();
-    if (cfg.fscr)
+    if (config.fullscreen)
         flgs = flgs | SDL_FULLSCREEN;
     Sdl_StVdMd(gm.scr_w, gm.scr_h, 16, flgs);
 
@@ -441,7 +441,7 @@ int G_Opn()
 void G_Cls()
 {
     // dim
-    if (!trm_gm && cfg.dim)
+    if (!trm_gm && config.dim)
         SDL_DIM();
 
     // free background
@@ -511,9 +511,9 @@ void G_Run()
                                 D_FDST(buf);
                                 D_FSRC(sdl.scr);
                                 SS_Blt();
-                                cfg.fscr = !cfg.fscr;
+                                config.fullscreen = !config.fullscreen;
                                 flgs = SDL_SWSURFACE;
-                                if (cfg.fscr)
+                                if (config.fullscreen)
                                     flgs = flgs | SDL_FULLSCREEN;
                                 Sdl_StVdMd(gm.scr_w, gm.scr_h, 16, flgs);
                                 D_FDST(sdl.scr);
@@ -526,19 +526,19 @@ void G_Run()
                                 if ( !gm.m_sel ) 
                                     break;
                                 /* warp? */
-                                if (gm.m_mv && (ev.key.keysym.sym == cfg.k_right || ev.key.keysym.sym == cfg.k_left || ev.key.keysym.sym == cfg.k_up || ev.key.keysym.sym == cfg.k_down)) {
+                                if (gm.m_mv && (ev.key.keysym.sym == config.k_right || ev.key.keysym.sym == config.k_left || ev.key.keysym.sym == config.k_up || ev.key.keysym.sym == config.k_down)) {
                                     gm.m_warp = 1;
                                     break;
                                 }
                                 // undo key
-                                if (ev.key.keysym.sym == cfg.k_undo) {
+                                if (ev.key.keysym.sym == config.k_undo) {
                                     restore_pos = 1;
 #ifdef SOUND
                                     sound_play(gm.wv_clk);
 #endif
                                 }
                                 // up key
-                                if (ev.key.keysym.sym == cfg.k_up && (gm.m_vd & MD_U) && !gm.m_mv) {
+                                if (ev.key.keysym.sym == config.k_up && (gm.m_vd & MD_U) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_U;
                                     Mr_IniMv();
@@ -547,7 +547,7 @@ void G_Run()
 #endif
                                 }
                                 // down key
-                                if (ev.key.keysym.sym == cfg.k_down && (gm.m_vd & MD_D) && !gm.m_mv) {
+                                if (ev.key.keysym.sym == config.k_down && (gm.m_vd & MD_D) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_D;
                                     Mr_IniMv();
@@ -556,7 +556,7 @@ void G_Run()
 #endif
                                 }
                                 // left key
-                                if (ev.key.keysym.sym == cfg.k_left && (gm.m_vd & MD_L) && !gm.m_mv) {
+                                if (ev.key.keysym.sym == config.k_left && (gm.m_vd & MD_L) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_L;
                                     Mr_IniMv();
@@ -565,7 +565,7 @@ void G_Run()
 #endif
                                 }
                                 // right key
-                                if (ev.key.keysym.sym == cfg.k_right && (gm.m_vd & MD_R) && !gm.m_mv) {
+                                if (ev.key.keysym.sym == config.k_right && (gm.m_vd & MD_R) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_R;
                                     Mr_IniMv();
@@ -686,7 +686,7 @@ void G_Run()
 
             }
 
-            if (cfg.dim)
+            if (config.dim)
                 SDL_DIM();
             if (!restart)
                 if (!L_FndNxt()) // game finished ?
@@ -872,9 +872,9 @@ void G_Ps()
                 if (e.key.keysym.sym == SDLK_p)
                     leave = 1;
                 if (e.key.keysym.sym == SDLK_f) {
-                    cfg.fscr = !cfg.fscr;
+                    config.fullscreen = !config.fullscreen;
                     flgs = SDL_SWSURFACE;
-                    if (cfg.fscr)
+                    if (config.fullscreen)
                         flgs = flgs | SDL_FULLSCREEN;
                     Sdl_StVdMd(gm.scr_w, gm.scr_h, 16, flgs);
                     D_FDST(sdl.scr);
@@ -1016,13 +1016,13 @@ int G_CfmWrp()
 #endif
 
     // restore screen
-    if (cfg.dim)
+    if (config.dim)
         SDL_DIM();
     if (!ret) {
         D_FDST(sdl.scr);
         D_FSRC(buf);
         SS_Blt();
-        if (cfg.dim)
+        if (config.dim)
             SDL_UNDIM();
         else
             Sdl_FUpd();
@@ -1116,12 +1116,12 @@ int G_CfmQut()
 
     // restore screen
     if (!ret) {
-        if (cfg.dim)
+        if (config.dim)
             SDL_DIM();
         D_FDST(sdl.scr);
         D_FSRC(buf);
         SS_Blt();
-        if (cfg.dim)
+        if (config.dim)
             SDL_UNDIM();
         else
             Sdl_FUpd();
@@ -1214,13 +1214,13 @@ int G_CfmRst()
 #endif
 
     // restore screen
-    if (cfg.dim)
+    if (config.dim)
         SDL_DIM();
     if (!ret) {
         D_FDST(sdl.scr);
         D_FSRC(buf);
         SS_Blt();
-        if (cfg.dim)
+        if (config.dim)
             SDL_UNDIM();
         else
             Sdl_FUpd();
@@ -2165,7 +2165,7 @@ void MA_Ini()
 
 void MA_Upd(int ms)
 {
-    if (!cfg.ani) return;
+    if (!config.animations) return;
 
     gm.ma_ow_a.p += (float)ms * gm.ma_ow_a.c;
     if (gm.ma_ow_a.p >= gm.ma_ow_a.f)
@@ -2184,7 +2184,7 @@ void MA_Shw()
     int i;
     int x, y;
 
-    if (!cfg.ani) return;
+    if (!config.animations) return;
 
     for (i = 0; i < gm.ma_num; i++) {
         // get position in screen
@@ -2391,7 +2391,7 @@ void Wl_Exp(int x, int y, int d)
     int x_r, x_off, y_r, y_off; // direction values
     SDL_Surface *s_shr;
 
-    if ( !cfg.ani ) return;
+    if ( !config.animations ) return;
 
     x_r = y_r = 200;
     x_off = y_off = 100;
@@ -2449,7 +2449,7 @@ void FA_Run()
     int leave = 0;
     int tm, c_tm; // time in ms
 
-    if (!cfg.ani) return;
+    if (!config.animations) return;
 
     if (gm.m_sel)
         Mr_Ins();
@@ -2655,7 +2655,7 @@ void Cr_Shw()
 void modify_score( int *b_lvl, int *b_tm )
 {
     /* modify score according to difficulty level */
-    switch (cfg.diff) {
+    switch (config.diff) {
         case DIFF_EASY:
             *b_lvl /= 2;
             *b_tm  /= 2;
