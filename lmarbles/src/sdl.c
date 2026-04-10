@@ -101,15 +101,11 @@ void SS_End(SDL_Surface *sur)
 */
 void SS_Blt(void)
 {
-#ifdef SDL_1_1_5
     if (sdl.s.s->flags & SDL_SRCALPHA)
         SDL_SetAlpha(sdl.s.s, SDL_SRCALPHA, 255 - sdl.s.s->format->alpha);
-#endif
     SDL_BlitSurface(sdl.s.s, &sdl.s.r, sdl.d.s, &sdl.d.r);
-#ifdef SDL_1_1_5
     if (sdl.s.s->flags & SDL_SRCALPHA)
         SDL_SetAlpha(sdl.s.s, SDL_SRCALPHA, 255 - sdl.s.s->format->alpha);
-#endif
 }
 
 /*
@@ -117,11 +113,7 @@ void SS_Blt(void)
 */
 void SS_ABlt(int alpha)
 {
- #ifdef SDL_1_1_5
     SDL_SetAlpha(sdl.s.s, SDL_SRCALPHA, 255 - alpha);
-#else
-    SDL_SetAlpha(sdl.s.s, SDL_SRCALPHA, alpha);
-#endif
     SDL_BlitSurface(sdl.s.s, &sdl.s.r, sdl.d.s, &sdl.d.r);
     SDL_SetAlpha(sdl.s.s, 0, 0);
 }
