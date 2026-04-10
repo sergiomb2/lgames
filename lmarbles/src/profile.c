@@ -33,26 +33,26 @@ char prf_pth[256];
 extern Config config;
 
 /* initialize dyn list and source path */
-void Prf_Ini()
+void Profile_Ini()
 {
     DL_Ini(&prfs);
     prfs.flgs = DL_AUTODEL;
-    prfs.cb = Prf_Del;
+    prfs.cb = Profile_Del;
 
     sprintf(prf_pth, "%s/lmarbles.prfs", PRF_DIR);
 }
 
 /* terminate profiles; must be saved first */
-void Prf_Trm()
+void Profile_Trm()
 {
-    Prf_DelLst();
+    Profile_DelLst();
     DL_Clr(&prfs);
 }
 
 /* load profiles */
-int Prf_Ld()
+int Profile_Ld()
 {
-    Prf *p;
+    Profile *p;
     SInf *st;
     int s_num = 0, p_num = 0;
     FILE    *f = 0;
@@ -65,7 +65,7 @@ int Prf_Ld()
     // read access ? //
     if ((f = fopen(prf_pth, "r")) == 0) {
         printf(_("\nWARNING: file %s does not exist; cannot read profiles\n"), prf_pth);
-        Prf_Crt("Michael");
+        Profile_Crt("Michael");
         not_f = 1;
     }
     else {
@@ -73,7 +73,7 @@ int Prf_Ld()
         fileGetEntry(f, str, F_VAL); str[strlen(str) - 1] = 0;
         if (strncmp(str,"ascii",5)) {
             printf("\nWARNING: trying to load raw binary data in ascii; cannot read profiles in %s\n", prf_pth);
-            Prf_Crt("Michael");
+            Profile_Crt("Michael");
             not_f = 1;
         }
         else {
@@ -81,12 +81,12 @@ int Prf_Ld()
         fileGetEntry(f, str, F_VAL); F_ValToInt(str, &p_num);
         if (p_num <= 0) {
             printf("WARNING: bad profile counter: %i\n", p_num);
-            Prf_Crt("Michael");
+            Profile_Crt("Michael");
             not_f = 1;
         }
         else {
             while (p_num--) {
-                 p = malloc(sizeof(Prf));
+                 p = malloc(sizeof(Profile));
                  /* name */
                  fileGetEntry(f, p->nm, F_VAL); p->nm[strlen(p->nm) - 1] = 0;
                  /* levels played */
@@ -123,15 +123,15 @@ int Prf_Ld()
         fclose(f);
     }
 
-    Prf_CrtLst();
+    Profile_CrtLst();
     return !not_f;
 }
 
 /* save profiles */
-void Prf_Sv()
+void Profile_Sv()
 {
     DL_E *e = prfs.hd.n, *le = 0;
-    Prf *p;
+    Profile *p;
     SInf *st;
     FILE *f;
     int i;
@@ -147,7 +147,7 @@ void Prf_Sv()
         /* save numbers of profiles */
         F_IntToStr(str, prfs.cntr); fileWriteEntry(f, str);
         while (e != &prfs.tl) {
-            p = (Prf*)e->d;
+            p = (Profile*)e->d;
             /* save name -- 12 chars */
             fileWriteEntry(f, p->nm);
             /* levels played */
@@ -188,20 +188,20 @@ void Prf_Sv()
 }
 
 /* create a new profile */
-void Prf_Crt(char *nm)
+void Profile_Crt(char *nm)
 {
-    Prf *p;
+    Profile *p;
     DL_E *e = prfs.hd.n;
     // if the name already exists the profile is not created //
     while (e != &prfs.tl) {
-        if (!strcmp(((Prf*)e->d)->nm, nm)) {
+        if (!strcmp(((Profile*)e->d)->nm, nm)) {
             printf(_("WARNING: profile '%s' already exists\n"), nm);
             return;
         }
         e = e->n;
     }
 
-    p = malloc(sizeof(Prf));
+    p = malloc(sizeof(Profile));
     strcpy(p->nm, nm);
     p->scr = 0;
     p->pct = 0;
@@ -212,14 +212,14 @@ void Prf_Crt(char *nm)
 }
 
 /* delete an existing profile by pointer */
-void Prf_Del(void *p)
+void Profile_Del(void *p)
 {
-    DL_Clr(&((Prf*)p)->sts);
+    DL_Clr(&((Profile*)p)->sts);
     free(p);
 }
 
 /* register or find a levelset with name nm */
-SInf* Prf_RegLS(Prf *p, LSet *l_st)
+SInf* Profile_RegLS(Profile *p, LSet *l_st)
 {
     int i;
     DL_E *e = p->sts.hd.n;
@@ -256,15 +256,15 @@ SInf* Prf_RegLS(Prf *p, LSet *l_st)
 }
 
 /* create profile name list */
-void Prf_CrtLst()
+void Profile_CrtLst()
 {
     int i = 0;
     DL_E *e = prfs.hd.n;
-    Prf *p;
-    Prf_DelLst();
+    Profile *p;
+    Profile_DelLst();
     prf_lst = malloc(sizeof(char*) * prfs.cntr);
     while (e != &prfs.tl) {
-        p = (Prf*)e->d;
+        p = (Profile*)e->d;
         prf_lst[i] = malloc(sizeof(p->nm) + 1);
         strcpy(prf_lst[i], p->nm);
         i++;
@@ -274,7 +274,7 @@ void Prf_CrtLst()
 }
 
 /* delete profile name list */
-void Prf_DelLst()
+void Profile_DelLst()
 {
     int i;
     if (prf_lst == 0) return;
@@ -286,7 +286,7 @@ void Prf_DelLst()
 /*
     sort all profiles best profile comes first
 */
-void Prf_Srt()
+void Profile_Srt()
 {
     void *p;
     DL_E *e = prfs.hd.n, *e2;
@@ -296,7 +296,7 @@ void Prf_Srt()
     while (e != prfs.tl.p) {
         e2 = e->n;
         while (e2 != &prfs.tl) {
-            if (((Prf*)e2->d)->scr > ((Prf*)e->d)->scr) {
+            if (((Profile*)e2->d)->scr > ((Profile*)e->d)->scr) {
                 p = e2->d;
                 e2->d = e->d;
                 e->d = p;
@@ -311,7 +311,7 @@ void Prf_Srt()
     update Profile p's score and info
     s is rem_time / max_time of that level
 */
-void Prf_Upd(Prf *p, SInf *inf, int l_id, float pct, int scr)
+void Profile_Upd(Profile *p, SInf *inf, int l_id, float pct, int scr)
 {
     float new_p;
 #ifdef DEBUG

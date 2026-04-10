@@ -111,7 +111,7 @@ typedef struct {
     SFnt    *f_wht; // time //
     SFnt    *f_rd; // time2 - not much time left //
     // references //
-    Prf     *c_prf; // current profile //
+    Profile     *c_prf; // current profile //
     SInf    *c_s_inf; // current profile level set info //
     LSet    *c_l_st; // current level set //
     GSet    *c_g_st; // current gfx set //

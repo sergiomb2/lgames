@@ -384,7 +384,7 @@ void G_Trm()
 */
 int G_Opn()
 {
-    Prf     *p;
+    Profile     *p;
     DL_E    *e;
     int     flgs = SDL_SWSURFACE;
 
@@ -400,10 +400,10 @@ int G_Opn()
     }
 
     // current profile
-    gm.c_prf = (Prf*)DL_Get(&prfs, config.prf);
+    gm.c_prf = (Profile*)DL_Get(&prfs, config.prf);
 
     // current set info
-    gm.c_s_inf = Prf_RegLS(gm.c_prf, gm.c_l_st);
+    gm.c_s_inf = Profile_RegLS(gm.c_prf, gm.c_l_st);
 
     // dim & resize
     if (config.dim)
@@ -420,7 +420,7 @@ int G_Opn()
     gm.hi_scr = 0;
     e = prfs.hd.n;
     while (e != &prfs.tl) {
-        p = (Prf*)e->d;
+        p = (Profile*)e->d;
         if (p->scr > gm.hi_scr)
             gm.hi_scr = p->scr;
         e = e->n;
@@ -680,7 +680,7 @@ void G_Run()
                     modify_score( &bonus_level, &bonus_moves );
                     BS_Run( bonus_level, bonus_moves );
                     tm_rel = ( 1000 * gm.c_lvl->tm ) / gm.c_l_st->ch[gm.c_ch].lvls[gm.c_l_id].tm;
-                    Prf_Upd(gm.c_prf, gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, tm_rel, bonus_level + bonus_moves );
+                    Profile_Upd(gm.c_prf, gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, tm_rel, bonus_level + bonus_moves );
 
                 }
 
@@ -696,7 +696,7 @@ void G_Run()
         }
     }
     // save profiles
-    Prf_Sv();
+    Profile_Sv();
 }
 
 /*

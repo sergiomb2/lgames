@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PROFILE_H
-#define PROFILE_H
+#ifndef __PROFILE_H
+#define __PROFILE_H
 
 #include "levels.h"
 #include "dynlist.h"
@@ -36,18 +36,18 @@ typedef struct {
     int     scr; // total score gained
     float   pct; // percentage of time needed to complete a level
     DLst    sts;
-} Prf;
+} Profile;
 
-void Prf_Ini();
-void Prf_Trm();
-int Prf_Ld();
-void Prf_Sv();
-void Prf_Crt(char *nm);
-void Prf_Del(void *p);
-SInf* Prf_RegLS(Prf *p, LSet *l_st);
-void Prf_CrtLst();
-void Prf_DelLst();
-void Prf_Srt();
-void Prf_Upd(Prf *p, SInf *inf, int l_id, float pct, int scr);
+void Profile_Ini();
+void Profile_Trm();
+int Profile_Ld();
+void Profile_Sv();
+void Profile_Crt(char *nm);
+void Profile_Del(void *p);
+SInf* Profile_RegLS(Profile *p, LSet *l_st);
+void Profile_CrtLst();
+void Profile_DelLst();
+void Profile_Srt();
+void Profile_Upd(Profile *p, SInf *inf, int l_id, float pct, int scr);
 
 #endif

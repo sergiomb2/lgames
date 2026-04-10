@@ -99,7 +99,7 @@ void H_Shw()
 	int i, j;
     SDL_Surface *buf = 0;
 	SFnt *ft;
-	Prf *p;
+	Profile *p;
 	int e_h = mm.ft_nml->h + 2;
 	int off = 50;
 	int a_y = 100;
@@ -131,7 +131,7 @@ void H_Shw()
     memset(hscr, 0, sizeof(hscr));
     e = prfs.hd.n;
     while (e != &prfs.tl) {
-        p = (Prf*)e->d;
+        p = (Profile*)e->d;
         for (i = 0; i < e_num; i++)
             if (p->scr >= hscr[i].scr) {
                 for (j = e_num - 1; j > i; j--)
@@ -216,8 +216,8 @@ void CB_StV()
 */
 void CB_CrtP()
 {
-    Prf_Crt(config.prf_nm);
-    Prf_CrtLst();
+    Profile_Crt(config.prf_nm);
+    Profile_CrtLst();
     // update menu entries //
     ME_CngSwX(me_prf, &config.prf, prf_lst, prf_n);
     ME_CngSwX(me_del, &config.prf, prf_lst, prf_n);
@@ -229,7 +229,7 @@ void CB_CrtP()
 */
 void CB_ClrP()
 {
-    Prf *p = DL_Get(&prfs, config.prf);
+    Profile *p = DL_Get(&prfs, config.prf);
     DL_Clr(&p->sts);
     p->lvls = 0;
     p->scr = 0;
@@ -247,7 +247,7 @@ void CB_DelP()
     }
     // delete from list //
     DL_Del(&prfs, config.prf);
-    Prf_CrtLst();
+    Profile_CrtLst();
     // update menu entries //
     ME_CngSwX(me_prf, &config.prf, prf_lst, prf_n);
     ME_CngSwX(me_del, &config.prf, prf_lst, prf_n);
@@ -256,7 +256,7 @@ void CB_DelP()
 
 void CB_SrtP()
 {
-//    Prf_Srt();
+//    Profile_Srt();
 }
 
 /*
@@ -461,8 +461,8 @@ int main(int argc, char *argv[])
     configLoad();
 
     // load profiles //
-    Prf_Ini();
-    if (!Prf_Ld())
+    Profile_Ini();
+    if (!Profile_Ld())
         config.prf = 0;
             
     // create levelset list and reset config's levelset index if nescessary //
@@ -535,8 +535,8 @@ int main(int argc, char *argv[])
     L_DelLst();
 
     // save profiles //
-    Prf_Sv();
-    Prf_Trm();
+    Profile_Sv();
+    Profile_Trm();
 
     // free screen //
     Sdl_Qut();
