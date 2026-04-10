@@ -171,7 +171,6 @@ typedef struct {
     AInf    ma_tlp_a; // teleport info
     int     tlp_a; // telporter alpha
     // sounds
-#ifdef SOUND
     Sound_Chunk      *wv_tlp; // teleport
     Sound_Chunk      *wv_sel; // select
     Sound_Chunk      *wv_stp; // stop
@@ -180,7 +179,6 @@ typedef struct {
     Sound_Chunk      *wv_alm; // alarm
     Sound_Chunk      *wv_arw; // arrow
     Sound_Chunk      *wv_scr; // score
-#endif
     DLst    shr; // shrapnells
     float   shr_a_c; // alpha change per second
     // credits

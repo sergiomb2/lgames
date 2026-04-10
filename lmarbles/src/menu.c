@@ -731,7 +731,10 @@ int MM_NxtE()
 int MM_SelE(int x, int y)
 {
     DL_E    *e = mm.c_mn->ent.hd.n;
-    MEnt    *me, *old = mm.c_mn->c_e;
+    MEnt    *me;
+#ifdef SOUND
+    MEnt *old = mm.c_mn->c_e;
+#endif
 
     while (e != &mm.c_mn->ent.tl) {
         me = (MEnt*)e->d;

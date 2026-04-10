@@ -279,17 +279,17 @@ void G_Ini()
     gm.c_u = gm.c_d = gm.c_l = gm.c_r = gm.c_s = gm.c_w = 0;
     gm.c_n = SDL_GetCursor();
     Cr_Ld(csr[0], data, mask);
-    gm.c_u = SDL_CreateCursor(data, mask, 16, 16, 8, 8);
+    gm.c_u = SDL_CreateCursor((Uint8*)data, (Uint8*)mask, 16, 16, 8, 8);
     Cr_Ld(csr[1], data, mask);
-    gm.c_d = SDL_CreateCursor(data, mask, 16, 16, 8, 8);
+    gm.c_d = SDL_CreateCursor((Uint8*)data, (Uint8*)mask, 16, 16, 8, 8);
     Cr_Ld(csr[2], data, mask);
-    gm.c_r = SDL_CreateCursor(data, mask, 16, 16, 8, 8);
+    gm.c_r = SDL_CreateCursor((Uint8*)data, (Uint8*)mask, 16, 16, 8, 8);
     Cr_Ld(csr[3], data, mask);
-    gm.c_l = SDL_CreateCursor(data, mask, 16, 16, 8, 8);
+    gm.c_l = SDL_CreateCursor((Uint8*)data, (Uint8*)mask, 16, 16, 8, 8);
     Cr_Ld(csr[4], data, mask);
-    gm.c_s = SDL_CreateCursor(data, mask, 16, 16, 8, 8);
+    gm.c_s = SDL_CreateCursor((Uint8*)data, (Uint8*)mask, 16, 16, 8, 8);
     Cr_Ld(csr[5], data, mask);
-    gm.c_w = SDL_CreateCursor(data, mask, 16, 16, 8, 8);
+    gm.c_w = SDL_CreateCursor((Uint8*)data, (Uint8*)mask, 16, 16, 8, 8);
 
     // map animations
     gm.m_ani = 0;
@@ -705,7 +705,7 @@ void G_Run()
 void G_LdGSts()
 {
     char    d_nm[256];
-    char    path[256+64];
+    char    path[256+256];
     DIR     *dir = 0;
     struct dirent  *e;
     struct stat     s;
@@ -1646,7 +1646,7 @@ void Mr_CkVDir(int mx, int my)
 */
 void Mr_Act()
 {
-    int x_a = 0, y_a = 0, ow = 0, mx = gm.m_mx, my = gm.m_my, tx, ty;
+    int x_a, y_a, ow = 0, mx = gm.m_mx, my = gm.m_my, tx, ty;
     int i, j;
 
     // crumbling wall ?
@@ -1654,9 +1654,7 @@ void Mr_Act()
         tx = mx + (gm.m_d == 1 ? 1 : gm.m_d == 3 ? -1 : 0);
         ty = my + (gm.m_d == 0 ? -1 : gm.m_d == 2 ? 1 : 0);
         if (gm.c_lvl->map[tx][ty].t == M_CRUMBLE) {
-#ifdef SOUND
                 sound_play(gm.wv_stp);
-#endif
             if (gm.c_lvl->map[tx][ty].id > 0)
                 gm.c_lvl->map[tx][ty].id--;
             else {
@@ -1669,9 +1667,7 @@ void Mr_Act()
                 gm.m_o_x = gm.m_tx;
                 gm.m_o_y = gm.m_ty;
                 gm.m_o_move_count = gm.c_lvl->tm;
-#ifdef SOUND
                 sound_play(gm.wv_exp);
-#endif
             }
             // draw to background
             L_DrwMpTl(tx, ty);
@@ -1711,6 +1707,7 @@ void Mr_Act()
             break;
     }
     if (ow) {
+	   y_a = x_a*y_a; /* XXX fix stupid unused warning */
 /*        mx += x_a; my += y_a;
         while (gm.c_lvl->map[mx][my].m != -1) {
             mx += x_a;
@@ -1721,9 +1718,7 @@ void Mr_Act()
             Mr_Ins();
             Mr_Sel(gm.l_x + mx * gm.t_w, gm.l_y + my * gm.t_h);
         }*/
-#ifdef SOUND
         sound_play(gm.wv_arw);
-#endif
         Mr_IniMv();
         return;
     }
@@ -1739,9 +1734,7 @@ void Mr_Act()
                         gm.m_my = j;
                         gm.m_x = gm.m_mx * gm.t_w + gm.l_x;
                         gm.m_y = gm.m_my * gm.t_h + gm.l_y;
-#ifdef SOUND
                         sound_play(gm.wv_tlp);
-#endif
                     }
                     gm.c_stat = gm.m_d + 2; // restore c_stat for movement initialization
                     // initate movement
@@ -2689,7 +2682,9 @@ void BS_Run(float b_lvl, float b_tm)
     float b_c = 1.0; // bonus change
     float scr = gm.c_prf->scr;
     int end_scr;
+#ifdef SOUND
     int old_scr;
+#endif
 
     end_scr = gm.c_prf->scr + (int)b_lvl + (int)b_tm;
 
@@ -2766,7 +2761,9 @@ void BS_Run(float b_lvl, float b_tm)
         BS_Hd(gm.scr_w - soff - sw, sy, sw, sh);
 
         // update
+#ifdef SOUND
         old_scr = (int)scr;
+#endif
         if ( b_lvl > 0 ) {
 
             b_lvl -= b_c * (float)ms;

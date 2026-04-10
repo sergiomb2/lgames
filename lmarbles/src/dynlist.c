@@ -136,7 +136,7 @@ int DL_DelP(DLst *dlst, void *item)
                 break;
         }
         else {
-            fprintf(stderr, "ERR: dl_delete: list does not contain item 0x%x...\n", (int)item);
+            fprintf(stderr, "ERR: dl_delete: list does not contain item...\n");
             return 1;
         }
 
@@ -247,7 +247,7 @@ DL_E *DL_GetE(DLst *dlst, void *item)
                 break;
         }
         else {
-            fprintf(stderr, "ERR: DL_GetE: list does not contain item 0x%x...\n", (int)item);
+            fprintf(stderr, "ERR: DL_GetE: list does not contain item...\n");
             return 0;
         }
 

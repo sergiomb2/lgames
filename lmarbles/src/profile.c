@@ -72,7 +72,7 @@ int Prf_Ld()
         /* load ascii identification */
         fileGetEntry(f, str, F_VAL); str[strlen(str) - 1] = 0;
         if (strncmp(str,"ascii",5)) {
-            printf("\nWARNING: trying to load raw binary data in ascii; cannot read profiles\n", prf_pth);
+            printf("\nWARNING: trying to load raw binary data in ascii; cannot read profiles in %s\n", prf_pth);
             Prf_Crt("Michael");
             not_f = 1;
         }

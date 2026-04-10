@@ -52,7 +52,7 @@ void L_CrtLst()
 {
     int     i;
     char    d_nm[256];
-    char    path[256+64];
+    char    path[256+256];
     DIR     *dir = 0;
     struct dirent  *e;
     struct stat     s;

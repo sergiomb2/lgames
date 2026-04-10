@@ -30,9 +30,8 @@ void fileGetEntry(FILE *f, char *str, int flgs)
 	int pos = 0;
 	char c;
 	str[0] = 0;
-	while (!feof(f)) {
-		/* read exactly one byte */
-		fread(&c, 1, 1, f);
+
+	while (fread(&c, 1, 1, f)) { /* read exactly one byte */
 		/* ignore return carrier but count lines */
 		if (c == 10) {
 			f_ln++;
@@ -89,8 +88,7 @@ int F_GetV(char *str, char *v)
     int i;
     char *n;
     for (i = 0; i < strlen(str); i++)
-        if (str[i] == '=') {
-            F_FstC(str + i + 1, &n);
+        if (str[i] == '=' && F_FstC(str + i + 1, &n)) {
             strcpy(v, n);
             v[strlen(v) - 1] = 0; // mask semicolon
             return 1;
@@ -101,15 +99,14 @@ int F_GetV(char *str, char *v)
 /* check entry for type @t and target name @nm and copy
  * value to @v if not NULL. Return 0 on failure, 1 on success.
 */
-int fileCheckEntry(char *str, int t, char *nm, char *v)
+int fileCheckEntry(char *str, int t, const char *nm, char *v)
 {
     char *n;
 
     if (strlen(str) == 0) return 0;
 
     if (t & F_VAL) {
-        F_FstC(str, &n);
-        if (strncmp(nm, n, strlen(nm)))
+        if (!F_FstC(str, &n) || strncmp(nm, n, strlen(nm)))
             return 0;
          if (v != 0 )
              return F_GetV(str, v);
@@ -118,12 +115,11 @@ int fileCheckEntry(char *str, int t, char *nm, char *v)
     }
     else
         if (t & F_SUB) {
-            F_FstC(str, &n);
-            if (!strncmp(nm, n, strlen(nm)))
+            if (F_FstC(str, &n) && !strncmp(nm, n, strlen(nm)))
                 return 1;
         }
         else
-            if (t & F_COM && F_FstC(str, 0) == '(' && F_LstC(str) == ')')
+            if ((t & F_COM) && F_FstC(str, 0) == '(' && F_LstC(str) == ')')
                 return 1;
     return 0;
 }
@@ -135,7 +131,6 @@ int fileCheckEntry(char *str, int t, char *nm, char *v)
 int fileReadString(FILE *f, const char *id, char *val)
 {
 	char entry[MAXSTRLEN]; /* FIXME fileGetEntry does not check length */
-	char str[MAXSTRLEN];
 	fileGetEntry(f, entry, F_VAL);
 	if (!fileCheckEntry(entry, F_VAL, id, val))
 		return 0;

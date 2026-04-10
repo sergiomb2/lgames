@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "sdl.h"
+#include "tools.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -172,25 +173,31 @@ SFnt* SF_Ld(char *fname)
     fnt->h = fnt->ss->h;
 	
     //table
+    int err = 0;
     file = fopen(path, "r");
     fseek(file, -1, SEEK_END);
-    fread(&fnt->off, 1, 1, file);
+    if (!fread(&fnt->off, 1, 1, file))
+	    err = 1;
 #ifdef DEBUG
     printf("offset: %i\n", fnt->off);
 #endif
     fseek(file, -2, SEEK_END);
-    fread(&fnt->len, 1, 1, file);
+    if (!fread(&fnt->len, 1, 1, file))
+	    err = 1;
 #ifdef DEBUG
     printf("number: %i\n", fnt->len);
 #endif
     fseek(file, -2 - fnt->len, SEEK_END);
-    fread(fnt->lw, 1, fnt->len, file);
+    if (!fread(fnt->lw, 1, fnt->len, file))
+	    err = 1;
 #ifdef DEBUG
     printf("letter width: %i\n", fnt->len);
     for (i = 0; i < fnt->len; i++)
         printf("%i ", fnt->lw[i]);
     printf("\n");
 #endif
+    if (err)
+	    _logerr("error reading font\n");
     fclose(file);
 
     //letter offsets

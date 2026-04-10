@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifdef SOUND
-
 #include <SDL_mixer.h>
 #include "audio.h"
 
@@ -147,5 +145,3 @@ void music_volume( int level )
 {
     /* not implemented */
 }
-
-#endif

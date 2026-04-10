@@ -18,8 +18,6 @@
 #ifndef __AUDIO_H
 #define __AUDIO_H
 
-#ifdef SOUND
-
 /*
 ====================================================================
 Wrapper for the SDL_mixer functions.
@@ -58,7 +56,5 @@ Music stuff
 ====================================================================
 */
 void music_volume( int level );
-
-#endif
 
 #endif
