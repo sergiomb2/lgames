@@ -15,11 +15,8 @@ AC_CHECK_LIB(m, main,, AC_MSG_ERROR(lib math is needed))
 AC_CHECK_LIB(SDL, main,, AC_MSG_ERROR(lib SDL is needed))
 AC_CHECK_LIB(SDL_mixer, main,, AC_MSG_ERROR(lib SDL mixer is needed))
 
-CFLAGS="$CFLAGS -DSDL_1_1_5"
-
 # Flags
 datdir=$datadir/$PACKAGE
-profdir=$localstatedir
 configdir="~/.lmarbles"
 debugflags=""
 AC_ARG_ENABLE( install,
@@ -29,7 +26,6 @@ AC_ARG_ENABLE( debug,
 [  --enable-debug       Add debug symbols, no optimization.], 
 debugflags="-O0 -g")
 AC_SUBST(datdir)
-AC_SUBST(profdir)
 
 SDL_CFLAGS=$(sdl-config --cflags)
 SDL_LIBS=$(sdl-config --libs)
