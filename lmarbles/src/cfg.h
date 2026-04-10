@@ -27,9 +27,6 @@ enum {
 
 // config file //
 typedef struct {
-    // profile
-    char prf_nm[12];
-    int prf;
     // level set //
     int ls;
     // sound

@@ -77,8 +77,6 @@ void configLoad()
 		return;
 	}
 
-	fileReadString(f, "profile", config.prf_nm);
-	fileReadInt(f, "profileid", &config.prf);
 	fileReadInt(f, "sound", &config.sound);
 	fileReadInt(f, "volume", &config.volume);
 	fileReadInt(f, "animations", &config.animations);
@@ -103,8 +101,6 @@ void configSave()
 	    return;
     }
 
-    fprintf(f, "profile = %s;\n", config.prf_nm);
-    fprintf(f, "profileid = %d;\n", config.prf);
     fprintf(f, "sound = %d;\n", config.sound);
     fprintf(f, "volume = %d;\n", config.volume);
     fprintf(f, "animations = %d;\n", config.animations);
@@ -125,8 +121,6 @@ void configSave()
 */
 void configSetDefaults()
 {
-    strcpy(config.prf_nm, "Michael");
-    config.prf = 0;
     // sound //
     config.volume = 6;
     config.sound = 1;

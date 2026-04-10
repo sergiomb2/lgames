@@ -239,8 +239,7 @@ int main(int argc, char *argv[])
 
     // load profiles //
     Profile_Ini();
-    if (!Profile_Ld())
-        config.prf = 0;
+    Profile_Ld();
             
     // create levelset list and reset config's levelset index if nescessary //
     L_CrtLst();
