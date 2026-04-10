@@ -15,10 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef TOOLS_H
-#define TOOLS_H
+#ifndef __TOOLS_H
+#define __TOOLS_H
 
 #define MAXSTRLEN 1024
+
+#define DEBUGLEVEL 0
+#define _logerr(...) do { \
+		fprintf(stderr,"ERROR: %s:%d: %s(): ", __FILE__, __LINE__, __FUNCTION__); \
+		fprintf (stderr, __VA_ARGS__); \
+	} while (0)
+#define _loginfo(...) fprintf (stdout, __VA_ARGS__)
+#define _logdebug(level,...) \
+	if (level <= DEBUGLEVEL) \
+		fprintf (stderr, __VA_ARGS__);
 
 int T_Gt();
 void T_Rst();
