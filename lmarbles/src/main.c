@@ -80,115 +80,6 @@ void event_clear_sdl_queue()
     SDL_SetEventFilter( 0 );
 }
 
-/*
-    previously defined hiscore.h but this file no longer needed
-*/
-typedef struct {
-	char	nm[12];
-	int		lvl;
-	int     lvs;
-	int		scr;
-	int     pct;
-} H_E;
-
-/*
-    show hiscore and highlight rank r
-*/
-void H_Shw()
-{
-	int i, j;
-    SDL_Surface *buf = 0;
-	SFnt *ft;
-	Profile *p;
-	int e_h = mm.ft_nml->h + 2;
-	int off = 50;
-	int a_y = 100;
-	char str[12];
-    int e_num = prfs.cntr > 10 ? 10 : prfs.cntr;
-    H_E hscr[e_num];
-    DL_E *e;
-
-    // save screen //
-    buf = SS_Crt(sdl.scr->w, sdl.scr->h, SDL_SWSURFACE);
-    D_FDST(buf);
-    D_FSRC(sdl.scr);
-    SS_Blt();
-    // darken screen //
-    if (config.dim)
-        SDL_DIM();
-
-    // draw background //
-    D_FDST(sdl.scr);
-    D_FSRC(mm.ss_bkgd);
-    SS_Blt();
-    // brighten screen //
-    if (config.dim)
-        SDL_UNDIM();
-    else
-        Sdl_FUpd();
-
-    // create highscore list //
-    memset(hscr, 0, sizeof(hscr));
-    e = prfs.hd.n;
-    while (e != &prfs.tl) {
-        p = (Profile*)e->d;
-        for (i = 0; i < e_num; i++)
-            if (p->scr >= hscr[i].scr) {
-                for (j = e_num - 1; j > i; j--)
-                    hscr[j] = hscr[j - 1];
-                hscr[i].scr = p->scr;
-                hscr[i].pct = p->pct;
-                hscr[i].lvl = p->lvls;
-                strcpy(hscr[i].nm, p->nm);
-                break;
-            }
-        e = e->n;
-    }
-
-    // write hiscores //
-	
-    SF_Wrt(mm.ft_nml, sdl.scr, sdl.scr->w / 2, 50, _("Best Profiles"), 0);
-    mm.ft_nml->algn = mm.ft_sel->algn = TA_X_L | TA_Y_T;
-
-    for (i = 0; i < e_num; i++) {
-        if (0) // changed later
-            ft = mm.ft_sel;
-        else
-            ft = mm.ft_nml;
-        ft->algn = TA_X_L | TA_Y_T;
-        SF_Wrt(ft, sdl.scr, off, a_y + i * e_h, hscr[i].nm, 0);
-        ft->algn = TA_X_C | TA_Y_T;
-        sprintf(str, "%i", hscr[i].lvl);
-        SF_Wrt(ft, sdl.scr, sdl.scr->w / 2, a_y + i * e_h, str, 0);
-        sprintf(str, "%i", hscr[i].scr);
-//        sprintf(str, "%i (%i.%i%%)", hscr[i].scr, hscr[i].pct / 10, hscr[i].pct % 10);
-        ft->algn = TA_X_R | TA_Y_T;
-        SF_Wrt(ft, sdl.scr, sdl.scr->w - off, a_y + i * e_h, str, 0);
-    }
-
-    mm.ft_nml->algn = mm.ft_sel->algn = TA_X_C | TA_Y_C;
-    Sdl_FUpd();
-
-    // wait for a click //
-    Sdl_WtFrClk();
-
-    //darken screen //
-    if (config.dim)
-        SDL_DIM();
-    // restore screen //
-    D_FDST(sdl.scr);
-    D_FSRC(buf);
-    SS_Blt();
-    // brighten screen //
-    if (config.dim)
-        SDL_UNDIM();
-    else
-        Sdl_FUpd();
-
-    // reset timer //
-    T_Rst();
-}
-
 // menu callbacks //
 
 /*
@@ -212,54 +103,6 @@ void CB_StV()
 }
 
 /*
-    create a profile
-*/
-void CB_CrtP()
-{
-    Profile_Crt(config.prf_nm);
-    Profile_CrtLst();
-    // update menu entries //
-    ME_CngSwX(me_prf, &config.prf, prf_lst, prf_n);
-    ME_CngSwX(me_del, &config.prf, prf_lst, prf_n);
-    ME_CngSwX(me_clr, &config.prf, prf_lst, prf_n);
-}
-
-/*
-    clear a profile
-*/
-void CB_ClrP()
-{
-    Profile *p = DL_Get(&prfs, config.prf);
-    DL_Clr(&p->sts);
-    p->lvls = 0;
-    p->scr = 0;
-    p->pct = 0;
-}
-
-/*
-    delete a profile
-*/
-void CB_DelP()
-{
-    if (prfs.cntr < 2) {
-        printf(_("WARNING: last profile cannot be deleted\n"));
-        return;
-    }
-    // delete from list //
-    DL_Del(&prfs, config.prf);
-    Profile_CrtLst();
-    // update menu entries //
-    ME_CngSwX(me_prf, &config.prf, prf_lst, prf_n);
-    ME_CngSwX(me_del, &config.prf, prf_lst, prf_n);
-    ME_CngSwX(me_clr, &config.prf, prf_lst, prf_n);
-}
-
-void CB_SrtP()
-{
-//    Profile_Srt();
-}
-
-/*
     init menu
     add all entries
     check them
@@ -268,7 +111,7 @@ void MM_CrtE()
 {
     SDL_Surface *ss_bk, *ss_lg;
     SFnt        *ft_y, *ft_w, *ft_t;
-    Menu        *_main, *opts, *snd, *new, *edit, *del, *clr, *crt, *c_del, *c_clr, *c_crt, *gfx, *ctrl;
+    Menu        *_main, *opts, *snd, *new, *gfx, *ctrl;
     MEnt        *e;
     char        *str_diff[] = {_("Easy"), _("Normal"), _("Hard"), _("Brainstorm")};
 
@@ -292,18 +135,10 @@ void MM_CrtE()
     opts = M_Crt(); MM_Add(opts);
     snd = M_Crt(); MM_Add(snd);
     new = M_Crt(); MM_Add(new);
-    edit = M_Crt(); MM_Add(edit);
-    del = M_Crt(); MM_Add(del);
-    clr = M_Crt(); MM_Add(clr);
-    crt = M_Crt(); MM_Add(crt);
-    c_del = M_Crt(); MM_Add(c_del);
-    c_clr = M_Crt(); MM_Add(c_clr);
-    c_crt = M_Crt(); MM_Add(c_crt);
     gfx = M_Crt(); MM_Add(gfx);
     ctrl = M_Crt(); MM_Add(ctrl);
     // main //
     M_Add(_main, ME_CrtSub(_("New Game"), new));
-    M_Add(_main, ME_CrtAct(_("Best Profiles"), MA_HSC));
     M_Add(_main, ME_CrtSub(_("Options"), opts));
     M_Add(_main, ME_CrtAct(_("Quit"), MA_QUT));
     // options //
@@ -331,55 +166,10 @@ void MM_CrtE()
     M_Add(new, ME_CrtSwX(_("Difficulty:"), &config.diff, str_diff, 4));
     if (config.ls >= ls_n) config.ls = 0; // maybe someone deleted some level sets //
     M_Add(new, ME_CrtSwX(_("Levelset:"), &config.ls, ls_lst, ls_n));
-    me_prf = ME_CrtSwX(_("Profile:"), &config.prf, prf_lst, prf_n);
-    M_Add(new, me_prf);
-    M_Add(new, ME_CrtSep(""));
-    M_Add(new, ME_CrtSub(_("Edit Profiles"), edit));
     M_Add(new, ME_CrtSep(""));
     M_Add(new, ME_CrtSub(_("Back"), _main));
-    // edit //
-    M_Add(edit, ME_CrtSub(_("Create Profile"), crt));
-    M_Add(edit, ME_CrtSub(_("Clear Profile"), clr));
-    M_Add(edit, ME_CrtSub(_("Delete Profile"), del));
-    M_Add(edit, ME_CrtSep(""));
-    e = ME_CrtSub(_("Back"), new);
-    e->cb = CB_SrtP;
-    M_Add(edit, e);
-    // create //
-    M_Add(crt, ME_CrtStr(_("Profile Name"), config.prf_nm, 11));
-    M_Add(crt, ME_CrtSub(_("Create Profile"), c_crt));
-    M_Add(crt, ME_CrtSep(""));
-    M_Add(crt, ME_CrtSub(_("Back"), edit));
-    // confirm create //
-    e = ME_CrtSub(_("Yes"), crt);
-    e->cb = CB_CrtP;
-    M_Add(c_crt, e);
-    M_Add(c_crt, ME_CrtSub(_("No"), crt));
-    // clear //
-    me_clr = ME_CrtSwX(_("Profile:"), &config.prf, prf_lst, prf_n);
-    M_Add(clr, me_clr);
-    M_Add(clr, ME_CrtSub(_("Clear Profile"), c_clr));
-    M_Add(clr, ME_CrtSep(""));
-    M_Add(clr, ME_CrtSub(_("Back"), edit));
-    // confirm clear //
-    e = ME_CrtSub(_("Yes"), clr);
-    e->cb = CB_ClrP;
-    M_Add(c_clr, e);
-    M_Add(c_clr, ME_CrtSub(_("No"), clr));
-    // delete //
-    me_del = ME_CrtSwX(_("Profile:"), &config.prf, prf_lst, prf_n);
-    M_Add(del, me_del);
-    M_Add(del, ME_CrtSub(_("Delete Profile"), c_del));
-    M_Add(del, ME_CrtSep(""));
-    M_Add(del, ME_CrtSub(_("Back"), edit));
-    // confirm clear //
-    e = ME_CrtSub(_("Yes"), del);
-    e->cb = CB_DelP;
-    M_Add(c_del, e);
-    M_Add(c_del, ME_CrtSub(_("No"), del));
     // graphics //
     M_Add(gfx, ME_CrtSw2(_("Animations:"), &config.animations, _("Off"), _("On")));
-//    M_Add(gfx, ME_CrtSw2("Transparency:", &cfg.trp, _("Off"), _("On")));
     M_Add(gfx, ME_CrtSw2(_("Fullscreen:"), &config.fullscreen, _("Off"), _("On")));
     M_Add(gfx, ME_CrtSw2(_("Dim Effect:"), &config.dim, _("Off"), _("On")));
     M_Add(gfx, ME_CrtSep(""));
@@ -455,8 +245,7 @@ int main(int argc, char *argv[])
     // show hardware capabilities //
     Sdl_HwCps();
 
-    /* load config (and create config dir which is also used
-     * for profiles) */
+    /* load config (and create config dir which is also used for profiles) */
     configSetPath();
     configLoad();
 
@@ -503,11 +292,6 @@ int main(int argc, char *argv[])
                         G_Cls();
                     }
                     break;
-                case MA_HSC:
-                    M_Shw(mm.c_mn);
-                    Sdl_UpdR();
-                    H_Shw(); // defined in main.c //
-                    break;
             }
         }
         ms = T_Gt();
@@ -536,7 +320,6 @@ int main(int argc, char *argv[])
 
     // save profiles //
     Profile_Sv();
-    Profile_Trm();
 
     // free screen //
     Sdl_Qut();

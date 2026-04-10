@@ -1,3 +1,4 @@
+- use only one profile (2025/04/10 MS)
 - config/profile always use ASCII encoding (2026/04/05 MS)
 - updated configuration/make process (2026/04/04 MS)
 - added gettext support and german localization (12/02/25 MS)

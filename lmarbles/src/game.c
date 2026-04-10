@@ -36,7 +36,7 @@ extern Config config;
 /* Sdl -- sdl.c */
 extern Sdl sdl;
 /* profiles -- profile.c */
-extern DLst prfs;
+extern Profile profile;
 /* terminate game -- sdl.c */
 extern int trm_gm;
 
@@ -384,8 +384,6 @@ void G_Trm()
 */
 int G_Opn()
 {
-    Profile     *p;
-    DL_E    *e;
     int     flgs = SDL_SWSURFACE;
 
     // get current level set
@@ -400,10 +398,10 @@ int G_Opn()
     }
 
     // current profile
-    gm.c_prf = (Profile*)DL_Get(&prfs, config.prf);
+    gm.c_prf = &profile;
 
     // current set info
-    gm.c_s_inf = Profile_RegLS(gm.c_prf, gm.c_l_st);
+    gm.c_s_inf = Profile_RegLS(gm.c_l_st);
 
     // dim & resize
     if (config.dim)
@@ -417,14 +415,7 @@ int G_Opn()
     SDL_SetColorKey(gm.s_bkgd, 0, 0);
 
     // get highest score
-    gm.hi_scr = 0;
-    e = prfs.hd.n;
-    while (e != &prfs.tl) {
-        p = (Profile*)e->d;
-        if (p->scr > gm.hi_scr)
-            gm.hi_scr = p->scr;
-        e = e->n;
-    }
+    gm.hi_scr = 0; /* TODO remove, obsolete */
 
     // clear old chapter
     gm.o_ch = -1;

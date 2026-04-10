@@ -96,7 +96,12 @@ void configLoad()
 
 void configSave()
 {
-    FILE	*f = fopen(configPath, "w");
+    FILE *f = fopen(configPath, "w");
+
+    if (f == NULL) {
+	    _logerr("no write access to config file %s\n",configPath);
+	    return;
+    }
 
     fprintf(f, "profile = %s;\n", config.prf_nm);
     fprintf(f, "profileid = %d;\n", config.prf);
