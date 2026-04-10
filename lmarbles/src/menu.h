@@ -99,9 +99,7 @@ typedef struct {
     DLst        mn;
     Menu        *c_mn;
     char        vkys[SDLK_LAST];
-#ifdef SOUND
     Sound_Chunk *s_clk;
-#endif
 } MMng;
 void MM_Ini(int x, int y, int ly, SDL_Surface *ss_bk, SDL_Surface *ss_lg, SFnt *fn, SFnt *fs);
 void MM_Shw(int rsz);

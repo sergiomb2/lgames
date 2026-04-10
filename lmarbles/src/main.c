@@ -87,9 +87,7 @@ void event_clear_sdl_queue()
 */
 void CB_Snd()
 {
-#ifdef SOUND
     sound_enable(config.sound);
-#endif
 }
 
 /*
@@ -97,9 +95,7 @@ void CB_Snd()
 */
 void CB_StV()
 {
-#ifdef SOUND
     sound_volume(config.volume * 16);
-#endif
 }
 
 /*
@@ -144,11 +140,7 @@ void MM_CrtE()
     // options //
     M_Add(opts, ME_CrtSub(_("Controls"), ctrl));
     M_Add(opts, ME_CrtSub(_("Graphics"), gfx));
-#ifdef SOUND
     M_Add(opts, ME_CrtSub(_("Audio"), snd));
-#else
-    M_Add(opts, ME_CrtSep(_("Audio")));
-#endif
     M_Add(opts, ME_CrtSep(""));
     M_Add(opts, ME_CrtSub(_("Back"), _main));
     // sound //
@@ -231,11 +223,7 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     // sdl init //
-#ifdef SOUND
     Sdl_Ini(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
-#else
-    Sdl_Ini(SDL_INIT_VIDEO | SDL_INIT_TIMER);
-#endif
     sprintf( aux, "LMarbles %s", VERSION );
     SDL_WM_SetCaption(aux, 0);
 
@@ -259,11 +247,9 @@ int main(int argc, char *argv[])
     if (config.ls >= ls_n)
         config.ls = 0;
 
-#ifdef SOUND
     audio_open();
     sound_enable( config.sound );
     sound_volume( config.volume * 16 );
-#endif
 		
     // game init //
     G_Ini();
@@ -308,9 +294,7 @@ int main(int argc, char *argv[])
     G_Trm();
 
     // close soundserver //
-#ifdef SOUND
     audio_close();
-#endif
 
     // save config //
     configSave();

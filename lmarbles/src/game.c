@@ -310,7 +310,7 @@ void G_Ini()
     gm.tlp_a = 32;
 
     // sounds
-#ifdef SOUND
+
     gm.wv_tlp = sound_chunk_load("teleport.wav");
     gm.wv_sel = sound_chunk_load("select.wav");
     gm.wv_stp = sound_chunk_load("stop.wav");
@@ -319,7 +319,7 @@ void G_Ini()
     gm.wv_alm = sound_chunk_load("alarm.wav");
     gm.wv_arw = sound_chunk_load("arrow.wav");
     gm.wv_scr = sound_chunk_load("score.wav");
-#endif
+
 
     // shrapnells
     DL_Ini(&gm.shr);
@@ -367,7 +367,7 @@ void G_Trm()
     if (gm.m_ani)
         free(gm.m_ani);
     // sounds
-#ifdef SOUND
+
     if (gm.wv_tlp) sound_chunk_free(&gm.wv_tlp);
     if (gm.wv_sel) sound_chunk_free(&gm.wv_sel);
     if (gm.wv_stp) sound_chunk_free(&gm.wv_stp);
@@ -376,7 +376,7 @@ void G_Trm()
     if (gm.wv_alm) sound_chunk_free(&gm.wv_alm);
     if (gm.wv_arw) sound_chunk_free(&gm.wv_arw);
     if (gm.wv_scr) sound_chunk_free(&gm.wv_scr);
-#endif
+
 }
 
 /*
@@ -524,45 +524,45 @@ void G_Run()
                                 // undo key
                                 if (ev.key.keysym.sym == config.k_undo) {
                                     restore_pos = 1;
-#ifdef SOUND
+
                                     sound_play(gm.wv_clk);
-#endif
+
                                 }
                                 // up key
                                 if (ev.key.keysym.sym == config.k_up && (gm.m_vd & MD_U) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_U;
                                     Mr_IniMv();
-#ifdef SOUND
+
                                     sound_play(gm.wv_clk);
-#endif
+
                                 }
                                 // down key
                                 if (ev.key.keysym.sym == config.k_down && (gm.m_vd & MD_D) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_D;
                                     Mr_IniMv();
-#ifdef SOUND
+
                                     sound_play(gm.wv_clk);
-#endif
+
                                 }
                                 // left key
                                 if (ev.key.keysym.sym == config.k_left && (gm.m_vd & MD_L) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_L;
                                     Mr_IniMv();
-#ifdef SOUND
+
                                     sound_play(gm.wv_clk);
-#endif
+
                                 }
                                 // right key
                                 if (ev.key.keysym.sym == config.k_right && (gm.m_vd & MD_R) && !gm.m_mv) {
                                     ign_c_stat = 1;
                                     gm.c_stat = C_R;
                                     Mr_IniMv();
-#ifdef SOUND
+
                                     sound_play(gm.wv_clk);
-#endif
+
                                 }
                                 break;
                         }
@@ -961,9 +961,9 @@ int G_CfmWrp()
 
     Sdl_FUpd();
 
-#ifdef SOUND
+
     sound_play(gm.wv_clk);
-#endif
+
     while (!leave) {
         SDL_WaitEvent(&e);
         switch (e.type) {
@@ -1002,9 +1002,9 @@ int G_CfmWrp()
                 break;
         }
     }
-#ifdef SOUND
+
     sound_play(gm.wv_clk);
-#endif
+
 
     // restore screen
     if (config.dim)
@@ -1063,9 +1063,9 @@ int G_CfmQut()
 
     Sdl_FUpd();
 
-#ifdef SOUND
+
     sound_play(gm.wv_clk);
-#endif
+
     while (!leave) {
         SDL_WaitEvent(&e);
         switch (e.type) {
@@ -1101,9 +1101,9 @@ int G_CfmQut()
                 break;
         }
     }
-#ifdef SOUND
+
     sound_play(gm.wv_clk);
-#endif
+
 
     // restore screen
     if (!ret) {
@@ -1162,9 +1162,9 @@ int G_CfmRst()
 
     Sdl_FUpd();
 
-#ifdef SOUND
+
     sound_play(gm.wv_clk);
-#endif
+
     while (!leave) {
         SDL_WaitEvent(&e);
         switch (e.type) {
@@ -1200,9 +1200,9 @@ int G_CfmRst()
                 break;
         }
     }
-#ifdef SOUND
+
     sound_play(gm.wv_clk);
-#endif
+
 
     // restore screen
     if (config.dim)
@@ -1390,9 +1390,9 @@ int Mr_Upd(int ms)
         Mr_Act();
     else
         if (stp) {
-#ifdef SOUND
+
             sound_play(gm.wv_stp);
-#endif
+
         }
 
     return 1;
@@ -1434,9 +1434,9 @@ void Mr_Sel(int x, int y)
     gm.m_o_y = (int)gm.m_y;
     gm.m_o_move_count = gm.c_lvl->tm;
 
-#ifdef SOUND
+
     sound_play(gm.wv_sel);
-#endif
+
 }
 
 /*
@@ -1830,9 +1830,9 @@ void Tm_Shw()
 */
 int Tm_Upd(int ms)
 {
-#ifdef SOUND
+
     int old_sec = gm.c_lvl->tm / 1000;
-#endif
+
 
     gm.blink_time += ms;
 
@@ -1842,10 +1842,10 @@ int Tm_Upd(int ms)
     gm.c_lvl->tm -= ms;
 
     // new second ?
-#ifdef SOUND
+
     if ( old_sec != gm.c_lvl->tm / 1000 && old_sec <= 30 )
         sound_play(gm.wv_alm);
-#endif
+
 
     if (gm.c_lvl->tm < 0) {
         gm.c_lvl->tm = 0;
@@ -2509,9 +2509,9 @@ void FA_Run()
                    gm.c_lvl->map[m_pos[m_cnt][0]][m_pos[m_cnt][1]].m);
             c_tm = tm;
             m_cnt--;
-#ifdef SOUND
+
             sound_play(gm.wv_exp);
-#endif
+
 
         }
 
@@ -2673,9 +2673,9 @@ void BS_Run(float b_lvl, float b_tm)
     float b_c = 1.0; // bonus change
     float scr = gm.c_prf->scr;
     int end_scr;
-#ifdef SOUND
+
     int old_scr;
-#endif
+
 
     end_scr = gm.c_prf->scr + (int)b_lvl + (int)b_tm;
 
@@ -2714,15 +2714,15 @@ void BS_Run(float b_lvl, float b_tm)
     SDL_Delay(500);
     BS_Shw(gm.scr_w - coff, cy, (int)b_lvl);
     Sdl_UpdR();
-#ifdef SOUND
+
     sound_play(gm.wv_exp);
-#endif
+
     SDL_Delay(500);
     BS_Shw(gm.scr_w - toff, ty, (int)b_tm);
     Sdl_UpdR();
-#ifdef SOUND
+
     sound_play(gm.wv_exp);
-#endif
+
     SDL_Delay(500);
 
     T_Rst();
@@ -2752,9 +2752,9 @@ void BS_Run(float b_lvl, float b_tm)
         BS_Hd(gm.scr_w - soff - sw, sy, sw, sh);
 
         // update
-#ifdef SOUND
+
         old_scr = (int)scr;
-#endif
+
         if ( b_lvl > 0 ) {
 
             b_lvl -= b_c * (float)ms;
@@ -2775,10 +2775,10 @@ void BS_Run(float b_lvl, float b_tm)
             scr = end_scr;
         if (b_lvl == 0 && b_tm == 0)
             scr = end_scr;
-#ifdef SOUND
+
         if ( (old_scr / 50) != (int)scr / 50 )
             sound_play(gm.wv_scr);
-#endif
+
 
         // show
         BS_Shw(gm.scr_w - coff, cy, (int)b_lvl);
@@ -2819,9 +2819,9 @@ void BS_Shw(int x, int y, int v)
 void SnapShot()
 {
 	char filename[32];
-#ifdef SOUND
+
     	sound_play(gm.wv_clk);
-#endif
+
 	sprintf(filename, "snapshot_%i.bmp", gm.snap++);
 	SDL_SaveBMP(sdl.scr, filename);
 }

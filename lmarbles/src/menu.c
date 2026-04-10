@@ -430,9 +430,7 @@ void MM_Ini(int x, int y, int ly, SDL_Surface *ss_bk, SDL_Surface *ss_lg, SFnt *
     mm.mn.cb = M_Fr;
     mm.c_mn = 0;
     mm.a_c = 0.28;
-#ifdef SOUND
     mm.s_clk = sound_chunk_load("click.wav");
-#endif
 }
 
 /*
@@ -472,9 +470,7 @@ void MM_Trm()
     if (mm.ft_nml) SF_Fr(mm.ft_nml);
     if (mm.ft_sel) SF_Fr(mm.ft_sel);
     DL_Clr(&mm.mn);
-#ifdef SOUND
     if (mm.s_clk) sound_chunk_free(&mm.s_clk);
-#endif
 }
 
 /*
@@ -645,25 +641,19 @@ int MM_UseE(int c)
     MEnt *me = mm.c_mn->c_e;
     switch (me->t) {
         case ME_SUB:
-#ifdef SOUND
             sound_play(mm.s_clk);
-#endif
             if (mm.c_mn->c_e->cb != 0)
                 mm.c_mn->c_e->cb();
             mm.c_mn = (Menu*)me->smn;
             break;
         case ME_ACT:
-#ifdef SOUND
             sound_play(mm.s_clk);
-#endif
             if (mm.c_mn->c_e->cb != 0)
                 mm.c_mn->c_e->cb();
             return me->act;
         case ME_SWT:
         case ME_RNG:
-#ifdef SOUND
             sound_play(mm.s_clk);
-#endif
             if (c == MM_DEC) {
         		*me->p -= me->stp;
             	if (*me->p < me->min)
@@ -700,9 +690,7 @@ int MM_PrvE()
         mm.c_mn->c_e->a = 0;
     }
 
-#ifdef SOUND
     sound_play(mm.s_clk);
-#endif
     return MM_NONE;
 }
 
@@ -719,9 +707,7 @@ int MM_NxtE()
         mm.c_mn->c_e->a = 0;
     }
 
-#ifdef SOUND
     sound_play(mm.s_clk);
-#endif
     return MM_NONE;
 }
 
@@ -732,19 +718,15 @@ int MM_SelE(int x, int y)
 {
     DL_E    *e = mm.c_mn->ent.hd.n;
     MEnt    *me;
-#ifdef SOUND
     MEnt *old = mm.c_mn->c_e;
-#endif
 
     while (e != &mm.c_mn->ent.tl) {
         me = (MEnt*)e->d;
         if (me->t != ME_SEP && x >= me->dx && x < me->dx + me->dw && y >= me->dy && y < me->dy + me->dh) {
             mm.c_mn->c_e = me;
             mm.c_mn->c_e->a = 0;
-#ifdef SOUND
             if (mm.c_mn->c_e != old)
                 sound_play(mm.s_clk);
-#endif
             return MM_NONE;
         }
         e = e->n;
