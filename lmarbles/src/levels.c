@@ -45,76 +45,68 @@ char **ls_lst = 0;
 int  ls_n = 0;
 DLst l_sts;
 
-/*
-    count and create a list with all loadable filenames found in SRC_DIR/levels
-*/
+/* create list of file names of all levelsets */
 void L_CrtLst()
 {
-    int     i;
-    char    d_nm[256];
-    char    path[256+256];
-    DIR     *dir = 0;
-    struct dirent  *e;
-    struct stat     s;
+	char d_nm[MAXSTRLEN/2];
+	char path[MAXSTRLEN];
+	DIR *dir;
+	struct dirent *e;
+	struct stat fs;
 
-    ls_n = 0;
+	ls_n = 0;
 
-    // create directory string //
-    sprintf(d_nm, "%s/levels", SRC_DIR);
+	/* create directory string */
+	snprintf(d_nm, MAXSTRLEN/2, "%s/levels", SRC_DIR);
 
-    // find and open directory //
-    if ((dir = opendir(d_nm)) == 0) {
-        fprintf(stderr, _("ERROR: can't find directory '%s'\n"), d_nm);
-        exit(1);
-    }
+	/* find and open directory */
+	if ((dir = opendir(d_nm)) == NULL) {
+		_logerr(_("cannot find directory %s\n"), d_nm);
+		return;
+	}
 
-    printf(_("searching for level sets...\n"));
-    // well, let's check the count the entries //
-    while ((e = readdir(dir)) != 0) {
-        sprintf(path, "%s/%s", d_nm, e->d_name);
-        stat(path, &s);
-        if (S_ISREG(s.st_mode)) {
-            (ls_n)++;
-            printf("'%s'\n", e->d_name);
-        }
-    }
+	/* count levelsets */
+	_loginfo(_("searching for level sets...\n"));
+	while ((e = readdir(dir)) != NULL) {
+		snprintf(path, MAXSTRLEN, "%s/%s", d_nm, e->d_name);
+		stat(path, &fs);
+		if (!S_ISREG(fs.st_mode) || !strncmp(e->d_name,"Makefile",8))
+			continue;
+		(ls_n)++;
+		_loginfo("  %s\n", e->d_name);
+	}
 
-    if (ls_n == 0) {
-        fprintf(stderr, _("ERROR: '%s' seems to be empty\n"), d_nm);
-        closedir(dir);
-        exit(1);
-    }
-    else
-        printf(_("...total of %i\n"), ls_n);
+	if (ls_n == 0) {
+		_logerr(_("%s seems to be empty\n"), d_nm);
+		closedir(dir);
+		return;
+	}
 
-    // now we'll create the list //
-    rewinddir(dir);
-    ls_lst = malloc(sizeof(char*) * (ls_n));
-    for (i = 0; i < ls_n; i++) {
-        do {
-            e = readdir(dir);
-            if (e == 0) continue;
-            sprintf(path, "%s/%s", d_nm, e->d_name);
-            stat(path, &s);
-        } while (!S_ISREG(s.st_mode));
-        ls_lst[i] = malloc(strlen(e->d_name) + 1);
-        strcpy(ls_lst[i], e->d_name);
-    }
+	/* create list */
+	rewinddir(dir);
+	ls_lst = calloc(ls_n, sizeof(char*));
+	for (int i = 0; i < ls_n; i++) {
+		while ((e = readdir(dir)) != NULL) {
+			snprintf(path, MAXSTRLEN, "%s/%s", d_nm, e->d_name);
+			stat(path, &fs);
+			if (!S_ISREG(fs.st_mode) || !strncmp(e->d_name,"Makefile",8))
+				continue;
+			ls_lst[i] = calloc(strlen(e->d_name)+1, sizeof(char));
+			strcpy(ls_lst[i], e->d_name);
+		}
+	}
 
-    // close dir //
-    closedir(dir);
+	closedir(dir);
 }
 
-/*
-    free list memory
-*/
+/* free set list */
 void L_DelLst()
 {
-    int i;
-    if (!ls_lst) return;
-    for (i = 0; i < ls_n; i++)
-        free(ls_lst[i]);
-    free(ls_lst);
+	if (ls_lst == NULL)
+		return;
+	for (int i = 0; i < ls_n; i++)
+		free(ls_lst[i]);
+	free(ls_lst);
 }
 
 /*

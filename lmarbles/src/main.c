@@ -222,22 +222,17 @@ int main(int argc, char *argv[])
     // random init
     srand(time(NULL));
 
-    // sdl init //
+    // init SDL
     Sdl_Ini(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
     sprintf( aux, "LMarbles %s", VERSION );
     SDL_WM_SetCaption(aux, 0);
-
-    // show logo //
     Sdl_StVdMd(512, 384, 16, SDL_SWSURFACE);
-
-    // show hardware capabilities //
-    Sdl_HwCps();
 
     /* load config (and create config dir which is also used for profiles) */
     configSetPath();
     configLoad();
 
-    // load profiles //
+    /* load profiles */
     profileInit();
     profileLoad();
             
@@ -286,27 +281,14 @@ int main(int argc, char *argv[])
         SDL_Delay( 5 );
     }
 
-    // terminate menu //
+    /* finalize */
     MM_Trm();
-
-    // terminate game //
     G_Trm();
-
-    // close soundserver //
     audio_close();
-
-    // save config //
     configSave();
-
-    // free levelset list //
     L_DelLst();
-
-    // save profiles //
     profileSave();
-
-    // free screen //
     Sdl_Qut();
-
     printf(_("Bye, bye!\n"));
 
     return 0;

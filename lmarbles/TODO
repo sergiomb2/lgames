@@ -1,4 +1,3 @@
-ignore Makefiles for levelset list
 properly check string size in file.c
 replace all strcpy with snprintf
 have move and time profile for user
@@ -6,3 +5,4 @@ give 0-3 stars for clearance according to time/moves
 <ref value = 3 stars, < +20% 2 stars, < +40% 1 star, else 0 stars 
 add shadow surface for scaling
 add proper crosscompiling
+fix error with second bad levelset
