@@ -37,7 +37,7 @@ extern Config config;
 void profileInit()
 {
 	snprintf(prf_pth, MAXSTRLEN, "%s/lmarbles.prf", configDir);
-	snprintf(profile.nm, MAXSTRLEN, "Profile");
+	snprintf(profile.name, MAXSTRLEN, "Profile");
 	DL_Ini(&profile.sts);
 	profile.sts.flgs = DL_AUTODEL | DL_NOCB;
 }
@@ -60,7 +60,7 @@ int profileLoad()
 	}
 
 	/* read profile */
-	fileReadString(fh, "name", profile.nm);
+	fileReadString(fh, "name", profile.name);
 	while (fileReadString(fh, "setname", str)) {
 		SInf *st = calloc(1,sizeof(SInf));
 		snprintf(st->nm, MAXSTRLEN, "%s", str);
@@ -94,7 +94,7 @@ void profileSave()
 		return;
 	}
 
-	fprintf(fh, "name=%s;\n", profile.nm);
+	fprintf(fh, "name=%s;\n", profile.name);
 	le = profile.sts.hd.n;
 	while (le != &profile.sts.tl) {
 		st = (SInf*)le->d;
@@ -136,7 +136,8 @@ SInf* profileRegisterSet(LSet *l_st)
                 for (i = 0; i < s->c_num; i++)
                     s->c_opn[i] = l_st->ch[i].opn;
                 memset(s->cmp, 0, sizeof(s->cmp));
-                printf("WARNING: profile '%s': set info '%s' seems to be out of date\n", profile.nm, l_st->nm);
+                printf("WARNING: profile '%s': set info '%s' seems to be out of date\n",
+                	profile.name, l_st->nm);
             }
             return s;
         }

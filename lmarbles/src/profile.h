@@ -33,7 +33,7 @@ typedef struct {
 } SInf;
 
 typedef struct {
-    char    nm[MAXSTRLEN];
+    char    name[MAXSTRLEN];
     DLst    sts;
 } Profile;
 
