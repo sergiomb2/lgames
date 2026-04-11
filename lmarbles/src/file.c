@@ -37,7 +37,8 @@ void fileClose(FILE *fh)
 		fclose(fh);
 }
 
-/* read an entry to @str of type @flags (value, subsection, comment).
+/* read an entry to @str (max size MAXSTRLEN including \0) of
+ * type @flags (value, subsection, comment).
  * ignore corrupted entries and continue reading until valid entry
  * or end of file (in which case entry might be corrupted).
 */
@@ -57,6 +58,8 @@ void fileGetEntry(FILE *fh, char *str, int flags)
 		/* add character */
 		str[pos++] = c;
 		str[pos] = 0;
+		if (pos == MAXSTRLEN - 1)
+			break;
 		/* check valid end character */
 		if ( (c == ';' && (flags & F_VAL)) ||
 				(c == '>' && (flags & F_SUB)) ||
