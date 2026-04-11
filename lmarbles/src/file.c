@@ -37,13 +37,15 @@ void fileClose(FILE *fh)
 		fclose(fh);
 }
 
-/*
-    read an entry and return if the correct flag is set else read next entry
+/* read an entry to @str of type @flags (value, subsection, comment).
+ * ignore corrupted entries and continue reading until valid entry
+ * or end of file (in which case entry might be corrupted).
 */
 void fileGetEntry(FILE *fh, char *str, int flags)
 {
 	int pos = 0;
 	char c;
+
 	str[0] = 0;
 
 	while (fread(&c, 1, 1, fh)) { /* read exactly one byte */
@@ -60,12 +62,10 @@ void fileGetEntry(FILE *fh, char *str, int flags)
 				(c == '>' && (flags & F_SUB)) ||
 				(c == ')' && (flags & F_COM)) )
 			break;
-		/* ignore corrupted parts */
+		/* ignore corrupted entries; try to read next one */
 		if (c == ';' || c == '>' || c == ')')
 			pos = 0;
 	}
-	if (pos == 1)
-		str[0] = 0; /* empty entry */
 }
 
 /* returns first non-blank character */
@@ -101,7 +101,8 @@ static int strGetValue(char *str, char *val)
 	for (i = 0; i < strlen(str); i++)
 		if (str[i] == '=' && strGetFirstChar(str + i + 1, &n)) {
 			strcpy(val, n);
-			val[strlen(val) - 1] = 0; // remove semicolon
+			if (val[strlen(val) - 1] == ';')
+				val[strlen(val) - 1] = 0; // remove semicolon
 			return 1;
 		}
 	return 0;
