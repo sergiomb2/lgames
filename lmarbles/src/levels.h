@@ -20,8 +20,8 @@
 
 #include <stdio.h>
 
-#define MAX_LVLS    10
-#define MAX_CHPTRS  10
+#define MAXLEVELS    10
+#define MAXCHAPTERS  10
 #define L_MAX_W     13
 #define L_MIN_W     4
 #define L_MAX_H     14

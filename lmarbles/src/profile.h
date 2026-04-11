@@ -27,8 +27,8 @@ typedef struct {
     int num;
     int l_num; // levels per chapter //
     int c_num;
-    int c_opn[MAX_CHPTRS];
-    int cmp[MAX_LVLS * MAX_CHPTRS];
+    int c_opn[MAXCHAPTERS];
+    int cmp[MAXLEVELS * MAXCHAPTERS];
 } SInf;
 
 typedef struct {
@@ -39,11 +39,11 @@ typedef struct {
     DLst    sts;
 } Profile;
 
-void Profile_Ini();
-int Profile_Ld();
-void Profile_Sv();
-void Profile_Reset();
-SInf* Profile_RegLS(LSet *l_st);
-void Profile_Upd(Profile *p, SInf *inf, int l_id, float pct, int scr);
+void profileInit();
+int profileLoad();
+void profileSave();
+void profileReset();
+SInf* profileRegisterSet(LSet *l_st);
+void profileUpdate(SInf *inf, int l_id, float pct, int scr);
 
 #endif

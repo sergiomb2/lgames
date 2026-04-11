@@ -401,7 +401,7 @@ int G_Opn()
     gm.c_prf = &profile;
 
     // current set info
-    gm.c_s_inf = Profile_RegLS(gm.c_l_st);
+    gm.c_s_inf = profileRegisterSet(gm.c_l_st);
 
     // dim & resize
     if (config.dim)
@@ -671,7 +671,7 @@ void G_Run()
                     modify_score( &bonus_level, &bonus_moves );
                     BS_Run( bonus_level, bonus_moves );
                     tm_rel = ( 1000 * gm.c_lvl->tm ) / gm.c_l_st->ch[gm.c_ch].lvls[gm.c_l_id].tm;
-                    Profile_Upd(gm.c_prf, gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, tm_rel, bonus_level + bonus_moves );
+                    profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, tm_rel, bonus_level + bonus_moves);
 
                 }
 
@@ -687,7 +687,7 @@ void G_Run()
         }
     }
     // save profiles
-    Profile_Sv();
+    profileSave();
 }
 
 /*

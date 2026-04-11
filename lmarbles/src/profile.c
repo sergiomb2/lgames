@@ -34,19 +34,19 @@ extern char configDir[MAXSTRLEN/2];
 extern Config config;
 
 /* initialize source path */
-void Profile_Ini()
+void profileInit()
 {
     snprintf(prf_pth, MAXSTRLEN, "%s/lmarbles.prf", configDir);
 }
 
 /* load profile; return 0 on error (and create standard profile), 1 otherwise */
-int Profile_Ld()
+int profileLoad()
 {
 	FILE    *fh = 0;
 	char    str[MAXSTRLEN];
 	int     i;
 
-	Profile_Reset(); /* default fallback */
+	profileReset(); /* default fallback */
 
 	_loginfo(_("loading profile...\n"));
 
@@ -80,14 +80,14 @@ int Profile_Ld()
 }
 
 /* save profiles */
-void Profile_Sv()
+void profileSave()
 {
 	DL_E *le = 0;
 	SInf *st;
 	FILE *fh;
 	int i;
 
-	_loginfo(_("saving profile... "));
+	_loginfo(_("saving profile...\n"));
 
 	if ((fh = fopen(prf_pth, "w")) == 0) {
 		_logerr("no write access to %s\n", prf_pth);
@@ -116,7 +116,7 @@ void Profile_Sv()
 }
 
 /* reset profile */
-void Profile_Reset()
+void profileReset()
 {
     snprintf(profile.nm,MAXSTRLEN,"Profile");
     profile.lvls = 0;
@@ -127,7 +127,7 @@ void Profile_Reset()
 }
 
 /* register or find a levelset with name nm */
-SInf* Profile_RegLS(LSet *l_st)
+SInf* profileRegisterSet(LSet *l_st)
 {
     int i;
     DL_E *e = profile.sts.hd.n;
@@ -167,33 +167,21 @@ SInf* Profile_RegLS(LSet *l_st)
     update Profile p's score and info
     s is rem_time / max_time of that level
 */
-void Profile_Upd(Profile *p, SInf *inf, int l_id, float pct, int scr)
+void profileUpdate(SInf *inf, int l_id, float pct, int scr)
 {
-    float new_p;
-#ifdef DEBUG
-    float old_p = p->pct;
-    printf(_("level %i..."), l_id);
-#endif
-    if (!inf->cmp[l_id]) {
-        /* mark as completed */
-        inf->cmp[l_id] = 1;
-        /* update percentage */
-        if (p->lvls == 0)
-            p->pct = pct;
-         else {
-            new_p = (p->pct * p->lvls + pct) / (p->lvls + 1);
-            p->pct = new_p;
-         }
-         p->lvls++;
-         p->scr += scr;
-#ifdef DEBUG
-    printf("marked as completed\n");
-    printf("added %4.2f: percentage changed from %4.2f to %4.2f\n", pct, old_p, p->pct);
-    printf("score added: %i\n", scr);
-#endif
-    }
-#ifdef DEBUG
-    else
-        printf("already finished\n");
-#endif
+	float new_p;
+
+	if (!inf->cmp[l_id]) {
+		/* mark as completed */
+		inf->cmp[l_id] = 1;
+		/* update percentage */
+		if (profile.lvls == 0)
+			profile.pct = pct;
+		else {
+			new_p = (profile.pct * profile.lvls + pct) / (profile.lvls + 1);
+			profile.pct = new_p;
+		}
+		profile.lvls++;
+		profile.scr += scr;
+	}
 }

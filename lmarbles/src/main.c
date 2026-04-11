@@ -238,8 +238,8 @@ int main(int argc, char *argv[])
     configLoad();
 
     // load profiles //
-    Profile_Ini();
-    Profile_Ld();
+    profileInit();
+    profileLoad();
             
     // create levelset list and reset config's levelset index if nescessary //
     L_CrtLst();
@@ -302,7 +302,7 @@ int main(int argc, char *argv[])
     L_DelLst();
 
     // save profiles //
-    Profile_Sv();
+    profileSave();
 
     // free screen //
     Sdl_Qut();
