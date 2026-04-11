@@ -104,8 +104,8 @@ static int strGetValue(char *str, char *val)
 	for (i = 0; i < strlen(str); i++)
 		if (str[i] == '=' && strGetFirstChar(str + i + 1, &n)) {
 			strcpy(val, n);
-			if (val[strlen(val) - 1] == ';')
-				val[strlen(val) - 1] = 0; // remove semicolon
+			if (val[strlen(val)-1] == ';')
+				val[strlen(val)-1] = 0; // remove semicolon
 			return 1;
 		}
 	return 0;
@@ -164,3 +164,28 @@ int fileReadInt(FILE *fh, const char *id, int *val)
 	return 1;
 }
 
+/** Read list of @size integers to @arr.
+ * Return 1 on success, 0 on failure */
+int fileReadIntList(FILE *fh, const char *id, int *arr, int size)
+{
+	char str[MAXSTRLEN];
+	int first;
+
+	if (size <= 0)
+		return 0;
+
+	/* to check id, read first element with fileReadInt */
+	if (!fileReadInt(fh, id, &first))
+		return 0;
+	arr[0] = first;
+
+	/* remaining elements have no extra ids */
+	for (int i = 1; i < size; i++) {
+		fileGetEntry(fh, str, F_VAL);
+		if (str[strlen(str)-1] == ';')
+			str[strlen(str)-1] = 0; /* remove semicolon */
+		arr[i] = atoi(str);
+	}
+
+	return 1;
+}

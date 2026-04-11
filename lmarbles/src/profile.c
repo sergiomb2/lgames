@@ -47,7 +47,6 @@ int profileLoad()
 {
 	FILE    *fh = 0;
 	char    str[MAXSTRLEN];
-	int     i;
 
 	profileReset();
 
@@ -68,10 +67,8 @@ int profileLoad()
 		fileReadInt(fh, "numlevels", &st->numLevels);
 		fileReadInt(fh, "numchapters", &st->numChapters);
 		fileReadInt(fh, "chaptersize", &st->chapterSize);
-		for (i = 0; i < st->numChapters; i++)
-			fileReadInt(fh, "chapteropen", &st->chapterOpen[i]);
-		for (i = 0; i < st->numLevels; i++)
-			fileReadInt(fh, "cmp", &st->completed[i]);
+		fileReadIntList(fh,"chapteropen", st->chapterOpen, st->numChapters);
+		fileReadIntList(fh,"completed", st->completed, st->numLevels);
 		DL_Add(&profile.sts, st);
 	}
 
@@ -104,10 +101,14 @@ void profileSave()
 		fprintf(fh, "numlevels=%d;\n", st->numLevels);
 		fprintf(fh, "numchapters=%d;\n", st->numChapters);
 		fprintf(fh, "chaptersize=%d;\n", st->chapterSize);
+		fprintf(fh, "chapteropen=");
 		for (i = 0; i < st->numChapters; i++)
-			fprintf(fh, "chapteropen=%d;\n", st->chapterOpen[i]);
+			fprintf(fh, "%d;", st->chapterOpen[i]);
+		fprintf(fh, "\n");
+		fprintf(fh, "completed=");
 		for (i = 0; i < st->numLevels; i++)
-			fprintf(fh, "cmp=%d;\n", st->completed[i]);
+			fprintf(fh, "%d;", st->completed[i]);
+		fprintf(fh, "\n");
 		le = le->n;
 	}
 

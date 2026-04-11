@@ -32,5 +32,6 @@ int fileCheckEntry(char *str, int type, const char *name, char *val);
 
 int fileReadString(FILE *fh, const char *id, char *val);
 int fileReadInt(FILE *fh, const char *id, int *val);
+int fileReadIntList(FILE *fh, const char *id, int *arr, int size);
 
 #endif
