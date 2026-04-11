@@ -24,6 +24,9 @@
 #define F_COM   0x0002
 #define F_VAL   0x0004
 
+FILE *fileOpen(const char *fname, const char *mode);
+void fileClose(FILE *fh);
+
 void fileGetEntry(FILE *f, char *str, int flgs);
 int fileCheckEntry(char *str, int t, const char *nm, char *v);
 

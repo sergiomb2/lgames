@@ -18,6 +18,17 @@
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
+/* i18n */
+#ifdef HAVE_CONFIG_H
+#include "../config.h"
+#endif
+#include "gettext.h"
+#if ENABLE_NLS
+#define _(str) gettext (str)
+#else
+#define _(str) (str)
+#endif
+
 #define MAXSTRLEN 1024
 
 #define DEBUGLEVEL 0

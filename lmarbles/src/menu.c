@@ -18,6 +18,7 @@
 #include "menu.h"
 #include <stdlib.h>
 #include <string.h>
+#include "tools.h"
 #include "cfg.h"
 
 extern Sdl sdl;

@@ -66,73 +66,70 @@ void configSetPath()
 
 void configLoad()
 {
-	FILE	*f;
+	FILE	*fh;
 
 	configSetDefaults();
 
 	printf(_("loading configuration %s\n"), configPath);
 
-	if ((f = fopen(configPath, "r")) == 0) {
-		printf(_("config file not found, using defaults\n"));
+	if ((fh = fileOpen(configPath,"r")) == NULL)
+		return;
+
+	if (!fileReadInt(fh, "sound", &config.sound)) {
+		_logerr("old or corrupted config, using defaults\n");
+		fileClose(fh);
 		return;
 	}
+	fileReadInt(fh, "volume", &config.volume);
+	fileReadInt(fh, "animations", &config.animations);
+	fileReadInt(fh, "fullscreen", &config.fullscreen);
+	fileReadInt(fh, "dim", &config.dim);
+	fileReadInt(fh, "diff", &config.diff);
+	fileReadInt(fh, "k_up", &config.k_up);
+	fileReadInt(fh, "k_down", &config.k_down);
+	fileReadInt(fh, "k_left", &config.k_left);
+	fileReadInt(fh, "k_right", &config.k_right);
+	fileReadInt(fh, "k_undo", &config.k_undo);
 
-	fileReadInt(f, "sound", &config.sound);
-	fileReadInt(f, "volume", &config.volume);
-	fileReadInt(f, "animations", &config.animations);
-	fileReadInt(f, "fullscreen", &config.fullscreen);
-	fileReadInt(f, "dim", &config.dim);
-	fileReadInt(f, "diff", &config.diff);
-	fileReadInt(f, "k_up", &config.k_up);
-	fileReadInt(f, "k_down", &config.k_down);
-	fileReadInt(f, "k_left", &config.k_left);
-	fileReadInt(f, "k_right", &config.k_right);
-	fileReadInt(f, "k_undo", &config.k_undo);
-
-	fclose(f);
+	fileClose(fh);
 }
 
 void configSave()
 {
-    FILE *f = fopen(configPath, "w");
+	FILE *fh = fileOpen(configPath, "w");
 
-    if (f == NULL) {
-	    _logerr("no write access to config file %s\n",configPath);
-	    return;
-    }
+	if (fh == NULL)
+		return;
 
-    fprintf(f, "sound = %d;\n", config.sound);
-    fprintf(f, "volume = %d;\n", config.volume);
-    fprintf(f, "animations = %d;\n", config.animations);
-    fprintf(f, "fullscreen = %d;\n", config.fullscreen);
-    fprintf(f, "dim = %d;\n", config.dim);
-    fprintf(f, "diff = %d;\n", config.diff);
-    fprintf(f, "k_up = %d;\n", config.k_up);
-    fprintf(f, "k_down = %d;\n", config.k_down);
-    fprintf(f, "k_left = %d;\n", config.k_left);
-    fprintf(f, "k_right = %d;\n", config.k_right);
-    fprintf(f, "k_undo = %d;\n", config.k_undo);
+	fprintf(fh, "sound = %d;\n", config.sound);
+	fprintf(fh, "volume = %d;\n", config.volume);
+	fprintf(fh, "animations = %d;\n", config.animations);
+	fprintf(fh, "fullscreen = %d;\n", config.fullscreen);
+	fprintf(fh, "dim = %d;\n", config.dim);
+	fprintf(fh, "diff = %d;\n", config.diff);
+	fprintf(fh, "k_up = %d;\n", config.k_up);
+	fprintf(fh, "k_down = %d;\n", config.k_down);
+	fprintf(fh, "k_left = %d;\n", config.k_left);
+	fprintf(fh, "k_right = %d;\n", config.k_right);
+	fprintf(fh, "k_undo = %d;\n", config.k_undo);
 
-    fclose(f);
+	fileClose(fh);
 }
 
-/*
-    default values
-*/
 void configSetDefaults()
 {
-    // sound //
-    config.volume = 6;
-    config.sound = 1;
-    // gfx //
-    config.animations = 1;
-    config.fullscreen = 0;
-    config.dim = 1;
-    config.diff = DIFF_NORMAL;
-    // controls
-    config.k_up = SDLK_UP;
-    config.k_down = SDLK_DOWN;
-    config.k_left = SDLK_LEFT;
-    config.k_right = SDLK_RIGHT;
-    config.k_undo = SDLK_SPACE;
+	// sound
+	config.volume = 6;
+	config.sound = 1;
+	// gfx
+	config.animations = 1;
+	config.fullscreen = 0;
+	config.dim = 1;
+	config.diff = DIFF_NORMAL;
+	// controls
+	config.k_up = SDLK_UP;
+	config.k_down = SDLK_DOWN;
+	config.k_left = SDLK_LEFT;
+	config.k_right = SDLK_RIGHT;
+	config.k_undo = SDLK_SPACE;
 }

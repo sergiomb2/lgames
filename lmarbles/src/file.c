@@ -15,12 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "tools.h"
 #include "file.h"
 #include <stdlib.h>
 #include <string.h>
-#include "tools.h"
 
-int f_ln = 0;
+int f_ln = 0; /* file line counter */
+
+/* open file and reset line counter */
+FILE *fileOpen(const char *fname, const char *mode)
+{
+	FILE *fh = fopen(fname, mode);
+	if (fh == NULL)
+		_logerr(_("cannot access file %s (%s)\n"), fname, mode);
+	f_ln = 0;
+	return fh;
+}
+void fileClose(FILE *fh)
+{
+	if (fh)
+		fclose(fh);
+}
 
 /*
     read an entry and return if the correct flag is set else read next entry
@@ -144,7 +159,8 @@ int fileReadString(FILE *f, const char *id, char *val)
 int fileReadInt(FILE *f, const char *id, int *val)
 {
 	char str[MAXSTRLEN];
-	fileReadString(f, id, str);
+	if (!fileReadString(f, id, str))
+		return 0;
 	*val = atoi(str);
 	return 1;
 }
