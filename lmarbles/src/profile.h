@@ -24,8 +24,9 @@
 
 typedef struct {
     char nm[MAXSTRLEN];
+    int score; /* total score gained for his set */
     int num;
-    int l_num; // levels per chapter //
+    int l_num; // levels per chapter
     int c_num;
     int c_opn[MAXCHAPTERS];
     int cmp[MAXLEVELS * MAXCHAPTERS];
@@ -33,9 +34,6 @@ typedef struct {
 
 typedef struct {
     char    nm[MAXSTRLEN];
-    int     lvls; // number of levels cleared
-    int     scr; // total score gained
-    float   pct; // percentage of time needed to complete a level
     DLst    sts;
 } Profile;
 
@@ -44,6 +42,6 @@ int profileLoad();
 void profileSave();
 void profileReset();
 SInf* profileRegisterSet(LSet *l_st);
-void profileUpdate(SInf *inf, int l_id, float pct, int scr);
+void profileUpdate(SInf *inf, int lvl, int scr);
 
 #endif

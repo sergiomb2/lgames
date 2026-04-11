@@ -33,10 +33,13 @@ char prf_pth[MAXSTRLEN];
 extern char configDir[MAXSTRLEN/2];
 extern Config config;
 
-/* initialize source path */
+/* initialize profile */
 void profileInit()
 {
-    snprintf(prf_pth, MAXSTRLEN, "%s/lmarbles.prf", configDir);
+	snprintf(prf_pth, MAXSTRLEN, "%s/lmarbles.prf", configDir);
+	snprintf(profile.nm, MAXSTRLEN, "Profile");
+	DL_Ini(&profile.sts);
+	profile.sts.flgs = DL_AUTODEL | DL_NOCB;
 }
 
 /* load profile; return 0 on error (and create standard profile), 1 otherwise */
@@ -46,7 +49,7 @@ int profileLoad()
 	char    str[MAXSTRLEN];
 	int     i;
 
-	profileReset(); /* default fallback */
+	profileReset();
 
 	_loginfo(_("loading profile...\n"));
 
@@ -58,9 +61,6 @@ int profileLoad()
 
 	/* read profile */
 	fileReadString(fh, "name", profile.nm);
-	fileReadInt(fh, "levels", &profile.lvls);
-	fileReadInt(fh, "score", &profile.scr);
-	profile.pct = 0; /* TODO remove or properly read */
 	while (fileReadString(fh, "setname", str)) {
 		SInf *st = calloc(1,sizeof(SInf));
 		snprintf(st->nm, MAXSTRLEN, "%s", str);
@@ -95,9 +95,6 @@ void profileSave()
 	}
 
 	fprintf(fh, "name=%s;\n", profile.nm);
-	fprintf(fh, "levels=%d;\n", profile.lvls);
-	fprintf(fh, "score=%d;\n", profile.scr);
-	/* TODO profile.pct is not saved right now */
 	le = profile.sts.hd.n;
 	while (le != &profile.sts.tl) {
 		st = (SInf*)le->d;
@@ -118,12 +115,7 @@ void profileSave()
 /* reset profile */
 void profileReset()
 {
-    snprintf(profile.nm,MAXSTRLEN,"Profile");
-    profile.lvls = 0;
-    profile.scr = 0;
-    profile.pct = 0;
-    DL_Ini(&profile.sts);
-    profile.sts.flgs = DL_AUTODEL | DL_NOCB;
+	DL_Clr(&profile.sts);
 }
 
 /* register or find a levelset with name nm */
@@ -163,25 +155,15 @@ SInf* profileRegisterSet(LSet *l_st)
     return s;
 }
 
-/*
-    update Profile p's score and info
-    s is rem_time / max_time of that level
+/* update profile's score and info
+   s is rem_time / max_time of that level
 */
-void profileUpdate(SInf *inf, int l_id, float pct, int scr)
+void profileUpdate(SInf *inf, int lvl, int scr)
 {
-	float new_p;
-
-	if (!inf->cmp[l_id]) {
+	if (!inf->cmp[lvl]) {
 		/* mark as completed */
-		inf->cmp[l_id] = 1;
+		inf->cmp[lvl] = 1;
 		/* update percentage */
-		if (profile.lvls == 0)
-			profile.pct = pct;
-		else {
-			new_p = (profile.pct * profile.lvls + pct) / (profile.lvls + 1);
-			profile.pct = new_p;
-		}
-		profile.lvls++;
-		profile.scr += scr;
+		inf->score += scr;
 	}
 }

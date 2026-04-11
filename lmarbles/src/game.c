@@ -461,7 +461,6 @@ void G_Run()
     SDL_Surface *buf;
     int flgs;
     int restore_pos;
-    int tm_rel = 0;
     int ign_c_stat = 0;
     int bonus_level, bonus_moves; /* bonus for level completion and remaining moves */
     
@@ -664,15 +663,12 @@ void G_Run()
                 FA_Run();
                 // bonus summary
                 if ( !gm.c_s_inf->cmp[gm.c_ch * gm.c_s_inf->l_num + gm.c_l_id] ) {
-
                     /* level wasn't completed until now so gain score for it */
                     bonus_level = LB_COMPLETED;
                     bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
                     modify_score( &bonus_level, &bonus_moves );
                     BS_Run( bonus_level, bonus_moves );
-                    tm_rel = ( 1000 * gm.c_lvl->tm ) / gm.c_l_st->ch[gm.c_ch].lvls[gm.c_l_id].tm;
-                    profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, tm_rel, bonus_level + bonus_moves);
-
+                    profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, bonus_level + bonus_moves);
                 }
 
             }
@@ -2656,10 +2652,7 @@ void modify_score( int *b_lvl, int *b_tm )
     }
 }
 
-// bonus summary //
-/*
-    give a bonus summary
-*/
+/* give a bonus summary by adding @b_lvl and @b_tm to current set score */
 void BS_Run(float b_lvl, float b_tm)
 {
     SDL_Surface *buf;
@@ -2671,13 +2664,12 @@ void BS_Run(float b_lvl, float b_tm)
     int ms;
     int sw = 80, sh = gm.f_sml->h; // string width, height
     float b_c = 1.0; // bonus change
-    float scr = gm.c_prf->scr;
+    float scr = gm.c_s_inf->score;
     int end_scr;
 
     int old_scr;
 
-
-    end_scr = gm.c_prf->scr + (int)b_lvl + (int)b_tm;
+    end_scr = gm.c_s_inf->score + (int)b_lvl + (int)b_tm;
 
     // normal cursor
     SDL_SetCursor(gm.c_n);
