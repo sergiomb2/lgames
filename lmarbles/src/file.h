@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef __FILE_H
+#define __FILE_H
 
 #include <stdio.h>
 
@@ -27,17 +27,10 @@
 FILE *fileOpen(const char *fname, const char *mode);
 void fileClose(FILE *fh);
 
-void fileGetEntry(FILE *f, char *str, int flgs);
-int fileCheckEntry(char *str, int t, const char *nm, char *v);
+void fileGetEntry(FILE *fh, char *str, int flags);
+int fileCheckEntry(char *str, int type, const char *name, char *val);
 
-int fileReadString(FILE *f, const char *id, char *val);
-int fileReadInt(FILE *f, const char *id, int *val);
-
-void fileWriteEntry(FILE *f, char *str);
-void F_IntToStr(char *str, int i);
-void F_FloatToStr(char *str, float f);
-void F_ValToInt(char *str, int *i);
-void F_ValToFloat(char *str, float *f);
-void F_ValToChar(char *str, char *c);
+int fileReadString(FILE *fh, const char *id, char *val);
+int fileReadInt(FILE *fh, const char *id, int *val);
 
 #endif
