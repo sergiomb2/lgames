@@ -23,13 +23,13 @@
 #include "dynlist.h"
 
 typedef struct {
-    char nm[MAXSTRLEN];
-    int score; /* total score gained for his set */
-    int num;
-    int l_num; // levels per chapter
-    int c_num;
-    int c_opn[MAXCHAPTERS];
-    int cmp[MAXLEVELS * MAXCHAPTERS];
+    char name[MAXSTRLEN];
+    int score; /* total score gained for this set */
+    int numLevels; /* total number of levels */
+    int numChapters; /* number of chapters */
+    int chapterSize; /* levels per chapter */
+    int chapterOpen[MAXCHAPTERS];
+    int completed[MAXCHAPTERS * MAXCHAPTERSIZE];
 } SInf;
 
 typedef struct {

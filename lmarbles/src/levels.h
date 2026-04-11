@@ -20,8 +20,8 @@
 
 #include <stdio.h>
 
-#define MAXLEVELS    10
-#define MAXCHAPTERS  10
+#define MAXCHAPTERS	10
+#define MAXCHAPTERSIZE	10
 #define L_MAX_W     13
 #define L_MIN_W     4
 #define L_MAX_H     14
@@ -36,6 +36,7 @@
 #define LB_PER_MOVE     50
 
 // limit type //
+#define LT_COUNT 2
 #define TIME 0
 #define MOVES 1
 

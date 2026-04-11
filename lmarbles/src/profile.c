@@ -63,14 +63,15 @@ int profileLoad()
 	fileReadString(fh, "name", profile.name);
 	while (fileReadString(fh, "setname", str)) {
 		SInf *st = calloc(1,sizeof(SInf));
-		snprintf(st->nm, MAXSTRLEN, "%s", str);
-		fileReadInt(fh, "num", &st->num);
-		fileReadInt(fh, "l_num", &st->l_num);
-		fileReadInt(fh, "c_num", &st->c_num);
-		for (i = 0; i < st->c_num; i++)
-			fileReadInt(fh, "c_open", &st->c_opn[i]);
-		for (i = 0; i < st->num; i++)
-			fileReadInt(fh, "cmp", &st->cmp[i]);
+		snprintf(st->name, MAXSTRLEN, "%s", str);
+		fileReadInt(fh, "score", &st->score);
+		fileReadInt(fh, "numlevels", &st->numLevels);
+		fileReadInt(fh, "numchapters", &st->numChapters);
+		fileReadInt(fh, "chaptersize", &st->chapterSize);
+		for (i = 0; i < st->numChapters; i++)
+			fileReadInt(fh, "chapteropen", &st->chapterOpen[i]);
+		for (i = 0; i < st->numLevels; i++)
+			fileReadInt(fh, "cmp", &st->completed[i]);
 		DL_Add(&profile.sts, st);
 	}
 
@@ -98,14 +99,15 @@ void profileSave()
 	le = profile.sts.hd.n;
 	while (le != &profile.sts.tl) {
 		st = (SInf*)le->d;
-		fprintf(fh, "setname=%s;\n", st->nm);
-		fprintf(fh, "num=%d;\n", st->num);
-		fprintf(fh, "l_num=%d;\n", st->l_num);
-		fprintf(fh, "c_num=%d;\n", st->c_num);
-		for (i = 0; i < st->c_num; i++)
-			fprintf(fh, "c_open=%d;\n", st->c_opn[i]);
-		for (i = 0; i < st->num; i++)
-			fprintf(fh, "cmp=%d;\n", st->cmp[i]);
+		fprintf(fh, "setname=%s;\n", st->name);
+		fprintf(fh, "score=%d;\n", st->score);
+		fprintf(fh, "numlevels=%d;\n", st->numLevels);
+		fprintf(fh, "numchapters=%d;\n", st->numChapters);
+		fprintf(fh, "chaptersize=%d;\n", st->chapterSize);
+		for (i = 0; i < st->numChapters; i++)
+			fprintf(fh, "chapteropen=%d;\n", st->chapterOpen[i]);
+		for (i = 0; i < st->numLevels; i++)
+			fprintf(fh, "cmp=%d;\n", st->completed[i]);
 		le = le->n;
 	}
 
@@ -118,7 +120,7 @@ void profileReset()
 	DL_Clr(&profile.sts);
 }
 
-/* register or find a levelset with name nm */
+/* register or find a levelset with @name */
 SInf* profileRegisterSet(LSet *l_st)
 {
     int i;
@@ -127,16 +129,16 @@ SInf* profileRegisterSet(LSet *l_st)
     /* maybe it already exists */
     while (e != &profile.sts.tl) {
         s = (SInf*)e->d;
-        if (!strcmp(s->nm, l_st->nm)) {
-            if (l_st->c_num != s->c_num || l_st->l_num != s->l_num) {
-                // seems to be changed; clear it //
-                s->num = l_st->c_num * l_st->l_num;
-                s->l_num = l_st->l_num;
-                s->c_num = l_st->c_num;
-                for (i = 0; i < s->c_num; i++)
-                    s->c_opn[i] = l_st->ch[i].opn;
-                memset(s->cmp, 0, sizeof(s->cmp));
-                printf("WARNING: profile '%s': set info '%s' seems to be out of date\n",
+        if (!strcmp(s->name, l_st->nm)) {
+            if (l_st->c_num != s->numChapters || l_st->l_num != s->chapterSize) {
+                // seems to have changed; clear it
+                s->numLevels = l_st->c_num * l_st->l_num;
+                s->chapterSize = l_st->l_num;
+                s->numChapters = l_st->c_num;
+                for (i = 0; i < s->numChapters; i++)
+                    s->chapterOpen[i] = l_st->ch[i].opn;
+                memset(s->completed, 0, sizeof(s->completed));
+                _loginfo("WARNING: profile '%s': set info '%s' seems to be out of date\n",
                 	profile.name, l_st->nm);
             }
             return s;
@@ -145,13 +147,13 @@ SInf* profileRegisterSet(LSet *l_st)
     }
     /* must be registered */
     s = calloc(1, sizeof(SInf));
-    strcpy(s->nm, l_st->nm);
-    s->num = l_st->c_num * l_st->l_num;
-    s->l_num = l_st->l_num;
-    s->c_num = l_st->c_num;
-    for (i = 0; i < s->c_num; i++)
-        s->c_opn[i] = l_st->ch[i].opn;
-    memset(s->cmp, 0, sizeof(s->cmp));
+    strcpy(s->name, l_st->nm);
+    s->numLevels = l_st->c_num * l_st->l_num;
+    s->chapterSize = l_st->l_num;
+    s->numChapters = l_st->c_num;
+    for (i = 0; i < s->numChapters; i++)
+        s->chapterOpen[i] = l_st->ch[i].opn;
+    memset(s->completed, 0, sizeof(s->completed));
     DL_Add(&profile.sts, s);
     return s;
 }
@@ -161,9 +163,9 @@ SInf* profileRegisterSet(LSet *l_st)
 */
 void profileUpdate(SInf *inf, int lvl, int scr)
 {
-	if (!inf->cmp[lvl]) {
+	if (!inf->completed[lvl]) {
 		/* mark as completed */
-		inf->cmp[lvl] = 1;
+		inf->completed[lvl] = 1;
 		/* update percentage */
 		inf->score += scr;
 	}

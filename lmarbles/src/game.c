@@ -662,7 +662,7 @@ void G_Run()
                 // figure animation
                 FA_Run();
                 // bonus summary
-                if ( !gm.c_s_inf->cmp[gm.c_ch * gm.c_s_inf->l_num + gm.c_l_id] ) {
+                if ( !gm.c_s_inf->completed[gm.c_ch * gm.c_s_inf->chapterSize + gm.c_l_id] ) {
                     /* level wasn't completed until now so gain score for it */
                     bonus_level = LB_COMPLETED;
                     bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
@@ -1876,7 +1876,7 @@ int Inf_Upd()
         sprintf(gm.inf_str, _("Tier %i, Puzzle %i"), gm.c_ch + 1, gm.c_l_id + 1);
         return 0;
     }
-    if (!gm.c_s_inf->cmp[y * gm.c_s_inf->l_num + x] && !gm.c_s_inf->c_opn[y]) {
+    if (!gm.c_s_inf->completed[y * gm.c_s_inf->chapterSize + x] && !gm.c_s_inf->chapterOpen[y]) {
         sprintf(gm.inf_str, _("Access Denied"));
         return 0;
     }
