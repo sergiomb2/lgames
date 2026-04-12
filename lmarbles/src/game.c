@@ -173,7 +173,7 @@ void G_Ini()
     for (i = 0; i < ls_n; i++) {
         printf("%s... ", ls_lst[i]);
         sprintf(str, "%s/levels/%s", SRC_DIR, ls_lst[i]);
-        f = fopen(str, "r");
+        f = fileOpen(str, "r");
         if (f != 0) {
             f_ln = 1;
             if (L_LdSt(f)) {
@@ -570,7 +570,7 @@ void G_Run()
                         break;
                     case SDL_MOUSEBUTTONUP:
                         if ( ev.button.button == 1 && gm.m_mv &&
-                             ( gm.c_l_st->limit_type == MOVES ) ) {
+                             ( config.limitType == LT_MOVES ) ) {
                             gm.m_warp = 1;
                             break;
                         }
@@ -665,8 +665,10 @@ void G_Run()
                 if ( !gm.c_s_inf->completed[gm.c_ch * gm.c_s_inf->chapterSize + gm.c_l_id] ) {
                     /* level wasn't completed until now so gain score for it */
                     bonus_level = LB_COMPLETED;
-                    bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
-                    modify_score( &bonus_level, &bonus_moves );
+                    if (config.limitType == LT_MOVES)
+                        bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
+                    else
+                	bonus_moves = gm.c_lvl->tm * LB_PER_SEC;
                     BS_Run( bonus_level, bonus_moves );
                     profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, bonus_level + bonus_moves);
                 }
@@ -1371,7 +1373,7 @@ int Mr_Upd(int ms)
     }
 
     // check time if move limit //
-    if ( stp && gm.c_l_st->limit_type == MOVES &&
+    if ( stp && config.limitType == LT_MOVES &&
          gm.m_act != M_TLP_0 && gm.m_act != M_TLP_1 &&
          gm.m_act != M_TLP_2 && gm.m_act != M_TLP_3) {
 
@@ -1750,7 +1752,7 @@ void Mr_ResPos()
     gm.m_act = M_EMPTY;
     gm.m_tx = gm.m_o_x;
     gm.m_ty = gm.m_o_y;
-    if ( gm.c_l_st->limit_type == MOVES )
+    if ( config.limitType == LT_MOVES )
         gm.c_lvl->tm = gm.m_o_move_count;
     Mr_Stp();
 }
@@ -1781,28 +1783,28 @@ void Tm_Shw()
     int tm;
 
     // adjust time //
-    if ( gm.c_l_st->limit_type == TIME )
+    if ( config.limitType == LT_TIME )
         tm = gm.c_lvl->tm / 1000;
     else
         tm = gm.c_lvl->tm;
 
     // select font
     ft = gm.f_wht;
-    if ( gm.c_l_st->limit_type == TIME && tm <= 30 )
+    if ( config.limitType == LT_TIME && tm <= 30 )
         ft = gm.f_rd;
     else
-        if ( gm.c_l_st->limit_type == MOVES && tm <= 10 )
+        if ( config.limitType == LT_MOVES && tm <= 10 )
             ft = gm.f_rd;
 
     // draw "time"
     ft->algn = TA_X_L | TA_Y_T;
-    if ( gm.c_l_st->limit_type == TIME )
+    if ( config.limitType == LT_TIME )
         SF_Wrt(ft, sdl.scr, gm.t_x + gm.b_x, gm.t_y, _("Time:"), 0);
     else
         SF_Wrt(ft, sdl.scr, gm.t_x + gm.b_x, gm.t_y, _("Moves:"), 0);
 
     // compute and draw time str
-    if ( gm.c_l_st->limit_type == TIME ) {
+    if ( config.limitType == LT_TIME ) {
 
         sprintf(str_tm, "%i:", tm / 60);
         sprintf(str_sec, "%i", tm % 60);
@@ -1833,13 +1835,14 @@ int Tm_Upd(int ms)
     gm.blink_time += ms;
 
     // if limit_type is MOVES, time is ignored //
-    if ( gm.c_l_st->limit_type == MOVES ) return 1;
+    if ( config.limitType == LT_MOVES ) return 1;
 
     gm.c_lvl->tm -= ms;
 
     // new second ?
 
-    if ( old_sec != gm.c_lvl->tm / 1000 && old_sec <= 30 )
+    if (old_sec != (gm.c_lvl->tm/1000) &&
+                 (old_sec == 31 || old_sec == 21 || old_sec == 11 || old_sec == 6))
         sound_play(gm.wv_alm);
 
 
@@ -2629,27 +2632,6 @@ void Cr_Shw()
     gm.f_sml->algn = TA_X_L | TA_Y_T;
     SF_Wrt(gm.f_sml, sdl.scr, gm.cr_x, gm.cr_y, gm.cr_str, (int)gm.cr_a);
     Sdl_AddR(gm.cr_x, gm.cr_y, gm.cr_w, gm.cr_h);
-}
-
-// modify score //
-void modify_score( int *b_lvl, int *b_tm )
-{
-    /* modify score according to difficulty level */
-    switch (config.diff) {
-        case DIFF_EASY:
-            *b_lvl /= 2;
-            *b_tm  /= 2;
-            break;
-        case DIFF_NORMAL: break;
-        case DIFF_HARD:
-            *b_lvl *= 2;
-            *b_tm  *= 2;
-            break;
-        case DIFF_BRAINSTORM:
-            *b_tm  *= 5;
-            *b_lvl *= 5;
-            break;
-    }
 }
 
 /* give a bonus summary by adding @b_lvl and @b_tm to current set score */

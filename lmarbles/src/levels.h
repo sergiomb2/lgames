@@ -34,11 +34,7 @@
 // level bonuses //
 #define LB_COMPLETED    1000
 #define LB_PER_MOVE     50
-
-// limit type //
-#define LT_COUNT 2
-#define TIME 0
-#define MOVES 1
+#define LB_PER_SEC      10
 
 // tile types //
 enum {
@@ -68,11 +64,13 @@ typedef struct {
 } MapT;
 
 typedef struct {
-    int     tm; // time //
-    int     m_w, m_h; // map size //
-    int     f_w, f_h; // figure size //
-    int     fgr[F_MAX_W][F_MAX_H]; // figure //
-    MapT    map[L_MAX_W][L_MAX_H]; // map //
+    int tm; // current time or move
+    int baseTime; // base time (no bonus)
+    int baseMoves; // base moves (no bonus)
+    int m_w, m_h; // map size //
+    int f_w, f_h; // figure size //
+    int fgr[F_MAX_W][F_MAX_H]; // figure //
+    MapT map[L_MAX_W][L_MAX_H]; // map //
 } Lvl;
 
 typedef struct {
@@ -90,7 +88,6 @@ typedef struct {
     int     l_num;
     Chptr   *ch;
     int     ok;
-    int     limit_type; /* which type of limit? */
 } LSet;
 
 void L_CrtLst();

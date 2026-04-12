@@ -180,17 +180,6 @@ int L_LdSt(FILE *f)
         return 0;
     }
     st->c_num = atoi(val);
-    // limit type //
-    fileGetEntry(f, str, F_VAL);
-    if (!fileCheckEntry(str, F_VAL, "limit", val)) {
-        printf("ERROR: line %i: 'limit' expected\n", f_ln);
-        free(st);
-        return 0;
-    }
-    if ( !strncmp( "time", val, 4 ) )
-        st->limit_type = TIME;
-    else
-        st->limit_type = MOVES;
     // info section //
     fileGetEntry(f, str, F_SUB | F_VAL);
     if (!fileCheckEntry(str, F_SUB, "</info>", 0)) {
@@ -252,7 +241,9 @@ int L_LdSt(FILE *f)
                 printf("ERROR: line %i: 'limit' expected\n", f_ln);
                 goto failure;
             }
-            st->ch[i].lvls[j].tm = atoi(val);
+            st->ch[i].lvls[j].tm = 0; /* not used yet */
+            st->ch[i].lvls[j].baseMoves = atoi(val);
+            st->ch[i].lvls[j].baseTime = atoi(val)*4; /* FIXME should be set in file */
             // map width //
             fileGetEntry(f, str, F_VAL);
             if (!fileCheckEntry(str, F_VAL, "map_w", val)) {
@@ -440,7 +431,6 @@ void L_Ini(int c, int l)
     char str[64];
     int off;
     char *str_num[] = {"1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10."};
-    float mv_mod;
         
     // show credit when new chapter
     if ( gm.o_ch == -1 || gm.o_ch != c )
@@ -613,34 +603,15 @@ void L_Ini(int c, int l)
     gm.m_act = M_EMPTY;
     gm.m_mx = gm.m_my = -1;
 
-    if ( gm.c_l_st->limit_type == TIME ) {
+    if (config.limitType == LT_TIME) {
         /* set time from seconds to milliseconds if time used */
-        gm.c_lvl->tm *= 1000;
-        gm.c_lvl->tm+=1000;
+        gm.c_lvl->tm = gm.c_lvl->baseTime * 1000 + 1000;
+    } else {
+	gm.c_lvl->tm = gm.c_lvl->baseMoves;
     }
-    else {
-        /* gm.c_lvl->tm containts the move limit. this is modified according
-           to the difficulty levels */
-        switch ( config.diff ) {
-            case DIFF_EASY:
-                mv_mod = (int)ceil((float)gm.c_lvl->tm * 0.2 * ( 5 - gm.c_ch ) );
-                gm.c_lvl->tm += mv_mod;
-                if ( gm.c_lvl->tm % 2 ) gm.c_lvl->tm++;
-                break;
-            case DIFF_NORMAL:
-                mv_mod = (int)ceil((float)gm.c_lvl->tm * 0.1 * ( 5 - gm.c_ch ) );
-                gm.c_lvl->tm += mv_mod;
-                if ( gm.c_lvl->tm % 2 ) gm.c_lvl->tm++;
-                break;
-            case DIFF_HARD:
-                mv_mod = (int)ceil((float)gm.c_lvl->tm * 0.05 * ( 5 - gm.c_ch ) );
-                gm.c_lvl->tm += mv_mod;
-                if ( gm.c_lvl->tm % 2 ) gm.c_lvl->tm++;
-                break;
-            case DIFF_BRAINSTORM:
-                break;
-        }
-    }
+    /* we always start with +60% of limit; according to how much time/moves
+     * is left, the resulting rating is different */
+    gm.c_lvl->tm = 160*gm.c_lvl->tm/100;
 
     // init blink time //
     gm.blink_time = 0;

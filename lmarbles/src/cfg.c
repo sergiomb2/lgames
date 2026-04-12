@@ -84,12 +84,12 @@ void configLoad()
 	fileReadInt(fh, "animations", &config.animations);
 	fileReadInt(fh, "fullscreen", &config.fullscreen);
 	fileReadInt(fh, "dim", &config.dim);
-	fileReadInt(fh, "diff", &config.diff);
 	fileReadInt(fh, "k_up", &config.k_up);
 	fileReadInt(fh, "k_down", &config.k_down);
 	fileReadInt(fh, "k_left", &config.k_left);
 	fileReadInt(fh, "k_right", &config.k_right);
 	fileReadInt(fh, "k_undo", &config.k_undo);
+	fileReadInt(fh, "limittype", &config.limitType);
 
 	fileClose(fh);
 }
@@ -106,18 +106,20 @@ void configSave()
 	fprintf(fh, "animations = %d;\n", config.animations);
 	fprintf(fh, "fullscreen = %d;\n", config.fullscreen);
 	fprintf(fh, "dim = %d;\n", config.dim);
-	fprintf(fh, "diff = %d;\n", config.diff);
 	fprintf(fh, "k_up = %d;\n", config.k_up);
 	fprintf(fh, "k_down = %d;\n", config.k_down);
 	fprintf(fh, "k_left = %d;\n", config.k_left);
 	fprintf(fh, "k_right = %d;\n", config.k_right);
 	fprintf(fh, "k_undo = %d;\n", config.k_undo);
+	fprintf(fh, "limittype = %d;\n", config.limitType);
 
 	fileClose(fh);
 }
 
 void configSetDefaults()
 {
+	// game
+	config.limitType = LT_TIME;
 	// sound
 	config.volume = 6;
 	config.sound = 1;
@@ -125,7 +127,6 @@ void configSetDefaults()
 	config.animations = 1;
 	config.fullscreen = 0;
 	config.dim = 1;
-	config.diff = DIFF_NORMAL;
 	// controls
 	config.k_up = SDLK_UP;
 	config.k_down = SDLK_DOWN;

@@ -109,7 +109,7 @@ void MM_CrtE()
     SFnt        *ft_y, *ft_w, *ft_t;
     Menu        *_main, *opts, *snd, *new, *gfx, *ctrl;
     MEnt        *e;
-    char        *str_diff[] = {_("Easy"), _("Normal"), _("Hard"), _("Brainstorm")};
+    char        *str_limit[] = {_("Time"), _("Moves")};
 
     // load and assign gfx //
     ss_bk = SS_Ld("gfx/title.bmp", SDL_SWSURFACE);
@@ -155,9 +155,9 @@ void MM_CrtE()
     // new game //
     M_Add(new, ME_CrtAct(_("Start"), MA_PLY));
     M_Add(new, ME_CrtSep(""));
-    M_Add(new, ME_CrtSwX(_("Difficulty:"), &config.diff, str_diff, 4));
     if (config.ls >= ls_n) config.ls = 0; // maybe someone deleted some level sets //
     M_Add(new, ME_CrtSwX(_("Levelset:"), &config.ls, ls_lst, ls_n));
+    M_Add(new, ME_CrtSwX(_("Limit:"), &config.limitType, str_limit, 2));
     M_Add(new, ME_CrtSep(""));
     M_Add(new, ME_CrtSub(_("Back"), _main));
     // graphics //

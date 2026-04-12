@@ -18,30 +18,30 @@
 #ifndef CFG_H
 #define CFG_H
 
+/* limit types */
 enum {
-    DIFF_EASY = 0,
-    DIFF_NORMAL,
-    DIFF_HARD,
-    DIFF_BRAINSTORM
+	LT_TIME = 0,
+	LT_MOVES,
+	LT_COUNT
 };
 
-// config file //
+/* config file */
 typedef struct {
-    // level set //
-    int ls;
-    // sound
-    int sound;
-    int volume;
-    // gfx //
-    int animations;
-    int fullscreen;
-    int dim;
-    int diff; // difficulty
-    int k_up; // controls
-    int k_down;
-    int k_left;
-    int k_right;
-    int k_undo;
+	// game
+	int ls; /* levelset id in menu list */
+	int limitType;
+	// sound
+	int sound;
+	int volume;
+	// gfx
+	int animations;
+	int fullscreen;
+	int dim;
+	int k_up; // controls
+	int k_down;
+	int k_left;
+	int k_right;
+	int k_undo;
 } Config;
 
 void configSetPath();

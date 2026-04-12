@@ -1,7 +1,6 @@
 <info>
 levels = 8; (per chapter)
 chapters = 4;
-limit = moves; (either moves or limit)
 </info>
 
 <chapter>
