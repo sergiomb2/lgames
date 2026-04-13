@@ -443,7 +443,7 @@ void L_Ini(int c, int l)
     gm.l_done = 0;
 
     // set open flag
-    gm.c_s_inf->chapterOpen[gm.c_ch] = 1;
+    gm.c_s_inf->chapterOpen[config.limitType][gm.c_ch] = 1;
 
     // copy current level
     if (gm.c_lvl) free(gm.c_lvl);
@@ -562,11 +562,11 @@ void L_Ini(int c, int l)
     for (j = 0; j < gm.c_l_st->c_num; j++)
         for (i = 0; i < gm.c_l_st->l_num; i++) {
             D_DST(gm.s_bkgd, gm.b_x + gm.c_x + i * L_SIZE, gm.c_y + j * L_SIZE, L_SIZE, L_SIZE);
-            if (!gm.c_s_inf->chapterOpen[j]) {
+            if (!gm.c_s_inf->chapterOpen[config.limitType][j]) {
                 D_SRC(gm.s_lghts, L_RED * L_SIZE, 0);
             }
             else
-                if ( gm.c_s_inf->completed[j * gm.c_l_st->l_num + i] ) {
+                if ( gm.c_s_inf->completed[config.limitType][j * gm.c_l_st->l_num + i] ) {
                     D_SRC(gm.s_lghts, L_GREEN * L_SIZE, 0);
                 }
                 else {
@@ -773,7 +773,7 @@ int L_FndNxt()
         if (gm.c_ch >= gm.c_l_st->c_num || !gm.c_l_st->ch[gm.c_ch].opn) {
             for (i = 0; i < gm.c_ch; i++)
                 for (j = 0; j < gm.c_l_st->l_num; j++)
-                    if (!gm.c_s_inf->completed[i * gm.c_l_st->l_num + j]) {
+                    if (!gm.c_s_inf->completed[config.limitType][i * gm.c_l_st->l_num + j]) {
                         // not all levels completed jump back to first unsolved level
                         gm.c_ch = i;
                         gm.c_l_id = j;
@@ -789,12 +789,12 @@ int L_FndNxt()
         // check if all levels of this chapter has been solved
         for (i = 0; i <= gm.c_ch; i++)
             for (j = 0; j < gm.c_l_st->l_num; j++)
-                if (!gm.c_s_inf->completed[i * gm.c_l_st->l_num + j]) {
+                if (!gm.c_s_inf->completed[config.limitType][i * gm.c_l_st->l_num + j]) {
                     return 1;
                 }
         // yes! open next chapter
         if ( gm.c_ch < gm.c_l_st->c_num - 1 )
-            gm.c_s_inf->chapterOpen[gm.c_ch + 1] = 1;
+            gm.c_s_inf->chapterOpen[config.limitType][gm.c_ch + 1] = 1;
     }
     return 1;
 }

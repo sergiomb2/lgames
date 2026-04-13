@@ -18,6 +18,7 @@
 #ifndef __PROFILE_H
 #define __PROFILE_H
 
+#include "cfg.h"
 #include "tools.h"
 #include "levels.h"
 #include "dynlist.h"
@@ -28,8 +29,8 @@ typedef struct {
     int numLevels; /* total number of levels */
     int numChapters; /* number of chapters */
     int chapterSize; /* levels per chapter */
-    int chapterOpen[MAXCHAPTERS];
-    int completed[MAXCHAPTERS * MAXCHAPTERSIZE];
+    int chapterOpen[LT_COUNT][MAXCHAPTERS];
+    int completed[LT_COUNT][MAXCHAPTERS * MAXCHAPTERSIZE];
 } SInf;
 
 typedef struct {

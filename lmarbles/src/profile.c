@@ -20,7 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cfg.h"
 #include "file.h"
 
 /* only one profile for user */
@@ -67,8 +66,10 @@ int profileLoad()
 		fileReadInt(fh, "numlevels", &st->numLevels);
 		fileReadInt(fh, "numchapters", &st->numChapters);
 		fileReadInt(fh, "chaptersize", &st->chapterSize);
-		fileReadIntList(fh,"chapteropen", st->chapterOpen, st->numChapters);
-		fileReadIntList(fh,"completed", st->completed, st->numLevels);
+		for (int i = 0; i < LT_COUNT; i++) {
+			fileReadIntList(fh,"chapteropen", st->chapterOpen[i], st->numChapters);
+			fileReadIntList(fh,"completed", st->completed[i], st->numLevels);
+		}
 		DL_Add(&profile.sts, st);
 	}
 
@@ -101,14 +102,16 @@ void profileSave()
 		fprintf(fh, "numlevels=%d;\n", st->numLevels);
 		fprintf(fh, "numchapters=%d;\n", st->numChapters);
 		fprintf(fh, "chaptersize=%d;\n", st->chapterSize);
-		fprintf(fh, "chapteropen=");
-		for (i = 0; i < st->numChapters; i++)
-			fprintf(fh, "%d;", st->chapterOpen[i]);
-		fprintf(fh, "\n");
-		fprintf(fh, "completed=");
-		for (i = 0; i < st->numLevels; i++)
-			fprintf(fh, "%d;", st->completed[i]);
-		fprintf(fh, "\n");
+		for (int j = 0; j < LT_COUNT; j++) {
+			fprintf(fh, "chapteropen=");
+			for (i = 0; i < st->numChapters; i++)
+				fprintf(fh, "%d;", st->chapterOpen[j][i]);
+			fprintf(fh, "\n");
+			fprintf(fh, "completed=");
+			for (i = 0; i < st->numLevels; i++)
+				fprintf(fh, "%d;", st->completed[j][i]);
+			fprintf(fh, "\n");
+		}
 		le = le->n;
 	}
 
@@ -124,49 +127,53 @@ void profileReset()
 /* register or find a levelset with @name */
 SInf* profileRegisterSet(LSet *l_st)
 {
-    int i;
-    DL_E *e = profile.sts.hd.n;
-    SInf  *s;
-    /* maybe it already exists */
-    while (e != &profile.sts.tl) {
-        s = (SInf*)e->d;
-        if (!strcmp(s->name, l_st->nm)) {
-            if (l_st->c_num != s->numChapters || l_st->l_num != s->chapterSize) {
-                // seems to have changed; clear it
-                s->numLevels = l_st->c_num * l_st->l_num;
-                s->chapterSize = l_st->l_num;
-                s->numChapters = l_st->c_num;
-                for (i = 0; i < s->numChapters; i++)
-                    s->chapterOpen[i] = l_st->ch[i].opn;
-                memset(s->completed, 0, sizeof(s->completed));
-                _loginfo("WARNING: profile '%s': set info '%s' seems to be out of date\n",
-                	profile.name, l_st->nm);
-            }
-            return s;
-        }
-        e = e->n;
-    }
-    /* must be registered */
-    s = calloc(1, sizeof(SInf));
-    strcpy(s->name, l_st->nm);
-    s->numLevels = l_st->c_num * l_st->l_num;
-    s->chapterSize = l_st->l_num;
-    s->numChapters = l_st->c_num;
-    for (i = 0; i < s->numChapters; i++)
-        s->chapterOpen[i] = l_st->ch[i].opn;
-    memset(s->completed, 0, sizeof(s->completed));
-    DL_Add(&profile.sts, s);
-    return s;
+	int i;
+	DL_E *e = profile.sts.hd.n;
+	SInf  *s;
+	/* maybe it already exists */
+	while (e != &profile.sts.tl) {
+		s = (SInf*)e->d;
+		if (strcmp(s->name, l_st->nm)) {
+			e = e->n;
+			continue;
+		}
+		/* match */
+		if (l_st->c_num != s->numChapters || l_st->l_num != s->chapterSize) {
+			// has changed; clear it
+			s->numLevels = l_st->c_num * l_st->l_num;
+			s->chapterSize = l_st->l_num;
+			s->numChapters = l_st->c_num;
+			for (int j = 0; j < LT_COUNT; j++) {
+				for (i = 0; i < s->numChapters; i++)
+					s->chapterOpen[j][i] = l_st->ch[i].opn;
+				memset(s->completed[j], 0, sizeof(s->completed[j]));
+			}
+			_loginfo("WARNING: profile '%s': set info '%s' seems to be out of date\n",
+					profile.name, l_st->nm);
+		}
+		return s;
+	}
+	/* must be registered */
+	s = calloc(1, sizeof(SInf));
+	strcpy(s->name, l_st->nm);
+	s->numLevels = l_st->c_num * l_st->l_num;
+	s->chapterSize = l_st->l_num;
+	s->numChapters = l_st->c_num;
+	for (int j = 0; j < LT_COUNT; j++) {
+		for (i = 0; i < s->numChapters; i++)
+			s->chapterOpen[j][i] = l_st->ch[i].opn;
+		memset(s->completed[j], 0, sizeof(s->completed[j]));
+	}
+	DL_Add(&profile.sts, s);
+	return s;
 }
 
-/* update profile's score and info
-   s is rem_time / max_time of that level
-*/
+/* update profile's score and rating */
 void profileUpdate(SInf *inf, int lvl, int scr)
 {
-	if (!inf->completed[lvl]) {
+	if (!inf->completed[config.limitType][lvl]) {
 		/* mark as completed */
-		inf->completed[lvl] = 1;
+		inf->completed[config.limitType][lvl] = 1;
 		/* update percentage */
 		inf->score += scr;
 	}

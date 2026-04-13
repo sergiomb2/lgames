@@ -1,3 +1,4 @@
+speed up marble movement, deny skip for time limit
 replace all strcpy with snprintf
 have move and time profile for user
 give 0-3 stars for clearance according to time/moves
