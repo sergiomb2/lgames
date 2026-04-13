@@ -44,8 +44,9 @@ void profileInit()
 /* load profile; return 0 on error (and create standard profile), 1 otherwise */
 int profileLoad()
 {
-	FILE    *fh = 0;
-	char    str[MAXSTRLEN];
+	FILE *fh = 0;
+	char str[MAXSTRLEN];
+	int dummy;
 
 	profileReset();
 
@@ -58,6 +59,7 @@ int profileLoad()
 	}
 
 	/* read profile */
+	fileReadInt(fh, "profver", &dummy); /* version for future changes */
 	fileReadString(fh, "name", profile.name);
 	while (fileReadString(fh, "setname", str)) {
 		SInf *st = calloc(1,sizeof(SInf));
@@ -93,6 +95,7 @@ void profileSave()
 		return;
 	}
 
+	fprintf(fh, "profver=1;\n");
 	fprintf(fh, "name=%s;\n", profile.name);
 	le = profile.sts.hd.n;
 	while (le != &profile.sts.tl) {
