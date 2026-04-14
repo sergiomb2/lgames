@@ -12,6 +12,7 @@ install-data-local:
 
 uninstall-local:
 	rm -rf $(DESTDIR)$(datdir)
+	rm -f $(DESTDIR)$(localstatedir)/lmarbles.prfs
 
 clean:
 	rm -f *.o lmarbles
