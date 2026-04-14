@@ -668,7 +668,7 @@ void G_Run()
                     if (config.limitType == LT_MOVES)
                         bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
                     else
-                	bonus_moves = gm.c_lvl->tm * LB_PER_SEC;
+                	bonus_moves = (gm.c_lvl->tm/1000) * LB_PER_SEC;
                     BS_Run( bonus_level, bonus_moves );
                     profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, bonus_level + bonus_moves);
                 }
@@ -2647,12 +2647,12 @@ void BS_Run(float b_lvl, float b_tm)
     int ms;
     int sw = 80, sh = gm.f_sml->h; // string width, height
     float b_c = 1.0; // bonus change
-    float scr = gm.c_s_inf->score;
+    float scr = gm.c_s_inf->score[config.limitType];
     int end_scr;
 
     int old_scr;
 
-    end_scr = gm.c_s_inf->score + (int)b_lvl + (int)b_tm;
+    end_scr = gm.c_s_inf->score[config.limitType] + (int)b_lvl + (int)b_tm;
 
     // normal cursor
     SDL_SetCursor(gm.c_n);

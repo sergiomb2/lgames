@@ -25,7 +25,7 @@
 
 typedef struct {
     char name[MAXSTRLEN];
-    int score; /* total score gained for this set */
+    int score[LT_COUNT]; /* total score gained for this set */
     int numLevels; /* total number of levels */
     int numChapters; /* number of chapters */
     int chapterSize; /* levels per chapter */

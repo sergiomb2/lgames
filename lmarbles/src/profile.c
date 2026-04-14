@@ -59,16 +59,16 @@ int profileLoad()
 	}
 
 	/* read profile */
-	fileReadInt(fh, "profver", &dummy); /* version for future changes */
+	fileReadInt(fh, "version", &dummy); /* for future changes */
 	fileReadString(fh, "name", profile.name);
 	while (fileReadString(fh, "setname", str)) {
 		SInf *st = calloc(1,sizeof(SInf));
 		snprintf(st->name, MAXSTRLEN, "%s", str);
-		fileReadInt(fh, "score", &st->score);
 		fileReadInt(fh, "numlevels", &st->numLevels);
 		fileReadInt(fh, "numchapters", &st->numChapters);
 		fileReadInt(fh, "chaptersize", &st->chapterSize);
 		for (int i = 0; i < LT_COUNT; i++) {
+			fileReadInt(fh, "score", &st->score[i]);
 			fileReadIntList(fh,"chapteropen", st->chapterOpen[i], st->numChapters);
 			fileReadIntList(fh,"completed", st->completed[i], st->numLevels);
 		}
@@ -95,17 +95,17 @@ void profileSave()
 		return;
 	}
 
-	fprintf(fh, "profver=1;\n");
+	fprintf(fh, "version=1;\n");
 	fprintf(fh, "name=%s;\n", profile.name);
 	le = profile.sts.hd.n;
 	while (le != &profile.sts.tl) {
 		st = (SInf*)le->d;
 		fprintf(fh, "setname=%s;\n", st->name);
-		fprintf(fh, "score=%d;\n", st->score);
 		fprintf(fh, "numlevels=%d;\n", st->numLevels);
 		fprintf(fh, "numchapters=%d;\n", st->numChapters);
 		fprintf(fh, "chaptersize=%d;\n", st->chapterSize);
 		for (int j = 0; j < LT_COUNT; j++) {
+			fprintf(fh, "score=%d;\n", st->score[j]);
 			fprintf(fh, "chapteropen=");
 			for (i = 0; i < st->numChapters; i++)
 				fprintf(fh, "%d;", st->chapterOpen[j][i]);
@@ -178,6 +178,6 @@ void profileUpdate(SInf *inf, int lvl, int scr)
 		/* mark as completed */
 		inf->completed[config.limitType][lvl] = 1;
 		/* update percentage */
-		inf->score += scr;
+		inf->score[config.limitType] += scr;
 	}
 }
