@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LEVELS_H
-#define LEVELS_H
+#ifndef __LEVELS_H
+#define __LEVELS_H
 
 #include <stdio.h>
 
@@ -98,5 +98,7 @@ int L_LdSt(FILE *f);
 void L_Ini(int c, int l);
 void L_DrwMpTl(int x, int y);
 int  L_FndNxt();
+
+int levelGetRating(Lvl *l);
 
 #endif

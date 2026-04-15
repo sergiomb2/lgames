@@ -611,7 +611,6 @@ void L_Ini(int c, int l)
     }
     /* we always start at double base limit, remaining time affects the rating */
     gm.c_lvl->tm *= 2;
-    gm.c_lvl->tm = 12; /* TEST */
 
     // init blink time //
     gm.blink_time = 0;
@@ -797,4 +796,44 @@ int L_FndNxt()
             gm.c_s_inf->chapterOpen[config.limitType][gm.c_ch + 1] = 1;
     }
     return 1;
+}
+
+/* Return rating of level (max 5 stars).
+ * <= base	5
+ * <= base+20% 	4
+ * <= base+40%	3
+ * <= base+60%	2
+ * <= base+80%	1
+ * else 0.
+ * */
+int levelGetRating(Lvl *l)
+{
+	int cur, base, used, rating;
+
+	if (config.limitType == LT_MOVES) {
+		base = l->baseMoves;
+		cur = l->tm;
+	} else {
+		base = l->baseTime;
+		cur = l->tm / 1000;
+	}
+	used = base*2 - cur; /* we start with 2*base */
+
+	if (used <= base)
+		rating = 5;
+	else if (used <= 120*base/100)
+		rating = 4;
+	else if (used <= 140*base/100)
+		rating = 3;
+	else if (used <= 160*base/100)
+		rating = 2;
+	else if (used <= 180*base/100)
+		rating = 1;
+	else
+		rating = 0;
+
+	_loginfo("Rating for base=%d, start=%d, cur=%d, used=%d: %d\n",
+			base, base*2, cur, used, rating);
+
+	return rating;
 }

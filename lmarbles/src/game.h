@@ -115,7 +115,7 @@ typedef struct {
     SInf    *c_s_inf; // current profile level set info //
     LSet    *c_l_st; // current level set //
     GSet    *c_g_st; // current gfx set //
-    Lvl     *c_lvl; // current level //
+    Lvl     *c_lvl; // copy of current level in set //
     // player //
     int     hi_scr; // last hiscore //
     int     c_l_id; // current level //
@@ -267,7 +267,7 @@ void Cr_Upd(int ms);
 void Cr_Shw();
 
 // bonus summary //
-void BS_Run(float b_lvl, float b_tm);
+void BS_Run(int rating, float b_lvl, float b_tm);
 void BS_Hd(int x, int y, int w, int h);
 void BS_Shw(int x, int y, int v);
 

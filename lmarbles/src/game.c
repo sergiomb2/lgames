@@ -660,15 +660,23 @@ void G_Run()
                 // figure animation
                 FA_Run();
                 // bonus summary
-                if ( !gm.c_s_inf->completed[config.limitType][gm.c_ch * gm.c_s_inf->chapterSize + gm.c_l_id] ) {
-                    /* level wasn't completed until now so gain score for it */
-                    bonus_level = LB_COMPLETED;
-                    if (config.limitType == LT_MOVES)
-                        bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
-                    else
-                	bonus_moves = (gm.c_lvl->tm/1000) * LB_PER_SEC;
-                    BS_Run( bonus_level, bonus_moves );
-                    profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id, bonus_level + bonus_moves);
+                int rating = levelGetRating(gm.c_lvl);
+                if (profileLevelImproved(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id,rating)) {
+                    if (profileLevelImproved(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id,0)) {
+                        /* level wasn't completed until now so gain score for it */
+                        bonus_level = LB_COMPLETED;
+                        if (config.limitType == LT_MOVES)
+                            bonus_moves = gm.c_lvl->tm * LB_PER_MOVE;
+                        else
+                	    bonus_moves = (gm.c_lvl->tm/1000) * LB_PER_SEC;
+                    } else {
+                	    /* just improved rating so give no score */
+                	    bonus_level = 0;
+                	    bonus_moves = 0;
+                    }
+                    BS_Run( rating, bonus_level, bonus_moves );
+                    profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id,
+                		    rating, bonus_level + bonus_moves);
                 }
 
             }
@@ -1867,32 +1875,42 @@ void Inf_Hd()
     Sdl_AddR(gm.b_x + gm.s_x, gm.s_y + gm.s_h - 20, gm.s_w, 20);
 }
 
-/*
-    update level info
-*/
+/* update level info; return 1 if open puzzle clicked, 0 otherwise */
 int Inf_Upd()
 {
-    int x, y;
+	int chapter, level, completion;
+	int levelid;
 
-    x = (gm.o_mx - gm.c_x - gm.b_x) / L_SIZE;
-    y = (gm.o_my - gm.c_y) / L_SIZE;
+	/* get selection */
+	level = (gm.o_mx - gm.c_x - gm.b_x) / L_SIZE;
+	chapter = (gm.o_my - gm.c_y) / L_SIZE;
+	if (gm.o_mx < gm.c_x + gm.b_x || gm.o_my < gm.c_y  ||
+			level >= gm.c_l_st->l_num || chapter >= gm.c_l_st->c_num) {
+		/* outside of selection, show current info */
+		chapter = gm.c_ch;
+		level = gm.c_l_id;
+		/* XXX need to return here */
+	}
+	levelid = chapter * gm.c_s_inf->chapterSize + level;
 
-    if (gm.o_mx < gm.c_x + gm.b_x || gm.o_my < gm.c_y  || x >= gm.c_l_st->l_num || y >= gm.c_l_st->c_num) {
-        sprintf(gm.inf_str, _("Tier %i, Puzzle %i"), gm.c_ch + 1, gm.c_l_id + 1);
-        return 0;
-    }
-    if (!gm.c_s_inf->completed[config.limitType][y * gm.c_s_inf->chapterSize + x] &&
-		    	    !gm.c_s_inf->chapterOpen[config.limitType][y]) {
-        sprintf(gm.inf_str, _("Access Denied"));
-        return 0;
-    }
-    sprintf(gm.inf_str, _("Tier %i, Puzzle %i"), y + 1, x + 1);
-    if (gm.bttn[1]) {
-        gm.w_c = y;
-        gm.w_l = x;
-        return 1;
-    }
-    return 0;
+	/* get completion rate */
+	completion = gm.c_s_inf->completed[config.limitType][levelid];
+
+	if (!gm.c_s_inf->completed[config.limitType][levelid] &&
+			!gm.c_s_inf->chapterOpen[config.limitType][chapter]) {
+		sprintf(gm.inf_str, _("Access Denied"));
+		return 0;
+	} else {
+		sprintf(gm.inf_str, _("Puzzle %d - %d (%d)"), chapter + 1, level + 1, completion);
+	}
+
+	/* XXX disable selection for now since I broke it */
+	if (0/*gm.bttn[1]*/) {
+		gm.w_c = chapter;
+		gm.w_l = level;
+		return 1;
+	}
+	return 0;
 }
 
 /*
@@ -2638,7 +2656,7 @@ void Cr_Shw()
 }
 
 /* give a bonus summary by adding @b_lvl and @b_tm to current set score */
-void BS_Run(float b_lvl, float b_tm)
+void BS_Run(int rating, float b_lvl, float b_tm)
 {
     SDL_Surface *buf;
     SDL_Event e;
@@ -2646,6 +2664,7 @@ void BS_Run(float b_lvl, float b_tm)
     int coff, cy; // level completed
     int toff, ty; // time bonus
     int soff, sy; // score
+    int roff, ry; // rating
     int ms;
     int sw = 80, sh = gm.f_sml->h; // string width, height
     float b_c = 1.0; // bonus change
@@ -2676,12 +2695,23 @@ void BS_Run(float b_lvl, float b_tm)
     cy = 200; coff = 200;
     ty = 220; toff = 200;
     sy = 250; soff = 200;
+    ry = 280; roff = 200;
+
+    // rating string
+    char ratingStr[MAXSTRLEN], stars[6];
+
+    strcpy(stars,"ooooo");
+    if (rating >= 0 && rating <= 5)
+	    for (int i = 0; i < rating; i++)
+		    stars[i] = '*';
+    snprintf(ratingStr,MAXSTRLEN,"%s: %s",_("Rating:"),stars);
 
     // info
     gm.f_sml->algn = TA_X_L | TA_Y_T;
     SF_Wrt(gm.f_sml, sdl.scr, coff, cy, _("Level Bonus:"), 0);
     SF_Wrt(gm.f_sml, sdl.scr, toff, ty, _("Move Bonus:"), 0);
     SF_Wrt(gm.f_sml, sdl.scr, soff, sy, _("Total Score:"), 0);
+    SF_Wrt(gm.f_sml, sdl.scr, roff, ry, ratingStr, 0);
     Sdl_FUpd();
 
     // show bonus first time

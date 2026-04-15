@@ -171,13 +171,22 @@ SInf* profileRegisterSet(LSet *l_st)
 	return s;
 }
 
-/* update profile's score and rating */
-void profileUpdate(SInf *inf, int lvl, int scr)
+/* update profile's score and completion state (rating + 1) so
+ * completed is 0 if not finished, 1 with 0 stars, 2 with 1 star, ... */
+void profileUpdate(SInf *inf, int lvl, int rating, int scr)
 {
-	if (!inf->completed[config.limitType][lvl]) {
+	if (inf->completed[config.limitType][lvl] < rating+1) {
 		/* mark as completed */
-		inf->completed[config.limitType][lvl] = 1;
+		inf->completed[config.limitType][lvl] = rating+1;
 		/* update percentage */
 		inf->score[config.limitType] += scr;
 	}
+}
+
+/* Return 1 if level rating has been improved, 0 otherwise. */
+int profileLevelImproved(SInf *inf, int lvl, int rating)
+{
+	if (inf->completed[config.limitType][lvl] < rating+1)
+		return 1;
+	return 0;
 }
