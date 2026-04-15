@@ -84,8 +84,8 @@ typedef struct {
 
 typedef struct {
     char    nm[64];
-    int     c_num;
-    int     l_num;
+    int     c_num; /* num of chapters */
+    int     l_num; /* num of levels per chapter */
     Chptr   *ch;
     int     ok;
 } LSet;

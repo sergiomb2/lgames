@@ -40,8 +40,6 @@ extern Profile profile;
 /* terminate game -- sdl.c */
 extern int trm_gm;
 
-void modify_score( int *b_lvl, int *b_tm );
-
 /*
     initialize game
 */
@@ -1378,6 +1376,8 @@ int Mr_Upd(int ms)
          gm.m_act != M_TLP_2 && gm.m_act != M_TLP_3) {
 
         gm.c_lvl->tm--;
+        if (gm.c_lvl->tm == 10)
+        	sound_play(gm.wv_alm);
         if ( gm.c_lvl->tm <= 0 && !gm.l_done /* completion with last move is okay */ )
             return 0;
 
@@ -1829,24 +1829,26 @@ void Tm_Shw()
 int Tm_Upd(int ms)
 {
 
-    int old_sec = gm.c_lvl->tm / 1000;
-
+    int old_tm = gm.c_lvl->tm;
 
     gm.blink_time += ms;
 
     // if limit_type is MOVES, time is ignored //
-    if ( config.limitType == LT_MOVES ) return 1;
+    if (config.limitType == LT_MOVES)
+        return 1;
 
     gm.c_lvl->tm -= ms;
 
-    // new second ?
+    // alarm sound on switch to 30s
+    if ((int)(old_tm/1000) != (int)(gm.c_lvl->tm/1000)) {
+	if ((int)(gm.c_lvl->tm/1000) == 30)
+	        sound_play(gm.wv_alm);
+    }
 
-    if (old_sec != (gm.c_lvl->tm/1000) &&
-                 (old_sec == 31 || old_sec == 21 || old_sec == 11 || old_sec == 6))
-        sound_play(gm.wv_alm);
-
-
-    if (gm.c_lvl->tm < 0) {
+    /* we add 999 ms in the beginning to show first second properly
+     * so it ends when we reach 999 ms which floors to 0s; but to
+     * allow display of 0 we allow 99 ms more. */
+    if (gm.c_lvl->tm < 900) {
         gm.c_lvl->tm = 0;
         return 0;
     }

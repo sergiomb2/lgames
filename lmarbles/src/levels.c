@@ -605,13 +605,13 @@ void L_Ini(int c, int l)
 
     if (config.limitType == LT_TIME) {
         /* set time from seconds to milliseconds if time used */
-        gm.c_lvl->tm = gm.c_lvl->baseTime * 1000 + 1000;
+        gm.c_lvl->tm = gm.c_lvl->baseTime * 1000 + 999;
     } else {
 	gm.c_lvl->tm = gm.c_lvl->baseMoves;
     }
-    /* we always start with +60% of limit; according to how much time/moves
-     * is left, the resulting rating is different */
-    gm.c_lvl->tm = 160*gm.c_lvl->tm/100;
+    /* we always start at double base limit, remaining time affects the rating */
+    gm.c_lvl->tm *= 2;
+    gm.c_lvl->tm = 12; /* TEST */
 
     // init blink time //
     gm.blink_time = 0;
