@@ -1880,6 +1880,7 @@ int Inf_Upd()
 {
 	int chapter, level, completion;
 	int levelid;
+	int click = gm.bttn[1];
 
 	/* get selection */
 	level = (gm.o_mx - gm.c_x - gm.b_x) / L_SIZE;
@@ -1889,7 +1890,7 @@ int Inf_Upd()
 		/* outside of selection, show current info */
 		chapter = gm.c_ch;
 		level = gm.c_l_id;
-		/* XXX need to return here */
+		click = 0; /* don't handle click */
 	}
 	levelid = chapter * gm.c_s_inf->chapterSize + level;
 
@@ -1899,13 +1900,12 @@ int Inf_Upd()
 	if (!gm.c_s_inf->completed[config.limitType][levelid] &&
 			!gm.c_s_inf->chapterOpen[config.limitType][chapter]) {
 		sprintf(gm.inf_str, _("Access Denied"));
-		return 0;
+		click = 0; /* don't handle click */
 	} else {
 		sprintf(gm.inf_str, _("Puzzle %d - %d (%d)"), chapter + 1, level + 1, completion);
 	}
 
-	/* XXX disable selection for now since I broke it */
-	if (0/*gm.bttn[1]*/) {
+	if (click) {
 		gm.w_c = chapter;
 		gm.w_l = level;
 		return 1;

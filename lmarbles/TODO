@@ -1,9 +1,7 @@
+improve score screen (level completed; rating on top; stars)
 speed up marble movement, deny skip for time limit
+reaction to mouse input very slow
 replace all strcpy with snprintf
-have move and time profile for user
-give 0-3 stars for clearance according to time/moves
-<ref value = 3 stars, < +20% 2 stars, < +40% 1 star, else 0 stars 
 add shadow surface for scaling
 add proper crosscompiling
 fix error with second bad levelset
-reaction to mouse input very slow
