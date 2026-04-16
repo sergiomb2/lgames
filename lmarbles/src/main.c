@@ -257,7 +257,7 @@ int main(int argc, char *argv[])
     T_Rst(); // reset time //
     while (go_on && !trm_gm) {
         M_Hd(mm.c_mn);
-        if (SDL_PollEvent(&e)) {
+        while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
                 trm_gm = 1;
             if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)
@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
         M_CmA(mm.c_mn, ms);
         M_Shw(mm.c_mn);
         Sdl_UpdR();
-        SDL_Delay( 5 );
+        SDL_Delay(5);
     }
 
     /* finalize */

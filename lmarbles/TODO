@@ -1,6 +1,5 @@
 improve score screen (level completed; rating on top; stars)
 speed up marble movement, deny skip for time limit
-reaction to mouse input very slow
 replace all strcpy with snprintf
 add shadow surface for scaling
 add proper crosscompiling

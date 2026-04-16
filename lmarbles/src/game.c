@@ -473,7 +473,7 @@ void G_Run()
             restore_pos = 0; // do not restore old position
             ign_c_stat = 0; // do not ignore cursor state
             // get input
-            if (SDL_PollEvent(&ev)) {
+            while (SDL_PollEvent(&ev)) {
                 switch (ev.type) {
                     case SDL_QUIT:
                         trm_gm = 1;
@@ -2494,7 +2494,7 @@ void FA_Run()
     while ( (m_cnt >= 0 || gm.shr.cntr > 0) && !trm_gm && !leave ) {
 
         // termination ?
-        if (SDL_PollEvent(&e)) {
+        while (SDL_PollEvent(&e)) {
             switch (e.type) {
                 case SDL_QUIT:
                     trm_gm = 1;
@@ -2736,7 +2736,7 @@ void BS_Run(int rating, float b_lvl, float b_tm)
     while ( !leave ) {
 
         // break?
-        if ( SDL_PollEvent(&e) )
+        while ( SDL_PollEvent(&e) )
             switch ( e.type ) {
 
                 case SDL_QUIT:
