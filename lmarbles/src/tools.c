@@ -45,3 +45,24 @@ void T_Rst()
 {
     t_lc = SDL_GetTicks();
 }
+
+/** Return static string using stars for rating (0 to 5).
+ * For an illegal rating an empty string is returned. */
+char *getRatingStr(int rating)
+{
+	static char str[6];
+
+	if (rating < 0 || rating > 5) {
+		str[0] = 0;
+		return str;
+	}
+
+	for (int i = 0; i < 5; i++)
+		str[i] = '`'; /* unlit star */
+	str[5] = 0;
+
+	for (int i = 1; i <= rating; i++)
+		str[i-1] = 127; /* star */
+
+	return str;
+}

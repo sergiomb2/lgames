@@ -1902,7 +1902,8 @@ int Inf_Upd()
 		sprintf(gm.inf_str, _("Access Denied"));
 		click = 0; /* don't handle click */
 	} else {
-		sprintf(gm.inf_str, _("Puzzle %d - %d (%d)"), chapter + 1, level + 1, completion);
+		sprintf(gm.inf_str, _("Puzzle %d-%d %s"),
+				chapter + 1, level + 1, getRatingStr(completion-1));
 	}
 
 	if (click) {
@@ -2655,7 +2656,8 @@ void Cr_Shw()
     Sdl_AddR(gm.cr_x, gm.cr_y, gm.cr_w, gm.cr_h);
 }
 
-/* give a bonus summary by adding @b_lvl and @b_tm to current set score */
+/* give a bonus summary by adding @b_lvl and @b_tm to current set score.
+ * if @b_lvl is 0 we just improved the rating, don't give score again */
 void BS_Run(int rating, float b_lvl, float b_tm)
 {
     SDL_Surface *buf;
@@ -2664,12 +2666,13 @@ void BS_Run(int rating, float b_lvl, float b_tm)
     int coff, cy; // level completed
     int toff, ty; // time bonus
     int soff, sy; // score
-    int roff, ry; // rating
     int ms;
     int sw = 80, sh = gm.f_sml->h; // string width, height
     float b_c = 1.0; // bonus change
     float scr = gm.c_s_inf->score[config.limitType];
     int end_scr;
+    int lpos = 150; /* first fixed output line */
+    int lheight = 3*sh/2; /* 1.5x font height */
 
     int old_scr;
 
@@ -2691,27 +2694,46 @@ void BS_Run(int rating, float b_lvl, float b_tm)
     D_FSRC(sdl.scr);
     SS_Blt();
 
-    // positions
-    cy = 200; coff = 200;
-    ty = 220; toff = 200;
-    sy = 250; soff = 200;
-    ry = 280; roff = 200;
+    /* fixed info */
+    gm.f_sml->algn = TA_X_C | TA_Y_T;
+    if (b_lvl == 0)
+	    SF_Wrt(gm.f_sml, sdl.scr, gm.scr_w/2, lpos, _("Rating improved!"), 0);
+    else
+    	    SF_Wrt(gm.f_sml, sdl.scr, gm.scr_w/2, lpos, _("Level completed!"), 0);
+    lpos += lheight*2;
+    SF_Wrt(gm.f_sml, sdl.scr, gm.scr_w/2, lpos, _("Rating:"), 0);
+    lpos += lheight;
+    SF_Wrt(gm.f_sml, sdl.scr, gm.scr_w/2, lpos, getRatingStr(rating), 0);
+    lpos += lheight*2;
 
-    // rating string
-    char ratingStr[MAXSTRLEN], stars[6];
+    /* just wait for input, then leave if no score change */
+    if (b_lvl == 0) {
+	    Sdl_FUpd();
+	    while (!leave) {
+		    while ( SDL_PollEvent(&e) )
+			    switch ( e.type ) {
+			    case SDL_QUIT:
+				    trm_gm = 1;
+				    break;
+			    case SDL_MOUSEBUTTONUP:
+			    case SDL_KEYUP:
+				    leave = 1;
+				    break;
+			    }
+		    SDL_Delay(5);
+	    }
+	    return;
+    }
 
-    strcpy(stars,"ooooo");
-    if (rating >= 0 && rating <= 5)
-	    for (int i = 0; i < rating; i++)
-		    stars[i] = '*';
-    snprintf(ratingStr,MAXSTRLEN,"%s: %s",_("Rating:"),stars);
+    /* animated info */
+    cy = lpos; coff = 200;
+    ty = lpos+20; toff = 200;
+    sy = lpos+50; soff = 200;
 
-    // info
     gm.f_sml->algn = TA_X_L | TA_Y_T;
     SF_Wrt(gm.f_sml, sdl.scr, coff, cy, _("Level Bonus:"), 0);
     SF_Wrt(gm.f_sml, sdl.scr, toff, ty, _("Move Bonus:"), 0);
     SF_Wrt(gm.f_sml, sdl.scr, soff, sy, _("Total Score:"), 0);
-    SF_Wrt(gm.f_sml, sdl.scr, roff, ry, ratingStr, 0);
     Sdl_FUpd();
 
     // show bonus first time
@@ -2793,6 +2815,7 @@ void BS_Run(int rating, float b_lvl, float b_tm)
         BS_Shw(gm.scr_w - soff, sy, (int)scr);
 
         Sdl_UpdR();
+        SDL_Delay(5);
     }
 }
 

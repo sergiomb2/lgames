@@ -44,4 +44,6 @@
 int T_Gt();
 void T_Rst();
 
+char *getRatingStr(int rating);
+
 #endif
