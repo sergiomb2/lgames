@@ -24,13 +24,16 @@
 #include "dynlist.h"
 
 typedef struct {
-    char name[MAXSTRLEN];
-    int score[LT_COUNT]; /* total score gained for this set */
-    int numLevels; /* total number of levels */
-    int numChapters; /* number of chapters */
-    int chapterSize; /* levels per chapter */
-    int chapterOpen[LT_COUNT][MAXCHAPTERS];
-    int completed[LT_COUNT][MAXCHAPTERS * MAXCHAPTERSIZE];
+	char name[MAXSTRLEN];
+	/* completion: is calculated when loading; not saved to file */
+	int completion[LT_COUNT] ; /* 0 (nothing) to 1000 (all 5 stars) */
+	int score[LT_COUNT]; /* total score gained for this set */
+	int numLevels; /* total number of levels */
+	int numChapters; /* number of chapters */
+	int chapterSize; /* levels per chapter */
+	int chapterOpen[LT_COUNT][MAXCHAPTERS];
+	/* completed: 0 = not yet, 1-6 are 0-5 stars */
+	int completed[LT_COUNT][MAXCHAPTERS * MAXCHAPTERSIZE];
 } SInf;
 
 typedef struct {

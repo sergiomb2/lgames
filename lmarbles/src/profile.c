@@ -63,6 +63,7 @@ int profileLoad()
 	fileReadString(fh, "name", profile.name);
 	while (fileReadString(fh, "setname", str)) {
 		SInf *st = calloc(1,sizeof(SInf));
+
 		snprintf(st->name, MAXSTRLEN, "%s", str);
 		fileReadInt(fh, "numlevels", &st->numLevels);
 		fileReadInt(fh, "numchapters", &st->numChapters);
@@ -71,7 +72,13 @@ int profileLoad()
 			fileReadInt(fh, "score", &st->score[i]);
 			fileReadIntList(fh,"chapteropen", st->chapterOpen[i], st->numChapters);
 			fileReadIntList(fh,"completed", st->completed[i], st->numLevels);
+			/* calculate completion rate (each level has 0-6) */
+			st->completion[i] = 0;
+			for (int k = 0; k < st->numLevels; k++)
+				st->completion[i] += st->completed[i][k];
+			st->completion[i] = 1000 * st->completion[i] / (st->numLevels*6);
 		}
+
 		DL_Add(&profile.sts, st);
 	}
 

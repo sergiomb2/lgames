@@ -117,7 +117,6 @@ typedef struct {
     GSet    *c_g_st; // current gfx set //
     Lvl     *c_lvl; // copy of current level in set //
     // player //
-    int     hi_scr; // last hiscore //
     int     c_l_id; // current level //
     int     c_ch; // current chapter //
     int     o_ch; // old chapter //

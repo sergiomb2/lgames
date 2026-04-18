@@ -255,7 +255,7 @@ void G_Ini()
     gm.f_x = 35;
     gm.f_y = 145;
     gm.i_x = 20;
-    gm.i_y = 25;
+    gm.i_y = 27;
     gm.t_x = 40;
     gm.t_y = 105;
     gm.s_x = 15;
@@ -411,9 +411,6 @@ int G_Opn()
     // create background
     gm.s_bkgd = SS_Crt(gm.scr_w, gm.scr_h, SDL_SWSURFACE);
     SDL_SetColorKey(gm.s_bkgd, 0, 0);
-
-    // get highest score
-    gm.hi_scr = 0; /* TODO remove, obsolete */
 
     // clear old chapter
     gm.o_ch = -1;
