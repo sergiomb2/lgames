@@ -603,14 +603,20 @@ void L_Ini(int c, int l)
     gm.m_act = M_EMPTY;
     gm.m_mx = gm.m_my = -1;
 
+    if (config.limitType == LT_TIME)
+        gm.c_lvl->startLimit = gm.c_lvl->baseTime;
+    else
+	gm.c_lvl->startLimit = gm.c_lvl->baseMoves;
+    /* we always start at double base limit, remaining time affects the rating;
+     * however, for optics, we ceil to 5 moves or 10 sec steps */
+    gm.c_lvl->startLimit *= 2;
     if (config.limitType == LT_TIME) {
-        /* set time from seconds to milliseconds if time used */
-        gm.c_lvl->tm = gm.c_lvl->baseTime * 1000 + 999;
+	    gm.c_lvl->startLimit = ceil(0.1*gm.c_lvl->startLimit)*10;
+	    gm.c_lvl->tm = gm.c_lvl->startLimit*1000+999;
     } else {
-	gm.c_lvl->tm = gm.c_lvl->baseMoves;
+	    gm.c_lvl->startLimit = ceil(0.2*gm.c_lvl->startLimit)*5;
+	    gm.c_lvl->tm = gm.c_lvl->startLimit;
     }
-    /* we always start at double base limit, remaining time affects the rating */
-    gm.c_lvl->tm *= 2;
 
     // init blink time //
     gm.blink_time = 0;
@@ -817,7 +823,7 @@ int levelGetRating(Lvl *l)
 		base = l->baseTime;
 		cur = l->tm / 1000;
 	}
-	used = base*2 - cur; /* we start with 2*base */
+	used = l->startLimit - cur;
 
 	if (used <= base)
 		rating = 5;
@@ -833,7 +839,7 @@ int levelGetRating(Lvl *l)
 		rating = 0;
 
 	_loginfo("Rating for base=%d, start=%d, cur=%d, used=%d: %d\n",
-			base, base*2, cur, used, rating);
+			base, l->startLimit, cur, used, rating);
 
 	return rating;
 }

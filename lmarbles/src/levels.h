@@ -65,8 +65,9 @@ typedef struct {
 
 typedef struct {
     int tm; // current time or move
-    int baseTime; // base time (no bonus)
-    int baseMoves; // base moves (no bonus)
+    int startLimit; // tm counts down from this
+    int baseTime; // base time (5 stars)
+    int baseMoves; // base moves (5 stars)
     int m_w, m_h; // map size //
     int f_w, f_h; // figure size //
     int fgr[F_MAX_W][F_MAX_H]; // figure //
