@@ -72,12 +72,8 @@ int profileLoad()
 			fileReadInt(fh, "score", &st->score[i]);
 			fileReadIntList(fh,"chapteropen", st->chapterOpen[i], st->numChapters);
 			fileReadIntList(fh,"completed", st->completed[i], st->numLevels);
-			/* calculate completion rate (each level has 0-6) */
-			st->completion[i] = 0;
-			for (int k = 0; k < st->numLevels; k++)
-				st->completion[i] += st->completed[i][k];
-			st->completion[i] = 1000 * st->completion[i] / (st->numLevels*6);
 		}
+		profileCalcCompletion(st);
 
 		DL_Add(&profile.sts, st);
 	}
@@ -183,10 +179,9 @@ SInf* profileRegisterSet(LSet *l_st)
 void profileUpdate(SInf *inf, int lvl, int rating, int scr)
 {
 	if (inf->completed[config.limitType][lvl] < rating+1) {
-		/* mark as completed */
 		inf->completed[config.limitType][lvl] = rating+1;
-		/* update percentage */
 		inf->score[config.limitType] += scr;
+		profileCalcCompletion(inf);
 	}
 }
 
@@ -196,4 +191,16 @@ int profileLevelImproved(SInf *inf, int lvl, int rating)
 	if (inf->completed[config.limitType][lvl] < rating+1)
 		return 1;
 	return 0;
+}
+
+/** Calculate completion rate (0 to 1000) for set. Each level
+ * has 0-6 as rating. */
+void profileCalcCompletion(SInf *st)
+{
+	for (int j = 0; j < LT_COUNT; j++) {
+		st->completion[j] = 0;
+		for (int i = 0; i < st->numLevels; i++)
+			st->completion[j] += st->completed[j][i];
+		st->completion[j] = 1000 * st->completion[j] / (st->numLevels*6);
+	}
 }

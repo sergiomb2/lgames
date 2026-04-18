@@ -164,7 +164,7 @@ aaaaaaaaaa;
 </level>
 
 <level>
-limit = 63; 
+limit = 58; 
 map_w = 13; map_h = 12;
 fig_w = 5; fig_h = 3;
 <figure>

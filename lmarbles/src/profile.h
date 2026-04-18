@@ -48,5 +48,6 @@ void profileReset();
 SInf* profileRegisterSet(LSet *l_st);
 void profileUpdate(SInf *inf, int lvl, int rating, int scr);
 int profileLevelImproved(SInf *inf, int lvl, int rating);
+void profileCalcCompletion(SInf *inf);
 
 #endif
