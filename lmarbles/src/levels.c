@@ -615,17 +615,14 @@ void L_Ini(int c, int l)
     gm.m_act = M_EMPTY;
     gm.m_mx = gm.m_my = -1;
 
-    if (config.limitType == LT_TIME)
-        gm.c_lvl->startLimit = gm.c_lvl->baseTime;
-    else
-	gm.c_lvl->startLimit = gm.c_lvl->baseMoves;
-    /* we always start at double base limit, remaining time affects the rating;
-     * however, for optics, we ceil to 5 moves or 10 sec steps */
-    gm.c_lvl->startLimit *= 2;
     if (config.limitType == LT_TIME) {
+	    /* for time limit, give 3*basetime + 30s; ceil to 10 */
+	    gm.c_lvl->startLimit = gm.c_lvl->baseTime*3 + 30;
 	    gm.c_lvl->startLimit = ceil(0.1*gm.c_lvl->startLimit)*10;
 	    gm.c_lvl->tm = gm.c_lvl->startLimit*1000+999;
     } else {
+	    /* for moves give double base; ceil to 5 */
+	    gm.c_lvl->startLimit = gm.c_lvl->baseMoves*2;
 	    gm.c_lvl->startLimit = ceil(0.2*gm.c_lvl->startLimit)*5;
 	    gm.c_lvl->tm = gm.c_lvl->startLimit;
     }
@@ -817,11 +814,12 @@ int L_FndNxt()
 }
 
 /* Return rating of level (max 5 stars).
- * <= base	5
- * <= base+20% 	4
- * <= base+40%	3
- * <= base+60%	2
- * <= base+80%	1
+ * for moves:		for time:
+ * <= base	5	<= base
+ * <= base+20%	4	<= base+50%
+ * <= base+40%	3	<= base+100%
+ * <= base+60%	2	<= base+150%
+ * <= base+80%	1	<= base+200%
  * else 0.
  * */
 int levelGetRating(Lvl *l)
@@ -837,18 +835,33 @@ int levelGetRating(Lvl *l)
 	}
 	used = l->startLimit - cur;
 
-	if (used <= base)
-		rating = 5;
-	else if (used <= 120*base/100)
-		rating = 4;
-	else if (used <= 140*base/100)
-		rating = 3;
-	else if (used <= 160*base/100)
-		rating = 2;
-	else if (used <= 180*base/100)
-		rating = 1;
-	else
-		rating = 0;
+	if (config.limitType == LT_MOVES) {
+		if (used <= base)
+			rating = 5;
+		else if (used <= 120*base/100)
+			rating = 4;
+		else if (used <= 140*base/100)
+			rating = 3;
+		else if (used <= 160*base/100)
+			rating = 2;
+		else if (used <= 180*base/100)
+			rating = 1;
+		else
+			rating = 0;
+	} else {
+		if (used <= base)
+			rating = 5;
+		else if (used <= 150*base/100)
+			rating = 4;
+		else if (used <= 200*base/100)
+			rating = 3;
+		else if (used <= 250*base/100)
+			rating = 2;
+		else if (used <= 300*base/100)
+			rating = 1;
+		else
+			rating = 0;
+	}
 
 	_loginfo("Rating for base=%d, start=%d, cur=%d, used=%d: %d\n",
 			base, l->startLimit, cur, used, rating);

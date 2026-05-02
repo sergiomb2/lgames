@@ -1,6 +1,8 @@
-improve score screen (level completed; rating on top; stars)
+center bonus info and darken screen more 
 speed up marble movement, deny skip for time limit
 replace all strcpy with snprintf
 add shadow surface for scaling
 add proper crosscompiling
 fix error with second bad levelset
+fullscreen switch and back traps mouse in window
+hardcore: mode normal or 5-stars only
