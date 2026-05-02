@@ -10,7 +10,7 @@ gfx_set = stone;
 open = 1;
 
 <level>
-limit = 11;
+time = 10; moves = 11;
 map_w = 8; map_h = 8;
 fig_w = 2; fig_h = 2;
 <figure>
@@ -30,7 +30,7 @@ cccc b c;
 </level>
 
 <level>
-limit = 18; 
+time = 14; moves = 18; 
 map_w = 10; map_h = 9;
 fig_w = 4; fig_h = 2;
 <figure>
@@ -51,7 +51,7 @@ aaaa..aaaa;
 </level>
 
 <level>
-limit = 22; 
+time = 0; moves = 22; 
 map_w = 11; map_h = 9;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -73,7 +73,7 @@ aaaaaaaa6 a;
 </level>
 
 <level>
-limit = 22; 
+time = 0; moves = 22; 
 map_w = 10; map_h = 10;
 fig_w = 3; fig_h = 1;
 <figure>
@@ -94,7 +94,7 @@ bbbbbbbbbb;
 </level>
 
 <level>
-limit = 25; 
+time = 0; moves = 25; 
 map_w = 9; map_h = 9;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -116,7 +116,7 @@ aaaaaaaaa;
 </level>
 
 <level>
-limit = 21; 
+time = 0; moves = 21; 
 map_w = 10; map_h = 12;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -141,7 +141,7 @@ bbbbbbbbbb;
 </level>
 
 <level>
-limit = 31; (seconds or moves)
+time = 0; moves = 31;
 map_w = 10; map_h = 10;
 fig_w = 4; fig_h = 3;
 <figure>
@@ -164,7 +164,7 @@ aaaaaaaaaa;
 </level>
 
 <level>
-limit = 58; 
+time = 0; moves = 58; 
 map_w = 13; map_h = 12;
 fig_w = 5; fig_h = 3;
 <figure>
@@ -197,7 +197,7 @@ gfx_set = wood;
 open = 0;
 
 <level>
-limit = 16;
+time = 0; moves = 16;
 map_w = 8; map_h = 7;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -217,7 +217,7 @@ bbbbbbbb;
 </level>
 
 <level>
-limit = 35; 
+time = 0; moves = 35; 
 map_w = 12; map_h = 9;
 fig_w = 5; fig_h = 3;
 <figure>
@@ -239,7 +239,7 @@ ccc cc  c  b;
 </level>
 
 <level>
-limit = 19;
+time = 0; moves = 19;
 map_w = 8; map_h = 8;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -260,7 +260,7 @@ cccccccc;
 </level>
 
 <level>
-limit = 22;
+time = 0; moves = 22;
 map_w = 11; map_h = 10;
 fig_w = 3; fig_h = 4;
 <figure>
@@ -284,7 +284,7 @@ bbbbbbbbbbb;
 </level>
 
 <level>
-limit = 54;
+time = 0; moves = 54;
 map_w = 12; map_h = 7;
 fig_w = 4; fig_h = 3;
 <figure>
@@ -304,7 +304,7 @@ bbbbbbbbbbbb;
 </level>
 
 <level>
-limit = 30; (!)
+time = 0; moves = 30; (!)
 map_w = 13; map_h = 13;
 fig_w = 6; fig_h = 3;
 <figure>
@@ -330,7 +330,7 @@ cccccccc.....;
 </level>
 
 <level>
-limit = 64;
+time = 0; moves = 64;
 map_w = 13; map_h = 13;
 fig_w = 5; fig_h = 5;
 <figure>
@@ -358,7 +358,7 @@ bbbbbbbb 1a b;
 </level>
 
 <level>
-limit = 16;
+time = 0; moves = 16;
 map_w = 11; map_h = 9;
 fig_w = 5; fig_h = 3;
 <figure>
@@ -388,7 +388,7 @@ gfx_set = metal;
 open = 0;
 
 <level>
-limit = 24;
+time = 0; moves = 24;
 map_w = 13; map_h = 12;
 fig_w = 4; fig_h = 3;
 <figure>
@@ -413,7 +413,7 @@ aa bb   bb a.;
 </level>
 
 <level>
-limit = 42; 
+time = 0; moves = 42; 
 map_w = 12; map_h = 8;
 fig_w = 4; fig_h = 4;
 <figure>
@@ -435,7 +435,7 @@ aaa aa12   a;
 </level>
 
 <level>
-limit = 98;
+time = 0; moves = 98;
 map_w = 11; map_h = 11;
 fig_w = 5; fig_h = 4;
 <figure>
@@ -460,7 +460,7 @@ cc 1c 7  cc;
 </level>
 
 <level>
-limit = 28;
+time = 0; moves = 28;
 map_w = 11; map_h = 10;
 fig_w = 3; fig_h = 4;
 <figure>
@@ -484,7 +484,7 @@ bbbbbbbbbbb;
 </level>
 
 <level>
-limit = 38;
+time = 0; moves = 38;
 map_w = 9; map_h = 11;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -508,7 +508,7 @@ ccccc....;
 </level>
 
 <level>
-limit = 20; (!)
+time = 0; moves = 20; (!)
 map_w = 12; map_h = 9;
 fig_w = 3; fig_h = 2;
 <figure>
@@ -529,7 +529,7 @@ aaaaaaadyuaa;
 </level>
 
 <level>
-limit = 42;
+time = 0; moves = 42;
 map_w = 12; map_h = 9;
 fig_w = 4; fig_h = 3;
 <figure>
@@ -551,7 +551,7 @@ bbb    a bb;
 </level>
 
 <level>
-limit = 22; 
+time = 0; moves = 22; 
 map_w = 9; map_h = 7;
 fig_w = 4; fig_h = 2;
 <figure>
@@ -577,7 +577,7 @@ gfx_set = metal;
 open = 0;
 
 <level>
-limit = 44; 
+time = 0; moves = 44; 
 map_w = 12; map_h = 12;
 fig_w = 5; fig_h = 3;
 <figure>
@@ -602,7 +602,7 @@ aaaaaaa.....;
 </level>
 
 <level>
-limit = 37; 
+time = 0; moves = 37; 
 map_w = 11; map_h = 11;
 fig_w = 3; fig_h = 5;
 <figure>
@@ -628,7 +628,7 @@ aa zax    a;
 </level>
 
 <level>
-limit = 14; 
+time = 0; moves = 14; 
 map_w = 8; map_h = 8;
 fig_w = 3; fig_h = 2;
 <figure>
@@ -648,7 +648,7 @@ cccc  3c;
 </level>
 
 <level>
-limit = 44; 
+time = 0; moves = 44; 
 map_w = 13; map_h = 9;
 fig_w = 3; fig_h = 3;
 <figure>
@@ -670,7 +670,7 @@ ccc   z   ccc;
 </level>
 
 <level>
-limit = 35; 
+time = 0; moves = 35; 
 map_w = 10; map_h = 12;
 fig_w = 3; fig_h = 4;
 <figure>
@@ -696,7 +696,7 @@ aaaa......;
 </level>
 
 <level>
-limit = 47; 
+time = 0; moves = 47; 
 map_w = 9; map_h = 9;
 fig_w = 3; fig_h = 4;
 <figure>
@@ -719,7 +719,7 @@ ccccccccc;
 </level>
 
 <level>
-limit = 43; 
+time = 0; moves = 43; 
 map_w = 11; map_h = 11;
 fig_w = 5; fig_h = 3;
 <figure>
@@ -743,7 +743,7 @@ bb  w y  bb;
 </level>
 
 <level>
-limit = 23; 
+time = 0; moves = 23; 
 map_w = 10; map_h = 9;
 fig_w = 3; fig_h = 3;
 <figure>

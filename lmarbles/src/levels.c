@@ -237,13 +237,25 @@ int L_LdSt(FILE *f)
             }
             // time //
             fileGetEntry(f, str, F_VAL);
-            if (!fileCheckEntry(str, F_VAL, "limit", val)) {
-                printf("ERROR: line %i: 'limit' expected\n", f_ln);
+            if (!fileCheckEntry(str, F_VAL, "time", val)) {
+                printf("ERROR: line %i: 'time' expected\n", f_ln);
                 goto failure;
             }
-            st->ch[i].lvls[j].tm = 0; /* not used yet */
+            st->ch[i].lvls[j].baseTime = atoi(val);
+            // moves //
+            fileGetEntry(f, str, F_VAL);
+            if (!fileCheckEntry(str, F_VAL, "moves", val)) {
+                printf("ERROR: line %i: 'moves' expected\n", f_ln);
+                goto failure;
+            }
             st->ch[i].lvls[j].baseMoves = atoi(val);
-            st->ch[i].lvls[j].baseTime = atoi(val)*4; /* FIXME should be set in file */
+            /* if either time or moves is missing, just copy other as
+             * 1s per move is a good average */
+            if (st->ch[i].lvls[j].baseTime == 0)
+        	    st->ch[i].lvls[j].baseTime = st->ch[i].lvls[j].baseMoves;
+            else if (st->ch[i].lvls[j].baseMoves == 0)
+        	    st->ch[i].lvls[j].baseMoves = st->ch[i].lvls[j].baseTime;
+            st->ch[i].lvls[j].tm = 0; /* current limit; not used yet */
             // map width //
             fileGetEntry(f, str, F_VAL);
             if (!fileCheckEntry(str, F_VAL, "map_w", val)) {
