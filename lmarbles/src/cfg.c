@@ -90,6 +90,7 @@ void configLoad()
 	fileReadInt(fh, "k_right", &config.k_right);
 	fileReadInt(fh, "k_undo", &config.k_undo);
 	fileReadInt(fh, "limittype", &config.limitType);
+	fileReadInt(fh, "hardcore", &config.hardcore);
 
 	fileClose(fh);
 }
@@ -112,6 +113,7 @@ void configSave()
 	fprintf(fh, "k_right = %d;\n", config.k_right);
 	fprintf(fh, "k_undo = %d;\n", config.k_undo);
 	fprintf(fh, "limittype = %d;\n", config.limitType);
+	fprintf(fh, "hardcore = %d;\n", config.hardcore);
 
 	fileClose(fh);
 }
@@ -120,6 +122,7 @@ void configSetDefaults()
 {
 	// game
 	config.limitType = LT_TIME;
+	config.hardcore = 0;
 	// sound
 	config.volume = 6;
 	config.sound = 1;

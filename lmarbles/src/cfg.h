@@ -30,6 +30,7 @@ typedef struct {
 	// game
 	int ls; /* levelset id in menu list */
 	int limitType;
+	int hardcore; /* need 5 stars for completion */
 	// sound
 	int sound;
 	int volume;

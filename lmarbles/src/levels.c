@@ -616,14 +616,22 @@ void L_Ini(int c, int l)
     gm.m_mx = gm.m_my = -1;
 
     if (config.limitType == LT_TIME) {
-	    /* for time limit, give 3*basetime + 30s; ceil to 10 */
-	    gm.c_lvl->startLimit = gm.c_lvl->baseTime*3 + 30;
-	    gm.c_lvl->startLimit = ceil(0.1*gm.c_lvl->startLimit)*10;
+    	if (config.hardcore) {
+    		gm.c_lvl->startLimit = gm.c_lvl->baseTime;
+    	} else {
+    		/* for time limit, give 3*basetime + 60s; ceil to 10 */
+    		gm.c_lvl->startLimit = gm.c_lvl->baseTime*3 + 60;
+    		gm.c_lvl->startLimit = ceil(0.1*gm.c_lvl->startLimit)*10;
+    	}
 	    gm.c_lvl->tm = gm.c_lvl->startLimit*1000+999;
     } else {
-	    /* for moves give double base; ceil to 5 */
-	    gm.c_lvl->startLimit = gm.c_lvl->baseMoves*2;
-	    gm.c_lvl->startLimit = ceil(0.2*gm.c_lvl->startLimit)*5;
+    	if (config.hardcore) {
+    		gm.c_lvl->startLimit = gm.c_lvl->baseMoves;
+    	} else {
+    		/* for moves give double base; ceil to 5 */
+    		gm.c_lvl->startLimit = gm.c_lvl->baseMoves*2;
+    		gm.c_lvl->startLimit = ceil(0.2*gm.c_lvl->startLimit)*5;
+    	}
 	    gm.c_lvl->tm = gm.c_lvl->startLimit;
     }
 

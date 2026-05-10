@@ -110,6 +110,7 @@ void MM_CrtE()
     Menu        *_main, *opts, *snd, *new, *gfx, *ctrl;
     MEnt        *e;
     char        *str_limit[] = {_("Time"), _("Moves")};
+    char        *str_mode[] = {_("Normal"), _("5 Stars only")};
 
     // load and assign gfx //
     ss_bk = SS_Ld("gfx/title.bmp", SDL_SWSURFACE);
@@ -158,6 +159,7 @@ void MM_CrtE()
     if (config.ls >= ls_n) config.ls = 0; // maybe someone deleted some level sets //
     M_Add(new, ME_CrtSwX(_("Levelset:"), &config.ls, ls_lst, ls_n));
     M_Add(new, ME_CrtSwX(_("Limit:"), &config.limitType, str_limit, 2));
+    M_Add(new, ME_CrtSwX(_("Mode:"), &config.hardcore, str_mode, 2));
     M_Add(new, ME_CrtSep(""));
     M_Add(new, ME_CrtSub(_("Back"), _main));
     // graphics //
