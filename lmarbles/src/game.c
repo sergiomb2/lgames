@@ -229,7 +229,7 @@ void G_Ini()
     gm.c_lvl = 0;
 
     // marble
-    gm.m_v = 0.15;
+    gm.m_v = 0.2;
     gm.m_a.p = 0;
     gm.m_a.f = 4;
     gm.m_a.c = 0.016 + 0.008;
@@ -512,7 +512,8 @@ void G_Run()
                                     break;
                                 /* warp? */
                                 if (gm.m_mv && (ev.key.keysym.sym == config.k_right || ev.key.keysym.sym == config.k_left || ev.key.keysym.sym == config.k_up || ev.key.keysym.sym == config.k_down)) {
-                                    gm.m_warp = 1;
+                                    if (config.limitType == LT_MOVES)
+                                    	gm.m_warp = 1;
                                     break;
                                 }
                                 // undo key
@@ -566,7 +567,8 @@ void G_Run()
                     case SDL_MOUSEBUTTONUP:
                         if ( ev.button.button == 1 && gm.m_mv &&
                              ( config.limitType == LT_MOVES ) ) {
-                            gm.m_warp = 1;
+                        	if (config.limitType == LT_MOVES)
+                        		gm.m_warp = 1;
                             break;
                         }
                         gm.bttn[ev.button.button] = 1;
