@@ -1,7 +1,8 @@
-center bonus info and darken screen more 
 replace all strcpy with snprintf
 add shadow surface for scaling
 add proper crosscompiling
 fix error with second bad levelset
 fullscreen switch and back traps mouse in window
 hardcore: mode normal or 5-stars only
+segfault after finishing level 2-2
+save profile directly after level completed 
