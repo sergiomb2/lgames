@@ -2687,7 +2687,7 @@ void BS_Run(int rating, float b_lvl, float b_tm)
     SS_Fill(0x0);
     D_FDST(sdl.scr);
     D_FSRC(buf);
-    SS_ABlt(128);
+    SS_ABlt(64);
     SDL_FreeSurface(buf);
     D_FDST(gm.s_bkgd);
     D_FSRC(sdl.scr);
