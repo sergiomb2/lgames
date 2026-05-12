@@ -30,7 +30,7 @@ cccc b c;
 </level>
 
 <level>
-time = 14; moves = 18; 
+time = 15; moves = 18; 
 map_w = 10; map_h = 9;
 fig_w = 4; fig_h = 2;
 <figure>
