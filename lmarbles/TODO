@@ -4,5 +4,3 @@ add proper crosscompiling
 fix error with second bad levelset
 fullscreen switch and back traps mouse in window
 segfault after finishing levels sometimes?
-
-fix colorkey of teleporters
