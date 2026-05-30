@@ -164,7 +164,7 @@ aaaaaaaaaa;
 </level>
 
 <level>
-time = 70; moves = 58; 
+time = 65; moves = 58; 
 map_w = 13; map_h = 12;
 fig_w = 5; fig_h = 3;
 <figure>
