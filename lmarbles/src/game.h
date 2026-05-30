@@ -91,7 +91,8 @@ typedef struct {
 #define L_GREEN     0
 #define L_ORANGE    1
 #define L_RED       2
-#define L_WHITE     3
+#define L_BLUE		3
+#define L_WHITE     4
 #define L_SIZE      12
 typedef struct {
     // gfx sets //

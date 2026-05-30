@@ -4,6 +4,5 @@ add proper crosscompiling
 fix error with second bad levelset
 fullscreen switch and back traps mouse in window
 segfault after finishing levels sometimes?
-save profile directly after level completed 
-blue lamp for 5 star completion
+
 fix colorkey of teleporters

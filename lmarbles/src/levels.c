@@ -575,15 +575,16 @@ void L_Ini(int c, int l)
         for (i = 0; i < gm.c_l_st->l_num; i++) {
             D_DST(gm.s_bkgd, gm.b_x + gm.c_x + i * L_SIZE, gm.c_y + j * L_SIZE, L_SIZE, L_SIZE);
             if (!gm.c_s_inf->chapterOpen[config.limitType][j]) {
-                D_SRC(gm.s_lghts, L_RED * L_SIZE, 0);
+            	D_SRC(gm.s_lghts, L_RED * L_SIZE, 0);
+            } else if ( gm.c_s_inf->completed[config.limitType][j * gm.c_l_st->l_num + i] ) {
+            	if ( gm.c_s_inf->completed[config.limitType][j * gm.c_l_st->l_num + i] == 6) {
+            		D_SRC(gm.s_lghts, L_BLUE * L_SIZE, 0);
+            	} else {
+            		D_SRC(gm.s_lghts, L_GREEN * L_SIZE, 0);
+            	}
+            } else {
+            	D_SRC(gm.s_lghts, L_ORANGE * L_SIZE, 0);
             }
-            else
-                if ( gm.c_s_inf->completed[config.limitType][j * gm.c_l_st->l_num + i] ) {
-                    D_SRC(gm.s_lghts, L_GREEN * L_SIZE, 0);
-                }
-                else {
-                    D_SRC(gm.s_lghts, L_ORANGE * L_SIZE, 0);
-                }
             SS_Blt();
         }
     // current level is white
