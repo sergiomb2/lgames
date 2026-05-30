@@ -676,6 +676,7 @@ void G_Run()
                     BS_Run( rating, bonus_level, bonus_moves );
                     profileUpdate(gm.c_s_inf, gm.c_ch * gm.c_l_st->l_num + gm.c_l_id,
                 		    rating, bonus_level + bonus_moves);
+                    profileSave();
                 }
 
             }
@@ -689,8 +690,6 @@ void G_Run()
             restart = 0;
         }
     }
-    // save profiles
-    profileSave();
 }
 
 /*
