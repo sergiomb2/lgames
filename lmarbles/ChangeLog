@@ -1,3 +1,4 @@
+1.1:
 - fixed colorkey of teleporters (2026/05/30 MS)
 - speed up marble movement and deny skip for time limit (2026/05/10 MS)
 - replaced difficulty with level rating (2026/04/15 MS)
