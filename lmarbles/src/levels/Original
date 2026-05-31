@@ -197,7 +197,7 @@ gfx_set = wood;
 open = 0;
 
 <level>
-time = 25; moves = 16;
+time = 20; moves = 16;
 map_w = 8; map_h = 7;
 fig_w = 3; fig_h = 3;
 <figure>
