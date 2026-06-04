@@ -1,3 +1,7 @@
+1.1.1:
+- updated icon install location (2026/06/04 MS)
+- added missing manpage lmarbles.6 (2026/06/04 MS)
+
 1.1:
 - fixed colorkey of teleporters (2026/05/30 MS)
 - speed up marble movement and deny skip for time limit (2026/05/10 MS)

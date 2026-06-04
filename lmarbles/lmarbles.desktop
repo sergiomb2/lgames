@@ -2,6 +2,6 @@
 Name=LMarbles
 Comment=Atomix-like enhanced puzzle game.
 Exec=lmarbles
-Icon=
+Icon=lmarbles
 Type=Application
 Categories=Game;
