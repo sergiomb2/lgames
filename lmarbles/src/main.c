@@ -122,7 +122,7 @@ void MM_CrtE()
     // add copyright //
     ft_t = SF_Ld("gfx/tiny.sdlfnt");
 	ft_t->algn = TA_X_R | TA_Y_B;
-	SF_Wrt(ft_t, ss_bk, ss_bk->w-3, ss_bk->h-1, "(C) 2000-2012 Michael Speck", 0);
+	SF_Wrt(ft_t, ss_bk, ss_bk->w-3, ss_bk->h-1, "(C) 2000-2026 Michael Speck", 0);
 	ft_t->algn = TA_X_L | TA_Y_B;
 	SF_Wrt(ft_t, ss_bk, 0, ss_bk->h-1, "http://lgames.sourceforge.net", 0);
     SF_Fr(ft_t);
