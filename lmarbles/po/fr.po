@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lmarbles 1.0.9\n"
 "Report-Msgid-Bugs-To: lgames.sf.net/contact.php\n"
-"POT-Creation-Date: 2026-05-31 11:06+0200\n"
+"POT-Creation-Date: 2026-06-04 09:10+0200\n"
 "PO-Revision-Date: 2012-02-25 20:15+0100\n"
 "Last-Translator: Eric Rausch <eric.rausch@gmx.fr>\n"
 "Language-Team: German\n"
@@ -131,19 +131,18 @@ msgstr ""
 msgid "Bye, bye!\n"
 msgstr ""
 
-#: src/cfg.c:53
+#: src/cfg.c:56
 #, c-format
-msgid "config directory: %s\n"
+msgid "directory %s not found, creating it\n"
 msgstr ""
 
-#: src/cfg.c:57
-#, c-format
-msgid "  not found, creating it\n"
-msgstr ""
-
-#: src/cfg.c:73
+#: src/cfg.c:72
 #, c-format
 msgid "loading configuration %s\n"
+msgstr ""
+
+#: src/cfg.c:75
+msgid "  not found, using defaults\n"
 msgstr ""
 
 #: src/game.c:170
@@ -337,12 +336,12 @@ msgid "checking menu... "
 msgstr ""
 
 #: src/profile.c:53
-msgid "loading profile...\n"
+#, c-format
+msgid "loading profile %s\n"
 msgstr ""
 
 #: src/profile.c:57
-#, c-format
-msgid "file %s does not exist\n"
+msgid "  not found, creating new profile\n"
 msgstr ""
 
 #: src/profile.c:94

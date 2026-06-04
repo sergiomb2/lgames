@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lmarbles 1.0.9\n"
 "Report-Msgid-Bugs-To: lgames.sf.net/contact.php\n"
-"POT-Creation-Date: 2026-05-31 11:06+0200\n"
+"POT-Creation-Date: 2026-06-04 09:10+0200\n"
 "PO-Revision-Date: 2012-02-25 17:27+0100\n"
 "Last-Translator: michael <lgames.sf.net>\n"
 "Language-Team: German\n"
@@ -138,23 +138,23 @@ msgstr "Rueckgaengig machen"
 msgid "Bye, bye!\n"
 msgstr "Auf Wiedersehen!\n"
 
-#: src/cfg.c:53
-#, fuzzy, c-format
-#| msgid "ERROR: can't find directory '%s'\n"
-msgid "config directory: %s\n"
-msgstr "Fehler: Kann Verzeichnis '%s' nicht finden\n"
-
-#: src/cfg.c:57
+#: src/cfg.c:56
 #, fuzzy, c-format
 #| msgid "Config directory ~/.lgames not found. Creating it.\n"
-msgid "  not found, creating it\n"
+msgid "directory %s not found, creating it\n"
 msgstr "Konfig-Verzeichnis ~/.lgames nicht gefunden. Wird erzeugt.\n"
 
-#: src/cfg.c:73
+#: src/cfg.c:72
 #, fuzzy, c-format
 #| msgid "loading configuration...\n"
 msgid "loading configuration %s\n"
 msgstr "Lade Konfiguration...\n"
+
+#: src/cfg.c:75
+#, fuzzy
+#| msgid "cfg file '%s' not found; using defaults\n"
+msgid "  not found, using defaults\n"
+msgstr "Konfigdatei '%s' nicht gefunden; Verwende Voreinstellungen\n"
 
 #: src/game.c:170
 #, c-format
@@ -353,21 +353,27 @@ msgid "checking menu... "
 msgstr "Pruefe Menue... "
 
 #: src/profile.c:53
-#, fuzzy
+#, fuzzy, c-format
 #| msgid "loading profiles... "
-msgid "loading profile...\n"
+msgid "loading profile %s\n"
 msgstr "Lade Profile... "
 
 #: src/profile.c:57
-#, c-format
-msgid "file %s does not exist\n"
-msgstr ""
+#, fuzzy
+#| msgid "Config directory ~/.lgames not found. Creating it.\n"
+msgid "  not found, creating new profile\n"
+msgstr "Konfig-Verzeichnis ~/.lgames nicht gefunden. Wird erzeugt.\n"
 
 #: src/profile.c:94
 #, fuzzy
 #| msgid "saving profiles... "
 msgid "saving profile...\n"
 msgstr "Speichere Profile... "
+
+#, fuzzy, c-format
+#~| msgid "ERROR: can't find directory '%s'\n"
+#~ msgid "config directory: %s\n"
+#~ msgstr "Fehler: Kann Verzeichnis '%s' nicht finden\n"
 
 #~ msgid "Best Profiles"
 #~ msgstr "Beste Profile"
@@ -412,10 +418,6 @@ msgstr "Speichere Profile... "
 
 #~ msgid "No"
 #~ msgstr "Nein"
-
-#, c-format
-#~ msgid "cfg file '%s' not found; using defaults\n"
-#~ msgstr "Konfigdatei '%s' nicht gefunden; Verwende Voreinstellungen\n"
 
 #, c-format
 #~ msgid "config file '%s' corrupted... using defaults\n"
