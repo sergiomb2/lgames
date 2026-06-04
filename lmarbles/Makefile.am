@@ -4,7 +4,7 @@ SUBDIRS = po src
 
 EXTRA_DIST = config.rpath \
 	     AUTHORS COPYING ChangeLog INSTALL README \
-	     README-SDL.txt TODO \
+	     README-SDL.txt TODO lmarbles.6 \
 	     lmarbles.png lmarbles.desktop.in
 
 desktopdir = $(datadir)/applications
