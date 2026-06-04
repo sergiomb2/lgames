@@ -27,7 +27,7 @@ FILE *fileOpen(const char *fname, const char *mode)
 {
 	FILE *fh = fopen(fname, mode);
 	if (fh == NULL)
-		_logerr(_("cannot access file %s (%s)\n"), fname, mode);
+		_logdebug(1,_("cannot access file %s (%s)\n"), fname, mode);
 	f_ln = 0;
 	return fh;
 }

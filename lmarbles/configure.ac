@@ -15,9 +15,14 @@ AC_CHECK_LIB(m, main,, AC_MSG_ERROR(lib math is needed))
 AC_CHECK_LIB(SDL, main,, AC_MSG_ERROR(lib SDL is needed))
 AC_CHECK_LIB(SDL_mixer, main,, AC_MSG_ERROR(lib SDL mixer is needed))
 
+# allow changing config dir
+configdir=.lmarbles
+AC_ARG_WITH( configdir,
+[  --with-configdir=CONFIGDIR       Set directory for config/data files in home directory (default: .lmarbles).],
+configdir="$withval",)
+
 # Flags
 datdir=$datadir/$PACKAGE
-configdir="~/.lmarbles"
 debugflags=""
 AC_ARG_ENABLE( install,
 [  --disable-install       No installation. Start from source directory.], 

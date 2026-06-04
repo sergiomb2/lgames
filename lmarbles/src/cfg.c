@@ -42,19 +42,18 @@ Config config;
 void configSetPath()
 {
 	DIR *dir;
-	char aux[MAXSTRLEN/2];
+	char aux[MAXSTRLEN/2-1];
 
-	/* build config dir by expanding home directory if needed */
+	/* build config dir */
 	snprintf(aux, sizeof(aux), "%s", CONFIGDIR);
-	if (aux[0] == '~')
-		snprintf(configDir, sizeof(configDir), "%s/%s", getenv( "HOME" ), aux+1);
+	if (strcmp(aux, ".") != 0) /* . = disabled install */
+		snprintf(configDir, sizeof(configDir), "%s/%s", getenv( "HOME" ), aux);
 	else
 		snprintf(configDir, sizeof(configDir), "%s", aux);
-	printf(_("config directory: %s\n"), configDir);
 
 	/* create directory if not found */
 	if ((dir = opendir(configDir)) == 0) {
-		fprintf(stderr, _("  not found, creating it\n"));
+		fprintf(stderr, _("directory %s not found, creating it\n"), configDir);
 		MKDIR(configDir, S_IRWXU);
 	} else {
 		closedir(dir);
@@ -72,11 +71,13 @@ void configLoad()
 
 	printf(_("loading configuration %s\n"), configPath);
 
-	if ((fh = fileOpen(configPath,"r")) == NULL)
+	if ((fh = fileOpen(configPath,"r")) == NULL) {
+		_loginfo(_("  not found, using defaults\n"), configPath);
 		return;
+	}
 
 	if (!fileReadInt(fh, "sound", &config.sound)) {
-		_logerr("old or corrupted config, using defaults\n");
+		_loginfo("  old or corrupted config, using defaults\n");
 		fileClose(fh);
 		return;
 	}

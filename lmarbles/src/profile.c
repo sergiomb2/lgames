@@ -50,11 +50,11 @@ int profileLoad()
 
 	profileReset();
 
-	_loginfo(_("loading profile...\n"));
+	_loginfo(_("loading profile %s\n"), prf_pth);
 
 	/* open file */
-	if ((fh = fopen(prf_pth, "r")) == 0) {
-		_logerr(_("file %s does not exist\n"), prf_pth);
+	if ((fh = fileOpen(prf_pth, "r")) == 0) {
+		_loginfo(_("  not found, creating new profile\n"));
 		return 0;
 	}
 

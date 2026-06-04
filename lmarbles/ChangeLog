@@ -1,4 +1,5 @@
 1.1.1:
+- configurable config dir (2026/06/04 MS)
 - updated icon install location (2026/06/04 MS)
 - added missing manpage lmarbles.6 (2026/06/04 MS)
 
